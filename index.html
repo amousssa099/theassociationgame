@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE ASSOCIATION GAME 🧠</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #1a1a25;
+  --panel: #14141e;
+  --border: #2a2a3a;
+  --accent: #00ff88;
+  --accent2: #ff3366;
+  --accent3: #ffcc00;
+  --accent4: #00ccff;
+  --purple: #9933ff;
+  --text: #e8e8f0;
+  --text2: #8888aa;
+  --pixel: 'Press Start 2P', monospace;
+  --ui: 'Rajdhani', sans-serif;
+  --title: 'Orbitron', sans-serif;
+  --glow-green: 0 0 10px #00ff8866, 0 0 20px #00ff8833;
+  --glow-red: 0 0 10px #ff336666, 0 0 20px #ff336633;
+  --glow-yellow: 0 0 10px #ffcc0066, 0 0 20px #ffcc0033;
+  --glow-blue: 0 0 10px #00ccff66, 0 0 20px #00ccff33;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow-x: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.5;
+  background-image:
+    radial-gradient(circle at 20% 50%, #9933ff0a 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, #00ff880a 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, #00ccff0a 0%, transparent 40%);
+  min-height: 100vh;
+}
+
+/* === SCANLINES OVERLAY === */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* === PIXEL GRID BG === */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === SCREENS === */
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* === SCREEN: TITLE === */
+#screen-title {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  gap: 30px;
+}
+.title-logo {
+  font-family: var(--title);
+  font-size: clamp(24px, 5vw, 52px);
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: var(--glow-green), 0 0 40px #00ff8855;
+  letter-spacing: 4px;
+  animation: pulse-glow 2s ease-in-out infinite;
+  line-height: 1.2;
+}
+@keyframes pulse-glow {
+  0%, 100% { text-shadow: var(--glow-green), 0 0 40px #00ff8855; }
+  50% { text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8899, 0 0 80px #00ff8844; }
+}
+.title-sub {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--accent3);
+  letter-spacing: 2px;
+  text-shadow: var(--glow-yellow);
+}
+.title-meme {
+  font-size: 80px;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0,255,136,0.4));
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* === BUTTONS === */
+.btn {
+  font-family: var(--pixel);
+  font-size: 9px;
+  padding: 14px 28px;
+  border: 2px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.btn:hover::before { opacity: 0.1; }
+.btn:active { transform: scale(0.96); }
+.btn-green { color: var(--accent); box-shadow: var(--glow-green); }
+.btn-green:hover { box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8866; }
+.btn-red { color: var(--accent2); box-shadow: var(--glow-red); }
+.btn-red:hover { box-shadow: 0 0 20px #ff3366, 0 0 40px #ff336666; }
+.btn-yellow { color: var(--accent3); box-shadow: var(--glow-yellow); }
+.btn-yellow:hover { box-shadow: 0 0 20px #ffcc00, 0 0 40px #ffcc0066; }
+.btn-blue { color: var(--accent4); box-shadow: var(--glow-blue); }
+.btn-blue:hover { box-shadow: 0 0 20px #00ccff, 0 0 40px #00ccff66; }
+.btn-purple { color: var(--purple); box-shadow: 0 0 10px #9933ff66; }
+.btn-purple:hover { box-shadow: 0 0 20px #9933ff, 0 0 40px #9933ff66; }
+.btn-big { font-size: 11px; padding: 18px 40px; }
+.btn-sm { font-size: 7px; padding: 8px 16px; }
+
+/* === PANELS === */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 24px;
+  position: relative;
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.5;
+}
+.panel-title {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* === SCREEN: SETUP === */
+#screen-setup {
+  padding: 30px 20px;
+  align-items: center;
+  gap: 24px;
+}
+.setup-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* === UPLOAD ZONE === */
+.upload-zone {
+  border: 2px dashed var(--accent);
+  border-radius: 2px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(0,255,136,0.02);
+  position: relative;
+}
+.upload-zone:hover {
+  background: rgba(0,255,136,0.05);
+  box-shadow: var(--glow-green);
+}
+.upload-zone.dragover {
+  background: rgba(0,255,136,0.08);
+  box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8866;
+}
+.upload-icon { font-size: 48px; margin-bottom: 12px; }
+.upload-text { font-family: var(--pixel); font-size: 9px; color: var(--accent); letter-spacing: 1px; }
+.upload-sub { font-size: 13px; color: var(--text2); margin-top: 8px; }
+#file-input { display: none; }
+
+.textarea-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 14px;
+  padding: 16px;
+  resize: vertical;
+  min-height: 120px;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+}
+.textarea-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--glow-green);
+}
+.textarea-input::placeholder { color: var(--text2); }
+
+/* === CONFIG GRID === */
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.config-item label {
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--text2);
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 8px;
+}
+.select-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.select-input:focus { outline: none; border-color: var(--accent); }
+.select-input option { background: var(--bg2); }
+
+/* === DIFFICULTY SELECTOR === */
+.difficulty-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.diff-btn {
+  font-family: var(--pixel);
+  font-size: 7px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 1px;
+}
+.diff-btn.active-easy { border-color: var(--accent); color: var(--accent); background: rgba(0,255,136,0.1); box-shadow: var(--glow-green); }
+.diff-btn.active-normal { border-color: var(--accent3); color: var(--accent3); background: rgba(255,204,0,0.1); box-shadow: var(--glow-yellow); }
+.diff-btn.active-hard { border-color: var(--accent2); color: var(--accent2); background: rgba(255,51,102,0.1); box-shadow: var(--glow-red); }
+.diff-btn.active-giga { border-color: var(--purple); color: var(--purple); background: rgba(153,51,255,0.1); box-shadow: 0 0 10px #9933ff66; }
+
+/* === AI PROCESSING === */
+#screen-processing {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 30px;
+  padding: 40px;
+}
+.loading-brain {
+  font-size: 80px;
+  animation: spin-brain 1s steps(8) infinite;
+}
+@keyframes spin-brain {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.loading-bar-wrap {
+  width: 400px;
+  max-width: 90vw;
+  height: 20px;
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  overflow: hidden;
+  position: relative;
+}
+.loading-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent4));
+  width: 0%;
+  transition: width 0.3s ease;
+  box-shadow: var(--glow-green);
+}
+.loading-status {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* === THEORY REVIEW === */
+#screen-theory {
+  padding: 20px;
+  align-items: center;
+  gap: 20px;
+}
+.theory-container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.theory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.theory-points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.theory-points::-webkit-scrollbar { width: 4px; }
+.theory-points::-webkit-scrollbar-track { background: var(--bg2); }
+.theory-points::-webkit-scrollbar-thumb { background: var(--accent); }
+.theory-point {
+  padding: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.theory-point:hover { border-color: var(--accent); background: rgba(0,255,136,0.04); }
+.theory-point.selected { border-color: var(--accent); background: rgba(0,255,136,0.08); box-shadow: var(--glow-green); }
+.point-num {
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--accent3);
+  min-width: 30px;
+}
+.point-content { flex: 1; }
+.point-title { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+.point-desc { font-size: 13px; color: var(--text2); }
+.point-checkbox {
+  width: 20px; height: 20px;
+  border: 2px solid var(--accent);
+  background: transparent;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+/* === GAME SCREEN === */
+#screen-game {
+  flex-direction: column;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* HUD */
+.hud {
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 100;
+  flex-wrap: wrap;
+}
+.hud-section { display: flex; align-items: center; gap: 8px; }
+.hud-label {
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--text2);
+  letter-spacing: 1px;
+}
+.hud-value {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--accent);
+  text-shadow: var(--glow-green);
+}
+.hud-sep { width: 1px; height: 30px; background: var(--border); }
+.hud-timer {
+  font-family: var(--pixel);
+  font-size: 14px;
+  color: var(--accent3);
+  text-shadow: var(--glow-yellow);
+  min-width: 60px;
+  text-align: center;
+}
+.hud-timer.danger { color: var(--accent2); text-shadow: var(--glow-red); animation: blink 0.5s step-end infinite; }
+
+/* PROGRESS BARS */
+.hp-bar-wrap {
+  flex: 1;
+  max-width: 150px;
+  height: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.hp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent3), var(--accent));
+  transition: width 0.5s ease;
+}
+
+/* GAME CONTENT */
+.game-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* PHASES */
+.phase { display: none; flex-direction: column; gap: 20px; }
+.phase.active { display: flex; }
+.phase-title {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--accent3);
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: var(--glow-yellow);
+}
+
+/* === ASSOCIATION PHASE === */
+.association-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.assoc-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.assoc-col-title {
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--text2);
+  letter-spacing: 1px;
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.assoc-item {
+  padding: 14px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px;
+  text-align: center;
+  position: relative;
+  user-select: none;
+  border-radius: 2px;
+}
+.assoc-item:hover { border-color: var(--accent4); background: rgba(0,204,255,0.05); }
+.assoc-item.selected-left { border-color: var(--accent3); background: rgba(255,204,0,0.1); box-shadow: var(--glow-yellow); }
+.assoc-item.selected-right { border-color: var(--purple); background: rgba(153,51,255,0.1); box-shadow: 0 0 10px #9933ff66; }
+.assoc-item.matched { border-color: var(--accent); background: rgba(0,255,136,0.08); cursor: default; }
+.assoc-item.wrong { border-color: var(--accent2); background: rgba(255,51,102,0.1); animation: shake 0.3s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+.assoc-item .meme-badge {
+  position: absolute;
+  top: -8px; right: -8px;
+  font-size: 18px;
+  filter: drop-shadow(0 0 4px rgba(255,204,0,0.5));
+}
+.assoc-connector {
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 40px;
+  gap: 8px;
+}
+.connector-line {
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(180deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+}
+
+/* === RECALL PHASE === */
+.recall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.recall-card {
+  aspect-ratio: 1;
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.recall-card::before {
+  content: '?';
+  font-family: var(--pixel);
+  font-size: 20px;
+  color: var(--text2);
+  position: absolute;
+}
+.recall-card.revealed::before { display: none; }
+.recall-card.revealed { background: rgba(0,255,136,0.05); border-color: var(--accent); }
+.recall-card:hover:not(.answered) { border-color: var(--accent4); transform: scale(1.02); }
+.recall-card .card-content { display: none; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 10px; }
+.recall-card.revealed .card-content { display: flex; }
+.card-emoji { font-size: 36px; }
+.card-label { font-size: 11px; color: var(--text2); font-weight: 600; line-height: 1.3; }
+
+/* === ANSWER INPUT === */
+.answer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.answer-prompt {
+  padding: 20px;
+  background: rgba(153,51,255,0.08);
+  border: 1px solid var(--purple);
+  border-radius: 2px;
+  font-size: 15px;
+}
+.answer-prompt strong { color: var(--accent3); }
+.answer-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 15px;
+  padding: 16px;
+  border-radius: 2px;
+  resize: vertical;
+  min-height: 100px;
+}
+.answer-input:focus { outline: none; border-color: var(--purple); }
+
+/* === AI JUDGE === */
+.ai-judge {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.ai-judge::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--purple), var(--accent4));
+}
+.judge-avatar { font-size: 40px; flex-shrink: 0; }
+.judge-content { flex: 1; }
+.judge-name { font-family: var(--pixel); font-size: 7px; color: var(--purple); letter-spacing: 1px; margin-bottom: 8px; }
+.judge-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+.judge-score {
+  font-family: var(--pixel);
+  font-size: 16px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  display: inline-block;
+}
+.judge-score.good { color: var(--accent); border: 1px solid var(--accent); box-shadow: var(--glow-green); }
+.judge-score.ok { color: var(--accent3); border: 1px solid var(--accent3); box-shadow: var(--glow-yellow); }
+.judge-score.bad { color: var(--accent2); border: 1px solid var(--accent2); box-shadow: var(--glow-red); }
+
+/* === SCOREBOARD === */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.score-card {
+  padding: 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  text-align: center;
+  border-radius: 2px;
+}
+.score-card.player-card { border-color: var(--accent); box-shadow: var(--glow-green); }
+.score-card.ai-card { border-color: var(--accent2); box-shadow: var(--glow-red); }
+.score-name { font-family: var(--pixel); font-size: 8px; letter-spacing: 1px; margin-bottom: 12px; }
+.player-card .score-name { color: var(--accent); }
+.ai-card .score-name { color: var(--accent2); }
+.score-num { font-family: var(--pixel); font-size: 32px; line-height: 1; }
+.player-card .score-num { color: var(--accent); text-shadow: var(--glow-green); }
+.ai-card .score-num { color: var(--accent2); text-shadow: var(--glow-red); }
+.score-detail { font-size: 12px; color: var(--text2); margin-top: 8px; }
+
+/* === SHOP === */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.shop-item {
+  padding: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+  position: relative;
+}
+.shop-item:hover:not(.sold-out) { border-color: var(--accent3); background: rgba(255,204,0,0.05); }
+.shop-item.sold-out { opacity: 0.4; cursor: not-allowed; }
+.shop-emoji { font-size: 32px; margin-bottom: 8px; }
+.shop-name { font-family: var(--pixel); font-size: 7px; color: var(--text); letter-spacing: 1px; margin-bottom: 4px; }
+.shop-desc { font-size: 11px; color: var(--text2); margin-bottom: 8px; }
+.shop-price {
+  font-family: var(--pixel);
+  font-size: 9px;
+  color: var(--accent3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.coin { font-size: 14px; }
+
+/* === CHAT === */
+.chat-panel {
+  position: fixed;
+  right: -360px;
+  top: 60px;
+  width: 340px;
+  height: calc(100vh - 80px);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+  z-index: 200;
+}
+.chat-panel.open { right: 0; }
+.chat-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-title { font-family: var(--pixel); font-size: 8px; color: var(--accent4); letter-spacing: 1px; }
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chat-msg {
+  padding: 10px 14px;
+  border-radius: 2px;
+  max-width: 85%;
+  font-size: 13px;
+  line-height: 1.5;
+  animation: msg-in 0.2s ease;
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-msg.user { background: rgba(0,255,136,0.1); border: 1px solid var(--accent); align-self: flex-end; color: var(--text); }
+.chat-msg.ai { background: rgba(153,51,255,0.1); border: 1px solid var(--purple); align-self: flex-start; color: var(--text); }
+.chat-msg.ai::before { content: '🤖 '; }
+.chat-input-row { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.chat-input {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--ui);
+  font-size: 13px;
+  padding: 10px;
+  border-radius: 2px;
+}
+.chat-input:focus { outline: none; border-color: var(--accent4); }
+.chat-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 56px; height: 56px;
+  background: var(--panel);
+  border: 2px solid var(--accent4);
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 201;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glow-blue);
+  transition: all 0.2s;
+}
+.chat-toggle:hover { transform: scale(1.1); }
+.chat-toggle.visible { display: flex; }
+
+/* === NOTIFICATION === */
+.notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--panel);
+  border: 1px solid var(--accent3);
+  padding: 12px 24px;
+  font-family: var(--pixel);
+  font-size: 8px;
+  color: var(--accent3);
+  letter-spacing: 1px;
+  z-index: 500;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  text-align: center;
+  max-width: 90vw;
+}
+.notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.notification.green { border-color: var(--accent); color: var(--accent); }
+.notification.red { border-color: var(--accent2); color: var(--accent2); }
+
+/* === RESULTS SCREEN === */
+#screen-results {
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 30px;
+  text-align: center;
+}
+.result-title {
+  font-family: var(--pixel);
+  font-size: clamp(12px, 3vw, 24px);
+  letter-spacing: 4px;
+  animation: pulse-glow 2s infinite;
+}
+.result-win { color: var(--accent); }
+.result-lose { color: var(--accent2); }
+.result-draw { color: var(--accent3); }
+.result-emoji { font-size: 80px; animation: float 2s ease-in-out infinite; }
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+.stat-box {
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.stat-label { font-family: var(--pixel); font-size: 7px; color: var(--text2); letter-spacing: 1px; margin-bottom: 8px; }
+.stat-value { font-family: var(--pixel); font-size: 20px; color: var(--accent3); }
+
+/* === AI RIVAL === */
+.rival-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255,51,102,0.05);
+  border: 1px solid rgba(255,51,102,0.3);
+  border-radius: 2px;
+}
+.rival-avatar { font-size: 40px; animation: float 2s ease-in-out infinite; }
+.rival-info { flex: 1; }
+.rival-name { font-family: var(--pixel); font-size: 8px; color: var(--accent2); letter-spacing: 1px; margin-bottom: 4px; }
+.rival-status { font-size: 12px; color: var(--text2); }
+.rival-action {
+  font-family: var(--pixel);
+  font-size: 7px;
+  padding: 6px 12px;
+  background: rgba(255,51,102,0.1);
+  border: 1px solid var(--accent2);
+  color: var(--accent2);
+  border-radius: 2px;
+}
+
+/* === POWER-UP EFFECTS === */
+.powerup-active {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 300;
+  animation: powerup-flash 0.5s ease;
+}
+@keyframes powerup-flash {
+  0% { background: rgba(255,204,0,0.3); }
+  100% { background: transparent; }
+}
+
+/* === STREAK INDICATOR === */
+.streak {
+  font-family: var(--pixel);
+  font-size: 9px;
+  padding: 4px 12px;
+  background: rgba(255,204,0,0.1);
+  border: 1px solid var(--accent3);
+  color: var(--accent3);
+}
+.streak.hot { animation: streak-pulse 0.5s ease infinite alternate; }
+@keyframes streak-pulse {
+  from { box-shadow: none; }
+  to { box-shadow: var(--glow-yellow); }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .association-grid { grid-template-columns: 1fr; }
+  .assoc-connector { display: none; }
+  .scoreboard { grid-template-columns: 1fr; }
+  .result-stats { grid-template-columns: 1fr 1fr; }
+}
+
+/* === TYPING ANIMATION === */
+.typing::after {
+  content: '|';
+  animation: blink 0.7s step-end infinite;
+}
+
+/* === COIN ANIMATION === */
+@keyframes coin-pop {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0) rotate(360deg) translateY(-40px); opacity: 0; }
+}
+.coin-pop {
+  position: fixed;
+  font-size: 24px;
+  pointer-events: none;
+  animation: coin-pop 0.8s ease forwards;
+  z-index: 400;
+}
+
+/* TABS */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.tab {
+  font-family: var(--pixel);
+  font-size: 7px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  letter-spacing: 1px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* BADGE */
+.badge {
+  font-family: var(--pixel);
+  font-size: 6px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+}
+.badge-green { background: rgba(0,255,136,0.15); color: var(--accent); border: 1px solid var(--accent); }
+.badge-red { background: rgba(255,51,102,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.badge-yellow { background: rgba(255,204,0,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
+
+/* SABOTAGE INDICATOR */
+.sabotage-warning {
+  padding: 10px 16px;
+  background: rgba(255,51,102,0.1);
+  border: 1px solid var(--accent2);
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--accent2);
+  letter-spacing: 1px;
+  animation: blink 0.3s step-end infinite;
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification"></div>
+
+<!-- CHAT TOGGLE -->
+<button class="chat-toggle" id="chat-toggle" onclick="toggleChat()">🤖</button>
+
+<!-- CHAT PANEL -->
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <span class="chat-title">💬 PREGUNTA A LA IA</span>
+    <button class="btn btn-sm btn-red" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-msg ai">Soy tu asistente de estudio. Puedo ayudarte a entender el tema, darte pistas o explicar conceptos. ¿Qué quieres saber? 🧠</div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" placeholder="Pregunta algo..." onkeydown="if(event.key==='Enter') sendChat()">
+    <button class="btn btn-sm btn-blue" onclick="sendChat()">▶</button>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: TITLE ==================== -->
+<div class="screen active" id="screen-title">
+  <div class="title-meme">🧠</div>
+  <div class="title-logo">THE ASSOCIATION<br>GAME</div>
+  <div class="title-sub">► STUDY LIKE A CHAD ◄</div>
+  <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
+    <span style="font-size:28px" title="Jujutsu Kaisen approved">⚡</span>
+    <span style="font-size:28px" title="Based">💀</span>
+    <span style="font-size:28px" title="Giga IQ">🗿</span>
+    <span style="font-size:28px" title="No pasa nada">🤌</span>
+    <span style="font-size:28px" title="W">👑</span>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:10px;">
+    <button class="btn btn-green btn-big" onclick="showScreen('screen-setup')">▶ NUEVA PARTIDA</button>
+    <button class="btn btn-yellow" onclick="showHowTo()">❓ CÓMO JUGAR</button>
+  </div>
+  <div style="font-family:var(--pixel); font-size:7px; color:var(--text2); margin-top:20px; letter-spacing:1px;">v1.0 · POWERED BY GROQ AI · NO CAP</div>
+</div>
+
+<!-- ==================== SCREEN: SETUP ==================== -->
+<div class="screen" id="screen-setup">
+  <div style="padding:20px 20px 0; display:flex; align-items:center; gap:16px;">
+    <button class="btn btn-sm btn-red" onclick="showScreen('screen-title')">← BACK</button>
+    <div style="font-family:var(--pixel); font-size:10px; color:var(--accent3); letter-spacing:2px;">CONFIGURAR PARTIDA</div>
+  </div>
+  <div class="setup-container" style="padding:20px; align-self:center;">
+
+    <!-- UPLOAD -->
+    <div class="panel">
+      <div class="panel-title">📁 SUBE TU TEMARIO</div>
+      <div class="tabs">
+        <button class="tab active" id="tab-upload" onclick="switchTab('upload')">ARCHIVO</button>
+        <button class="tab" id="tab-text" onclick="switchTab('text')">TEXTO</button>
+      </div>
+      <div id="tab-upload-content">
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()"
+          ondragover="event.preventDefault(); this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="handleDrop(event)">
+          <div class="upload-icon">📄</div>
+          <div class="upload-text">DRAG & DROP O CLICK</div>
+          <div class="upload-sub">PDF, TXT, DOCX, imágenes, lo que sea 🗿</div>
+          <div id="upload-status" style="margin-top:12px; font-size:12px; color:var(--accent);"></div>
+        </div>
+        <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
+      </div>
+      <div id="tab-text-content" style="display:none;">
+        <textarea class="textarea-input" id="theory-text" placeholder="Pega aquí tus apuntes, el texto del tema, lo que tengas... La IA lo analiza y saca lo importante 🔥&#10;&#10;Por ejemplo: 'La fotosíntesis es el proceso por el cual...' o 'Los Reyes Católicos unificaron España en...'" rows="8"></textarea>
+        <div style="font-size:12px; color:var(--text2); margin-top:8px;">💡 Pro tip: cuanto más detallado, mejor el juego</div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="panel">
+      <div class="panel-title">⚙️ CONFIGURACIÓN</div>
+      <div class="config-grid">
+        <div class="config-item">
+          <label>🎮 MODO DE JUEGO</label>
+          <select class="select-input" id="game-mode">
+            <option value="career">Modo Carrera</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>⏱️ TIEMPO POR RONDA</label>
+          <select class="select-input" id="time-config">
+            <option value="60">60 segundos</option>
+            <option value="90" selected>90 segundos</option>
+            <option value="120">120 segundos</option>
+            <option value="180">Sin límite</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>🤖 RIVAL IA</label>
+          <select class="select-input" id="rival-config">
+            <optgroup label="⚡ Jujutsu Kaisen">
+              <option value="gojo">Gojo Satoru 🩵</option>
+              <option value="sukuna">Ryomen Sukuna 🩸</option>
+            </optgroup>
+            <optgroup label="🇪🇸 España Política">
+              <option value="pedro">Pedro Sánchez 🌹</option>
+              <option value="rajoy">Mariano Rajoy 🕶️</option>
+              <option value="susaneta">Susana Díaz 🌻</option>
+              <option value="epstein">Mr. No Lo Sé 🏝️</option>
+            </optgroup>
+            <optgroup label="🎭 Personajes Españoles">
+              <option value="calo">Caló Estudioso 🔥</option>
+              <option value="paquirrín">Paquirrín 🐃</option>
+              <option value="chiquito">Chiquito de la Calzada 🤏</option>
+              <option value="torrente">Torrente 🚔</option>
+              <option value="antoñito">El Sevilla (Antoñito) 🤡</option>
+            </optgroup>
+            <optgroup label="🎮 Internet / Streamers">
+              <option value="ibai">Ibai Llanos 🎮</option>
+              <option value="broncano">David Broncano 🎙️</option>
+              <option value="florentino">Florentino Pérez 🏟️</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>💰 MONEDAS INICIO</label>
+          <select class="select-input" id="coins-config">
+            <option value="50">50 coins (Normal)</option>
+            <option value="100" selected>100 coins (Generoso)</option>
+            <option value="200">200 coins (Bocachancla)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFFICULTY -->
+    <div class="panel">
+      <div class="panel-title">💀 DIFICULTAD</div>
+      <div class="difficulty-btns">
+        <button class="diff-btn" data-diff="easy" onclick="setDiff('easy', this)">😴 FÁCIL</button>
+        <button class="diff-btn active-normal" data-diff="normal" onclick="setDiff('normal', this)">😤 NORMAL</button>
+        <button class="diff-btn" data-diff="hard" onclick="setDiff('hard', this)">💀 DIFÍCIL</button>
+        <button class="diff-btn" data-diff="giga" onclick="setDiff('giga', this)">🗿 GIGA CHAD</button>
+      </div>
+      <div id="diff-desc" style="margin-top:12px; font-size:13px; color:var(--text2);">
+        Normal: La IA es competente. Puede sabotearte 1 vez. 90s por ronda.
+      </div>
+    </div>
+
+    <button class="btn btn-green btn-big" onclick="startAnalysis()" style="align-self:center;">
+      🚀 ANALIZAR TEORÍA Y JUGAR
+    </button>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: PROCESSING ==================== -->
+<div class="screen" id="screen-processing">
+  <div class="loading-brain">🧠</div>
+  <div style="font-family:var(--pixel); font-size:12px; color:var(--accent3); letter-spacing:2px;">ANALIZANDO TEORÍA</div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar" id="loading-bar"></div>
+  </div>
+  <div class="loading-status" id="loading-status">Cargando neurona...</div>
+  <div style="font-size:13px; color:var(--text2); max-width:400px; text-align:center; line-height:1.8;" id="loading-meme">
+    🗿 La IA está asimilando tu temario como Sukuna asimila a Yuji...
+  </div>
+</div>
+
+<!-- ==================== SCREEN: THEORY ==================== -->
+<div class="screen" id="screen-theory">
+  <div class="theory-container">
+    <div class="theory-header">
+      <div style="font-family:var(--pixel); font-size:10px; color:var(--accent3); letter-spacing:2px;">📚 TEORÍA ANALIZADA</div>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <span style="font-size:12px; color:var(--text2);">Selecciona los puntos para el juego:</span>
+        <button class="btn btn-sm btn-green" onclick="selectAll()">TODOS</button>
+        <button class="btn btn-sm btn-red" onclick="selectNone()">NINGUNO</button>
+      </div>
+    </div>
+
+    <div class="panel" style="padding:12px 16px;">
+      <div style="font-size:13px; color:var(--text2);" id="theory-summary"></div>
+    </div>
+
+    <div class="theory-points" id="theory-points-list"></div>
+
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding-bottom:20px;">
+      <button class="btn btn-green btn-big" onclick="startGame()">⚡ EMPEZAR PARTIDA</button>
+      <button class="btn btn-yellow" onclick="showScreen('screen-setup')">← CAMBIAR CONFIG</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: GAME ==================== -->
+<div class="screen" id="screen-game">
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-section">
+      <div>
+        <div class="hud-label">TU PUNTUACIÓN</div>
+        <div class="hud-value" id="hud-score">0</div>
+      </div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-section" style="flex-direction:column; gap:2px;">
+      <div class="hud-label">TÚ</div>
+      <div class="hp-bar-wrap"><div class="hp-bar-fill" id="player-hp" style="width:100%"></div></div>
+    </div>
+    <div class="hud-section" style="flex-direction:column; gap:2px;">
+      <div class="hud-label" id="rival-hud-name">IA</div>
+      <div class="hp-bar-wrap"><div class="hp-bar-fill" id="rival-hp" style="width:100%; background:linear-gradient(90deg,#ff3366,#9933ff)"></div></div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-section">
+      <div>
+        <div class="hud-label">⏱️ TIEMPO</div>
+        <div class="hud-timer" id="hud-timer">--</div>
+      </div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-section">
+      <div>
+        <div class="hud-label">💰 COINS</div>
+        <div class="hud-value" id="hud-coins" style="color:var(--accent3)">0</div>
+      </div>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hud-section">
+      <div class="streak" id="streak-indicator">🔥 x0</div>
+    </div>
+    <div style="margin-left:auto; display:flex; gap:8px;">
+      <button class="btn btn-sm btn-yellow" onclick="toggleShop()">🛒 SHOP</button>
+      <button class="btn btn-sm btn-red" onclick="if(confirm('¿Abandonar?')) showScreen(\'screen-title\')">✕ SALIR</button>
+    </div>
+  </div>
+
+  <!-- GAME CONTENT -->
+  <div class="game-content">
+
+    <!-- RIVAL INFO -->
+    <div class="rival-section" id="rival-section">
+      <div class="rival-avatar" id="rival-avatar">🤖</div>
+      <div class="rival-info">
+        <div class="rival-name" id="rival-name-display">RIVAL IA</div>
+        <div class="rival-status" id="rival-status">Pensando...</div>
+      </div>
+      <div class="rival-action" id="rival-action">🎮 EN JUEGO</div>
+      <div class="hud-value" style="font-size:16px;" id="rival-score-display">0 pts</div>
+    </div>
+
+    <!-- SABOTAGE WARNING -->
+    <div class="sabotage-warning" id="sabotage-warning" style="display:none;">
+      ⚠️ ¡SABOTAJE ACTIVO! TU TIEMPO SE REDUCE ⚠️
+    </div>
+
+    <!-- PHASE: ASSOCIATION -->
+    <div class="phase active" id="phase-association">
+      <div class="phase-title">FASE 1 · ASOCIACIÓN RÁPIDA</div>
+      <div style="font-size:13px; color:var(--text2); text-align:center;">
+        Conecta cada concepto con su definición/meme. Click en uno de cada columna para asociarlos.
+      </div>
+      <div class="association-grid" id="association-grid">
+        <div class="assoc-column" id="left-col">
+          <div class="assoc-col-title">📖 CONCEPTOS</div>
+        </div>
+        <div class="assoc-connector">
+          <div class="connector-line"></div>
+          <span style="font-size:20px;">⚡</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="assoc-column" id="right-col">
+          <div class="assoc-col-title">🎯 DEFINICIONES / MEMES</div>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button class="btn btn-green" id="btn-check-assoc" onclick="checkAssociations()" disabled>✓ COMPROBAR</button>
+        <div id="assoc-progress" style="font-family:var(--pixel); font-size:8px; color:var(--text2); display:flex; align-items:center;">0/0 asociadas</div>
+      </div>
+    </div>
+
+    <!-- PHASE: RECALL -->
+    <div class="phase" id="phase-recall">
+      <div class="phase-title">FASE 2 · MEMORIA - ¿RECUERDAS?</div>
+      <div style="font-size:13px; color:var(--text2); text-align:center;">
+        Se te mostrarán los objetos/memes. Dices a qué concepto corresponde.
+      </div>
+      <div class="recall-grid" id="recall-grid"></div>
+      <div style="display:flex; justify-content:center; gap:12px; margin-top:8px;">
+        <button class="btn btn-blue" onclick="nextRecallCard()">SIGUIENTE CARD ▶</button>
+      </div>
+    </div>
+
+    <!-- PHASE: FINAL TEST -->
+    <div class="phase" id="phase-final">
+      <div class="phase-title">FASE FINAL · PRUEBA DEFINITIVA 🗿</div>
+      <div class="ai-judge" style="margin-bottom:8px;">
+        <div class="judge-avatar">⚖️</div>
+        <div class="judge-content">
+          <div class="judge-name">JUEZ IA · MODO ESTRICTO</div>
+          <div class="judge-text" id="final-question">Preparando pregunta definitiva...</div>
+        </div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-prompt" id="final-prompt"></div>
+        <textarea class="answer-input" id="final-answer" placeholder="Explica con tus propias palabras. Justifica. No hagas copy-paste o el juez te pillará. 🗿"></textarea>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-purple btn-big" onclick="submitFinalAnswer()">📝 ENVIAR RESPUESTA</button>
+        </div>
+      </div>
+      <div class="ai-judge" id="final-feedback" style="display:none; border-color:var(--purple);">
+        <div class="judge-avatar" id="feedback-avatar">🤖</div>
+        <div class="judge-content">
+          <div class="judge-name">VEREDICTO DEL JUEZ</div>
+          <div class="judge-text" id="feedback-text"></div>
+          <div class="judge-score" id="feedback-score"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHOP PANEL (hidden by default) -->
+    <div id="shop-panel" style="display:none;">
+      <div class="panel">
+        <div class="panel-title">🛒 TIENDA DE POWER-UPS</div>
+        <div class="shop-grid" id="shop-grid"></div>
+      </div>
+    </div>
+
+    <!-- SCOREBOARD MINI -->
+    <div class="scoreboard">
+      <div class="score-card player-card">
+        <div class="score-name">👤 TÚ</div>
+        <div class="score-num" id="player-score-big">0</div>
+        <div class="score-detail" id="player-detail">0 correctas · 0 racha</div>
+      </div>
+      <div class="score-card ai-card">
+        <div class="score-name" id="rival-score-name">🤖 RIVAL</div>
+        <div class="score-num" id="rival-score-big">0</div>
+        <div class="score-detail" id="rival-detail">0 correctas · calculando...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== SCREEN: RESULTS ==================== -->
+<div class="screen" id="screen-results">
+  <div class="result-emoji" id="result-emoji">🏆</div>
+  <div class="result-title" id="result-title">RESULTADO</div>
+  <div class="result-stats">
+    <div class="stat-box">
+      <div class="stat-label">TU PUNTUACIÓN</div>
+      <div class="stat-value" id="res-score">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">PUNTUACIÓN IA</div>
+      <div class="stat-value" id="res-ai-score">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">TIEMPO</div>
+      <div class="stat-value" id="res-time">0s</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">PRECISIÓN</div>
+      <div class="stat-value" id="res-accuracy">0%</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">RACHA MÁXIMA</div>
+      <div class="stat-value" id="res-streak">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">COINS GANADOS</div>
+      <div class="stat-value" id="res-coins">0</div>
+    </div>
+  </div>
+  <div class="ai-judge" style="max-width:600px; width:100%;">
+    <div class="judge-avatar" id="result-rival-avatar">🤖</div>
+    <div class="judge-content">
+      <div class="judge-name">MENSAJE DEL RIVAL</div>
+      <div class="judge-text" id="result-rival-msg">...</div>
+    </div>
+  </div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+    <button class="btn btn-green btn-big" onclick="startGame()">🔄 REVANCHA</button>
+    <button class="btn btn-yellow" onclick="showScreen('screen-setup')">📚 NUEVO TEMA</button>
+    <button class="btn btn-red" onclick="showScreen('screen-title')">🏠 INICIO</button>
+  </div>
+</div>
+
+<script>
+const GROQ_KEY = "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";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+// === STATE ===
+let state = {
+  theory: '',
+  theoryPoints: [],
+  selectedPoints: [],
+  config: { difficulty: 'normal', timePerRound: 90, rival: 'gojo', startCoins: 100 },
+  game: {
+    playerScore: 0, rivalScore: 0, coins: 100,
+    streak: 0, maxStreak: 0, correctCount: 0, totalCount: 0,
+    timeUsed: 0, phase: 'association',
+    associations: [], // {left, right, leftId, rightId}
+    matched: new Set(), selectedLeft: null, selectedRight: null,
+    recallIndex: 0, finalPassed: false,
+    sabotageActive: false, hintsUsed: 0,
+    startTime: 0
+  }
+};
+
+const RIVALS = {
+  gojo:      { name: 'Gojo Satoru',        avatar: '🩵', msg_win: "Por supuesto que yo gané. Soy el más fuerte. Next.", msg_lose: "Heh... no está mal. Pero yo podría haberlo hecho con los ojos vendados.", status: ['Usando Infinito para estudiar...', 'Técnica Prohibida: Memorización Perfecta', 'Ojo Violeta activado 👁️'] },
+  sukuna:    { name: 'Ryomen Sukuna',       avatar: '🩸', msg_win: "¿Eso es todo? Patético. Ni siquiera sudé.", msg_lose: "Tsk... Reconozco el poder cuando lo veo. Solo esta vez.", status: ['Asimilando conocimiento con Malevolent Shrine', 'Desfingeriendo conceptos en 0.01s', 'Domain Expansion: Estudio Perfecto'] },
+  pedro:     { name: 'Pedro Sánchez',       avatar: '🌹', msg_win: "España va bien, yo voy mejor. Decreto aprobado.", msg_lose: "Esto es una investidura fallida. Pero yo sigo siendo presidente.", status: ['Consultando con la SEPI', 'Usando fondos europeos para estudiar', 'Redactando decreto de aprobado', 'Enviando carta a mi mujer sobre lo injusto que es esto'] },
+  epstein:   { name: 'Mr. No Lo Sé',        avatar: '🏝️', msg_win: "No recuerdo nada... pero gané. Qué curioso.", msg_lose: "No tengo ninguna relación con ese resultado.", status: ['En la isla estudiando', 'Los documentos se perdieron', 'Lista de estudiantes confidencial', 'No aparezco en ningún registro'] },
+  calo:      { name: 'Caló Estudioso',      avatar: '🔥', msg_win: "Arsa mi niño, esto es mío. Palabra de caló.", msg_lose: "Que sepas que te ayudé yo. Que quede claro, primo.", status: ['Repasando apuntes al compás de la zambomba', 'Técnica especial: memoria aflamencá', 'Por mi mare que me lo sé', 'Estudiando en el chiscón'] },
+  paquirrín: { name: 'Paquirrín',           avatar: '🐃', msg_win: "¡Toma ya! ¡Soy el número uno, lo flipas!", msg_lose: "Bueno, se me fue la pinza. Pero lo vuelvo a intentar, ¿eh?", status: ['Estudiando con Kiko Rivera de fondo', 'Repasando apuntes en Cantora', 'Técnica del torero: esquivar preguntas', 'Llamando a Julio Iglesias por si sabe'] },
+  florentino:{ name: 'Florentino Pérez',    avatar: '🏟️', msg_win: "El Madrid siempre gana. Y yo también. Que quede claro.", msg_lose: "Esto está amañado. Pido el VAR.", status: ['Fichando neuronas del mercado', 'Presupuesto ilimitado para estudiar', 'Reunión de urgencia con Benzema', 'Remodelando el Bernabéu para estudiar mejor'] },
+  torrente:  { name: 'Torrente',            avatar: '🚔', msg_win: "¡Chúpate esa, inmigrante intelectual!", msg_lose: "Esto está mal planteao. Yo lo haría diferente, ¿me entiendes?", status: ['Estudiando con una cerveza en la mano', 'Técnica de investigación: el chivatazo', 'Fumando en la biblioteca', 'Buscando el tramposo del examen'] },
+  broncano:  { name: 'David Broncano',      avatar: '🎙️', msg_win: "¿Cuánto dinero tienes? ¿Con cuántas personas te has acostado? Gané yo.", msg_lose: "Me lo podría haber preguntado la Resistencia. Habría quedado mejor.", status: ['Preguntando cuánto dinero tiene la teoría', 'Haciendo test de personalidad al temario', 'Con Grison revisando los apuntes', 'La Resistencia estudia contigo esta noche'] },
+  rajoy:     { name: 'Mariano Rajoy',       avatar: '🕶️', msg_win: "Spain is different. Y yo soy más different que tú.", msg_lose: "Bueno. Y a mí qué me cuentas.", status: ['Enviando SMS a Bárcenas sobre los apuntes', 'Rajoy no contesta a los conceptos difíciles', 'En Pontevedra repasando sin prisa', '"Esto es lo que hay"'] },
+  chiquito:  { name: 'Chiquito de la Calzada', avatar: '🤏', msg_win: "¡Pecador de la pradera! ¡Ganééé, jarl!", msg_lose: "¡Fistro! ¡Me has ganao de la calzada! ¡Cobarde!", status: ['¡Estudiando con el testarrudo ese!', '¡No puedorl con tanto temario!', 'Técnica del chiquito: repetir hasta que entre', '¡Hasta luego, Lucas, que me voy a repasar!'] },
+  ibai:      { name: 'Ibai Llanos',         avatar: '🎮', msg_win: "¡La hostia! ¡Gané! ¡Viva la vida, compañeros!", msg_lose: "Uy, me han ganao. Respeto total, te lo juro por mi madre.", status: ['Haciendo stream de los apuntes', 'Estudiando en el KOI con Piqué', 'Retransmitiendo el examen en directo', 'La Velada del Estudio 4 confirmed'] },
+  susaneta:  { name: 'Susana Díaz',         avatar: '🌻', msg_win: "Andalucía siempre gana, cariño. Así de claro.", msg_lose: "No pasa nada, que aquí quien manda mando yo.", status: ['Gestionando los ERE del temario', 'Estudiando con fondos de la Junta', 'Técnica: subsidio de aprendizaje', 'En Sevilla repasando tranquilamente'] },
+  antoñito:  { name: 'El Sevilla (Antoñito)',avatar: '🤡', msg_win: "¡Soy el maaaás grande! ¡Soy el crack!", msg_lose: "¡Que me han hecho trampa! ¡Que yo lo sabía!", status: ['Soñando con ser listo', 'Técnica de memoria: liarla y escapar', 'Haciendo el tonto para que no le pregunten', 'Estudiando en Los Morancos University'] },
+};
+
+const SHOP_ITEMS = [
+  { id: 'hint', emoji: '💡', name: 'PISTA', desc: 'La IA te da una pista sobre la asociación correcta', price: 30, uses: 3, used: 0 },
+  { id: 'freeze', emoji: '❄️', name: 'FREEZE TIME', desc: 'Pausa el tiempo 15 segundos', price: 40, uses: 2, used: 0 },
+  { id: 'sabotage', emoji: '💣', name: 'SABOTAJE', desc: 'Reduce el tiempo del rival 20 segundos', price: 50, uses: 1, used: 0 },
+  { id: 'skip', emoji: '⏭️', name: 'SKIP', desc: 'Salta una pregunta sin perder puntos', price: 45, uses: 2, used: 0 },
+  { id: 'double', emoji: '✖️2', name: 'DOUBLE XP', desc: 'Doble puntos en la siguiente ronda', price: 60, uses: 1, used: 0 },
+  { id: 'reveal', emoji: '👁️', name: 'REVEAL', desc: 'Muestra una asociación correcta al azar', price: 35, uses: 2, used: 0 },
+];
+
+let timer = null;
+let timeLeft = 90;
+let doubleXP = false;
+let freezeActive = false;
+let chatHistory = [];
+let rivalTimer = null;
+
+// === HELPERS ===
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-game') {
+    document.getElementById('chat-toggle').classList.add('visible');
+  } else {
+    document.getElementById('chat-toggle').classList.remove('visible');
+    document.getElementById('chat-panel').classList.remove('open');
+  }
+}
+
+function notify(msg, type='', duration=3000) {
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.className = `notification show ${type}`;
+  setTimeout(() => el.className = 'notification', duration);
+}
+
+function setDiff(diff, btn) {
+  document.querySelectorAll('.diff-btn').forEach(b => b.className = 'diff-btn');
+  btn.classList.add(`active-${diff}`);
+  state.config.difficulty = diff;
+  const descs = {
+    easy: 'Fácil: La IA es torpe. Sin sabotajes. 120s por ronda. Para arrancar con buen ritmo.',
+    normal: 'Normal: La IA es competente. Puede sabotearte 1 vez. 90s por ronda.',
+    hard: 'Difícil: La IA es rápida. Sabotajes frecuentes. 60s por ronda. Giga IQ required.',
+    giga: '🗿 GIGA CHAD: La IA usa técnicas prohibidas. Sin piedad. 45s. No para normies.'
+  };
+  document.getElementById('diff-desc').textContent = descs[diff];
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-upload-content').style.display = tab === 'upload' ? 'block' : 'none';
+  document.getElementById('tab-text-content').style.display = tab === 'text' ? 'block' : 'none';
+  document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
+  document.getElementById('tab-text').classList.toggle('active', tab === 'text');
+}
+
+function spawnCoin(x, y) {
+  const el = document.createElement('div');
+  el.className = 'coin-pop';
+  el.textContent = '🪙';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 800);
+}
+
+// === FILE HANDLING ===
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+function processFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.theory = e.target.result;
+    document.getElementById('upload-status').textContent = `✓ Cargado: ${file.name} (${(file.size/1024).toFixed(1)}KB)`;
+    notify(`📁 ${file.name} cargado. ¡Ready!`, 'green');
+  };
+  if (file.type.includes('text')) reader.readAsText(file);
+  else reader.readAsDataURL(file);
+}
+
+// === GROQ API ===
+async function callGroq(messages, maxTokens=1500) {
+  const resp = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: maxTokens,
+      temperature: 0.7,
+      messages
+    })
+  });
+  if (!resp.ok) throw new Error(`Groq error: ${resp.status}`);
+  const data = await resp.json();
+  return data.choices[0].message.content;
+}
+
+// === ANALYSIS ===
+async function startAnalysis() {
+  const textInput = document.getElementById('theory-text').value.trim();
+  if (!state.theory && !textInput) {
+    notify('⚠️ Sube un archivo o escribe el temario primero, crack', 'red');
+    return;
+  }
+  if (textInput) state.theory = textInput;
+
+  // read config
+  state.config.difficulty = document.querySelector('.diff-btn[class*="active-"]')?.dataset?.diff || 'normal';
+  state.config.timePerRound = parseInt(document.getElementById('time-config').value);
+  state.config.rival = document.getElementById('rival-config').value;
+  state.config.startCoins = parseInt(document.getElementById('coins-config').value);
+
+  showScreen('screen-processing');
+  await runAnalysis();
+}
+
+async function runAnalysis() {
+  const steps = [
+    { text: 'Leyendo apuntes como si fueran memes...', pct: 15 },
+    { text: 'Extrayendo conceptos clave...', pct: 35 },
+    { text: 'Generando asociaciones y memes...', pct: 60 },
+    { text: 'Calibrando nivel de caos...', pct: 80 },
+    { text: 'Preparando el ring de batalla...', pct: 95 },
+  ];
+
+  for (const step of steps) {
+    document.getElementById('loading-status').textContent = step.text;
+    document.getElementById('loading-bar').style.width = step.pct + '%';
+    await sleep(300 + Math.random() * 400);
+  }
+
+  try {
+    const prompt = `Eres el analizador de "The Association Game", un juego de estudio gamificado español con cultura meme, humor ibérico y referencias a Jujutsu Kaisen, política española e internet.
+
+Tu misión: analizar la teoría y para CADA concepto clave, crear un OBJETO FÍSICO o SITUACIÓN CONCRETA Y GRACIOSA que ayude a recordarlo. NO uses descripciones abstractas. Usa objetos reales, situaciones cotidianas, referencias culturales españolas, memes, personajes.
+
+EJEMPLOS DE BUENAS ASOCIACIONES (así de específico debes ser):
+- El Lazarillo sirve al ciego → objeto: "Una botella de vino con mordisco" (el ciego le pegó con el jarro de vino)
+- La Celestina alcahueta → objeto: "Un teléfono con WhatsApp de ligue"  
+- Don Quijote confunde molinos con gigantes → objeto: "Un molino de viento con capa de superhéroe"
+- La picaresca → objeto: "Una cartera vacía con agujero"
+- Pedro Sánchez → objeto: "Una carta de reflexión de 5 folios"
+- La mística de San Juan → objeto: "Una vela negra a medianoche"
+- El Barroco → objeto: "Un churro con demasiado azúcar encima"
+- El Romanticismo → objeto: "Un paraguas roto bajo la lluvia llorando"
+- Góngora culteranismo → objeto: "Un libro con 40 adjetivos en una frase"
+
+Los objetos/triggers deben ser VISUALIZABLES, CONCRETOS y que al verlos te recuerden el concepto. Puedes usar emojis físicos: 🍷🗡️📜🔥💀🪙🏹⚔️📖🕯️🌪️🍞💀🎭🎪
+
+TEORÍA A ANALIZAR:
+${state.theory.substring(0, 4000)}
+
+Responde SOLO en JSON válido (sin markdown, sin backticks, sin texto extra):
+{
+  "summary": "Resumen del tema en 2-3 frases con tono de 'te lo explico mientras nos tomamos algo'",
+  "subject": "Nombre del tema",
+  "points": [
+    {
+      "id": 1,
+      "title": "Nombre exacto del concepto",
+      "description": "Explicación clara del concepto en 1-2 frases",
+      "memeTrigger": "OBJETO FÍSICO O SITUACIÓN: descripción concreta de qué objeto/situación lo representa y POR QUÉ (ej: 'Una botella de vino rota - porque el ciego le pegó con el jarro de vino a Lázaro')",
+      "memeEmoji": "Emoji del objeto físico",
+      "objectLabel": "Nombre corto del objeto para mostrar en la carta (ej: 'Botella de vino' o 'Carta de Pedro' o 'Molino gigante')",
+      "importance": "alta|media|baja",
+      "keywords": ["palabra1", "palabra2", "palabra3"]
+    }
+  ]
+}
+
+Genera entre 7 y 10 puntos. OBLIGATORIO: cada memeTrigger debe mencionar un objeto FÍSICO o situación VISUAL concreta. Nada de "representa la dualidad de" - eso es abstracto y aburrido. Dame el objeto concreto.`;
+
+    const response = await callGroq([{ role: 'user', content: prompt }], 2000);
+
+    let clean = response.trim();
+    if (clean.startsWith('```')) clean = clean.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+
+    const parsed = JSON.parse(clean);
+    state.theoryPoints = parsed.points;
+    state.theorySummary = parsed.summary;
+    state.theorySubject = parsed.subject;
+
+    document.getElementById('loading-bar').style.width = '100%';
+    await sleep(300);
+    showTheory();
+
+  } catch (err) {
+    console.error(err);
+    // Fallback con datos de ejemplo
+    state.theoryPoints = generateFallbackPoints();
+    state.theorySummary = "Análisis generado (modo offline). Los puntos son aproximados.";
+    state.theorySubject = "Tu Tema";
+    showTheory();
+    notify('⚠️ Error API - usando modo demo', 'red');
+  }
+}
+
+function generateFallbackPoints() {
+  return [
+    { id:1, title:"Concepto Principal", description:"El concepto más importante del tema", memeTrigger:"Como Gojo diciendo 'Soy el más fuerte' - este concepto manda en todo", memeEmoji:"🩵", importance:"alta", keywords:["principal"] },
+    { id:2, title:"Segundo Concepto", description:"El segundo punto clave", memeTrigger:"Como Sukuna absorbiendo a Yuji - este concepto absorbe al resto", memeEmoji:"🩸", importance:"alta", keywords:["segundo"] },
+    { id:3, title:"Tercer Elemento", description:"Tercer punto importante", memeTrigger:"Pedro Sánchez lo decreto por ley: es fundamental", memeEmoji:"🌹", importance:"media", keywords:["tercero"] },
+    { id:4, title:"Cuarto Factor", description:"Cuarto elemento del tema", memeTrigger:"Nadie sabe dónde está pero existe, como Mr. No Lo Sé", memeEmoji:"🏝️", importance:"media", keywords:["cuarto"] },
+    { id:5, title:"Quinta Clave", description:"Quinto punto relevante", memeTrigger:"Arsa mi niño, esto es lo más básico del temario", memeEmoji:"🔥", importance:"baja", keywords:["quinto"] },
+    { id:6, title:"Sexto Concepto", description:"Sexto elemento para completar", memeTrigger:"Como Domain Expansion - crea su propio espacio en el temario", memeEmoji:"⚫", importance:"alta", keywords:["sexto"] },
+  ];
+}
+
+function showTheory() {
+  document.getElementById('theory-summary').innerHTML = `<strong style="color:var(--accent)">${state.theorySubject || 'Tu Tema'}</strong>: ${state.theorySummary}`;
+
+  const list = document.getElementById('theory-points-list');
+  list.innerHTML = '';
+  state.selectedPoints = [...state.theoryPoints];
+
+  state.theoryPoints.forEach(point => {
+    const div = document.createElement('div');
+    div.className = 'theory-point selected';
+    div.dataset.id = point.id;
+    div.innerHTML = `
+      <div class="point-checkbox" id="chk-${point.id}">✓</div>
+      <div class="point-content">
+        <div class="point-title">${point.memeEmoji} ${point.title} <span class="badge badge-${point.importance === 'alta' ? 'red' : point.importance === 'media' ? 'yellow' : 'green'}">${point.importance.toUpperCase()}</span></div>
+        <div class="point-desc">${point.description}</div>
+        <div style="font-size:12px; color:var(--accent4); margin-top:4px;">🎭 ${point.memeTrigger}</div>
+      </div>
+    `;
+    div.onclick = () => togglePoint(point.id, div);
+    list.appendChild(div);
+  });
+
+  showScreen('screen-theory');
+}
+
+function togglePoint(id, div) {
+  const idx = state.selectedPoints.findIndex(p => p.id === id);
+  if (idx >= 0) {
+    state.selectedPoints.splice(idx, 1);
+    div.classList.remove('selected');
+    document.getElementById(`chk-${id}`).textContent = '';
+  } else {
+    state.selectedPoints.push(state.theoryPoints.find(p => p.id === id));
+    div.classList.add('selected');
+    document.getElementById(`chk-${id}`).textContent = '✓';
+  }
+}
+
+function selectAll() { state.theoryPoints.forEach(p => { state.selectedPoints = [...state.theoryPoints]; document.querySelectorAll('.theory-point').forEach(d => { d.classList.add('selected'); d.querySelector('.point-checkbox').textContent = '✓'; }); }); }
+function selectNone() { state.selectedPoints = []; document.querySelectorAll('.theory-point').forEach(d => { d.classList.remove('selected'); d.querySelector('.point-checkbox').textContent = ''; }); }
+
+// === GAME ===
+function startGame() {
+  if (state.selectedPoints.length < 3) {
+    notify('⚠️ Selecciona al menos 3 puntos, crack', 'red');
+    return;
+  }
+
+  // Reset game state
+  const g = state.game;
+  g.playerScore = 0; g.rivalScore = 0;
+  g.coins = state.config.startCoins;
+  g.streak = 0; g.maxStreak = 0;
+  g.correctCount = 0; g.totalCount = 0;
+  g.timeUsed = 0; g.phase = 'association';
+  g.matched = new Set(); g.selectedLeft = null; g.selectedRight = null;
+  g.sabotageActive = false; g.hintsUsed = 0;
+  g.startTime = Date.now();
+  g.recallIndex = 0; g.finalPassed = false;
+
+  doubleXP = false; freezeActive = false;
+
+  // Reset shop
+  SHOP_ITEMS.forEach(i => i.used = 0);
+
+  // Setup rival
+  const rival = RIVALS[state.config.rival];
+  document.getElementById('rival-avatar').textContent = rival.avatar;
+  document.getElementById('rival-name-display').textContent = rival.name;
+  document.getElementById('rival-hud-name').textContent = rival.name;
+  document.getElementById('rival-score-name').textContent = `${rival.avatar} ${rival.name}`;
+
+  updateHUD();
+  buildAssociationPhase();
+  showPhase('phase-association');
+  showScreen('screen-game');
+  startTimer(state.config.timePerRound);
+  startRivalAI();
+
+  // Setup chat context
+  chatHistory = [
+    { role: 'system', content: `Eres un asistente de estudio integrado en "The Association Game". El tema es: ${state.theorySubject}. Los puntos del temario son: ${state.selectedPoints.map(p => p.title + ': ' + p.description).join('; ')}. Responde de forma concisa, útil, con algo de humor pero sin ser pesado. Puedes dar pistas sutiles pero no revelar respuestas directamente.` }
+  ];
+
+  showScreen('screen-game');
+}
+
+function buildAssociationPhase() {
+  const points = [...state.selectedPoints].slice(0, Math.min(8, state.selectedPoints.length));
+  const leftCol = document.getElementById('left-col');
+  const rightCol = document.getElementById('right-col');
+
+  leftCol.innerHTML = '<div class="assoc-col-title">📖 CONCEPTOS</div>';
+  rightCol.innerHTML = '<div class="assoc-col-title">🎯 DEFINICIONES / MEMES</div>';
+
+  state.game.associations = [];
+  state.game.matched = new Set();
+  state.game.selectedLeft = null;
+  state.game.selectedRight = null;
+
+  const shuffledRight = [...points].sort(() => Math.random() - 0.5);
+
+  points.forEach((p, i) => {
+    const leftEl = document.createElement('div');
+    leftEl.className = 'assoc-item';
+    leftEl.dataset.id = p.id;
+    leftEl.dataset.side = 'left';
+    leftEl.innerHTML = `<span class="meme-badge">${p.memeEmoji}</span>${p.title}`;
+    leftEl.onclick = () => selectAssocItem(leftEl, 'left', p.id);
+    leftCol.appendChild(leftEl);
+  });
+
+  shuffledRight.forEach((p, i) => {
+    const rightEl = document.createElement('div');
+    rightEl.className = 'assoc-item';
+    rightEl.dataset.id = p.id;
+    rightEl.dataset.side = 'right';
+    // Show either description or meme trigger
+    const showMeme = Math.random() > 0.4;
+    rightEl.textContent = showMeme ? p.memeTrigger : p.description;
+    rightEl.dataset.meme = showMeme ? '1' : '0';
+    rightEl.onclick = () => selectAssocItem(rightEl, 'right', p.id);
+    rightCol.appendChild(rightEl);
+  });
+
+  state.game.totalAssociations = points.length;
+  updateAssocProgress();
+  document.getElementById('btn-check-assoc').disabled = true;
+}
+
+function selectAssocItem(el, side, id) {
+  if (el.classList.contains('matched')) return;
+  const g = state.game;
+
+  if (side === 'left') {
+    document.querySelectorAll('.assoc-item.selected-left').forEach(e => e.classList.remove('selected-left'));
+    if (g.selectedLeft === id) { g.selectedLeft = null; return; }
+    g.selectedLeft = id;
+    el.classList.add('selected-left');
+  } else {
+    document.querySelectorAll('.assoc-item.selected-right').forEach(e => e.classList.remove('selected-right'));
+    if (g.selectedRight === id) { g.selectedRight = null; return; }
+    g.selectedRight = id;
+    el.classList.add('selected-right');
+  }
+
+  // Auto-check when both selected
+  if (g.selectedLeft !== null && g.selectedRight !== null) {
+    setTimeout(() => checkPair(), 200);
+  }
+}
+
+function checkPair() {
+  const g = state.game;
+  const correct = g.selectedLeft === g.selectedRight;
+
+  if (correct) {
+    g.matched.add(g.selectedLeft);
+    g.correctCount++;
+    g.streak++;
+    if (g.streak > g.maxStreak) g.maxStreak = g.streak;
+
+    const pts = (100 + g.streak * 20) * (doubleXP ? 2 : 1);
+    g.playerScore += pts;
+    g.coins += 10;
+    doubleXP = false;
+
+    document.querySelectorAll(`.assoc-item[data-id="${g.selectedLeft}"]`).forEach(e => {
+      e.classList.remove('selected-left', 'selected-right');
+      e.classList.add('matched');
+      e.onclick = null;
+    });
+
+    spawnCoin(window.innerWidth/2, 200);
+    notify(`+${pts} pts! 🔥 ${g.streak > 1 ? `RACHA x${g.streak}!` : ''}`, 'green', 1500);
+  } else {
+    g.streak = 0;
+    g.totalCount++;
+
+    document.querySelectorAll('.assoc-item.selected-left, .assoc-item.selected-right').forEach(e => {
+      e.classList.add('wrong');
+      setTimeout(() => e.classList.remove('wrong'), 400);
+    });
+    notify('❌ No es correcto... -10 pts', 'red', 1500);
+    g.playerScore = Math.max(0, g.playerScore - 10);
+  }
+
+  g.selectedLeft = null; g.selectedRight = null;
+  g.totalCount++;
+  updateHUD();
+  updateAssocProgress();
+
+  if (g.matched.size >= g.totalAssociations) {
+    clearInterval(timer);
+    notify('✅ ¡Todas asociadas! Pasando a Fase 2...', 'green', 2000);
+    setTimeout(() => buildRecallPhase(), 2000);
+  }
+}
+
+function checkAssociations() { checkPair(); }
+
+function updateAssocProgress() {
+  const g = state.game;
+  const prog = document.getElementById('assoc-progress');
+  if (prog) prog.textContent = `${g.matched.size}/${g.totalAssociations || state.selectedPoints.length} asociadas`;
+}
+
+function buildRecallPhase() {
+  const g = state.game;
+  showPhase('phase-recall');
+  startTimer(state.config.timePerRound);
+  g.recallIndex = 0;
+
+  const recallGrid = document.getElementById('recall-grid');
+  recallGrid.innerHTML = '';
+  const points = state.selectedPoints.slice(0, Math.min(6, state.selectedPoints.length));
+
+  points.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'recall-card';
+    card.id = `recall-${i}`;
+    card.innerHTML = `
+      <div class="card-content">
+        <div class="card-emoji">${p.memeEmoji}</div>
+        <div class="card-label">${p.memeTrigger}</div>
+      </div>
+    `;
+    card.onclick = () => revealCard(card, p, i);
+    recallGrid.appendChild(card);
+  });
+
+  notify('Fase 2: ¿Recuerdas qué significan los memes/objetos?', '', 3000);
+}
+
+function revealCard(card, point, idx) {
+  if (card.classList.contains('answered')) return;
+  card.classList.add('revealed');
+  card.classList.add('answered');
+
+  // Ask player to name the concept
+  const answer = prompt(`🎭 ${point.memeEmoji} "${point.memeTrigger}"\n\n¿A qué concepto del temario corresponde este meme/objeto?`);
+  if (!answer) return;
+
+  const correct = point.title.toLowerCase().split(' ').some(w => w.length > 3 && answer.toLowerCase().includes(w)) ||
+                  answer.toLowerCase().includes(point.title.toLowerCase().substring(0, 5));
+
+  if (correct) {
+    state.game.playerScore += 150;
+    state.game.coins += 15;
+    state.game.streak++;
+    card.style.borderColor = 'var(--accent)';
+    spawnCoin(card.getBoundingClientRect().left, card.getBoundingClientRect().top);
+    notify(`✅ Correcto! +150 pts 🔥`, 'green', 2000);
+  } else {
+    state.game.streak = 0;
+    state.game.playerScore = Math.max(0, state.game.playerScore - 20);
+    card.style.borderColor = 'var(--accent2)';
+    notify(`❌ Era: "${point.title}"`, 'red', 2500);
+  }
+  updateHUD();
+
+  // Check if all cards answered
+  const allAnswered = document.querySelectorAll('.recall-card:not(.answered)').length === 0;
+  if (allAnswered) {
+    clearInterval(timer);
+    setTimeout(() => buildFinalPhase(), 2000);
+  }
+}
+
+function nextRecallCard() {
+  const cards = document.querySelectorAll('.recall-card:not(.answered)');
+  if (cards.length > 0) cards[0].click();
+  else buildFinalPhase();
+}
+
+async function buildFinalPhase() {
+  showPhase('phase-final');
+  startTimer(state.config.timePerRound * 2);
+
+  const randomPoint = state.selectedPoints[Math.floor(Math.random() * state.selectedPoints.length)];
+  state.game.finalPoint = randomPoint;
+
+  document.getElementById('final-question').textContent = '⚖️ El juez te va a hacer la prueba final. Prepárate...';
+  document.getElementById('final-prompt').innerHTML = `
+    <strong>🎯 OBJETO/MEME:</strong> ${randomPoint.memeEmoji} "${randomPoint.memeTrigger}"<br><br>
+    <strong>📝 TU TAREA:</strong> Explica con tus propias palabras a qué concepto del temario se refiere esto y por qué es importante. Justifica tu respuesta.
+  `;
+
+  notify('🗿 PRUEBA FINAL - Explica lo que sabes, no hagas copy paste', '', 3000);
+}
+
+async function submitFinalAnswer() {
+  const answer = document.getElementById('final-answer').value.trim();
+  if (!answer || answer.length < 20) {
+    notify('⚠️ Escribe algo más que "no sé" amigo', 'red');
+    return;
+  }
+
+  document.getElementById('final-feedback').style.display = 'flex';
+  document.getElementById('feedback-text').textContent = '⏳ El juez está evaluando tu respuesta...';
+
+  const point = state.game.finalPoint;
+  try {
+    const evalPrompt = `Eres un juez estricto pero con sentido del humor en "The Association Game". 
+El jugador debe relacionar este meme/objeto: "${point.memeTrigger}" con el concepto "${point.title}": "${point.description}"
+
+La respuesta del jugador es: "${answer}"
+
+Evalúa si el jugador realmente entiende el concepto (no solo si copió palabras).
+Responde en JSON:
+{"score": [0-100], "verdict": "CORRECTO|PARCIAL|INCORRECTO", "feedback": "Comentario del juez de 2-3 frases con humor y referencias meme si encajan", "points_earned": [0-300]}`;
+
+    const resp = await callGroq([{ role: 'user', content: evalPrompt }], 500);
+    let clean = resp.trim().replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+    const eval_result = JSON.parse(clean);
+
+    const scoreClass = eval_result.score >= 70 ? 'good' : eval_result.score >= 40 ? 'ok' : 'bad';
+    const pts = eval_result.points_earned * (doubleXP ? 2 : 1);
+    state.game.playerScore += pts;
+    state.game.coins += Math.floor(pts / 10);
+
+    document.getElementById('feedback-avatar').textContent = eval_result.score >= 70 ? '🏆' : eval_result.score >= 40 ? '🤔' : '💀';
+    document.getElementById('feedback-text').textContent = eval_result.feedback;
+    document.getElementById('feedback-score').className = `judge-score ${scoreClass}`;
+    document.getElementById('feedback-score').textContent = `${eval_result.verdict} · +${pts} PTS`;
+
+    updateHUD();
+    spawnCoin(window.innerWidth/2, window.innerHeight/2);
+
+    setTimeout(() => endGame(), 4000);
+
+  } catch(err) {
+    // Fallback evaluation
+    const keywords = [point.title, ...point.keywords].map(k => k.toLowerCase());
+    const matchCount = keywords.filter(k => answer.toLowerCase().includes(k)).length;
+    const pct = Math.min(100, (matchCount / keywords.length) * 100 + (answer.length > 100 ? 20 : 0));
+    const pts = Math.floor(pct * 3);
+    state.game.playerScore += pts;
+
+    document.getElementById('feedback-text').textContent = `Tu respuesta menciona ${matchCount} conceptos clave. ${pct > 60 ? '🗿 No está mal, crack.' : '💀 Puedes hacerlo mejor, socio.'}`;
+    document.getElementById('feedback-score').className = `judge-score ${pct > 60 ? 'good' : 'ok'}`;
+    document.getElementById('feedback-score').textContent = `+${pts} PTS`;
+    updateHUD();
+    setTimeout(() => endGame(), 4000);
+  }
+}
+
+function endGame() {
+  clearInterval(timer);
+  clearInterval(rivalTimer);
+
+  const g = state.game;
+  const timeUsed = Math.floor((Date.now() - g.startTime) / 1000);
+  const accuracy = g.totalCount > 0 ? Math.floor((g.correctCount / g.totalCount) * 100) : 0;
+  const rival = RIVALS[state.config.rival];
+
+  document.getElementById('res-score').textContent = g.playerScore;
+  document.getElementById('res-ai-score').textContent = g.rivalScore;
+  document.getElementById('res-time').textContent = timeUsed + 's';
+  document.getElementById('res-accuracy').textContent = accuracy + '%';
+  document.getElementById('res-streak').textContent = g.maxStreak;
+  document.getElementById('res-coins').textContent = g.coins;
+
+  const win = g.playerScore > g.rivalScore;
+  const draw = g.playerScore === g.rivalScore;
+
+  document.getElementById('result-emoji').textContent = win ? '🏆' : draw ? '🤝' : '💀';
+  document.getElementById('result-title').className = `result-title ${win ? 'result-win' : draw ? 'result-draw' : 'result-lose'}`;
+  document.getElementById('result-title').textContent = win ? '¡VICTORIA! W KING' : draw ? '¡EMPATE! RESPETABLE' : '¡DERROTA! SKILL ISSUE';
+  document.getElementById('result-rival-avatar').textContent = rival.avatar;
+  document.getElementById('result-rival-msg').textContent = win ? rival.msg_lose : rival.msg_win;
+
+  showScreen('screen-results');
+  document.getElementById('chat-toggle').classList.remove('visible');
+}
+
+// === TIMER ===
+function startTimer(seconds) {
+  clearInterval(timer);
+  timeLeft = seconds;
+  updateTimerDisplay();
+
+  timer = setInterval(() => {
+    if (!freezeActive) {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        notify('⏰ ¡TIEMPO! Pasando a siguiente fase...', 'red', 2000);
+        handleTimeUp();
+      }
+      updateTimerDisplay();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('hud-timer');
+  el.textContent = timeLeft + 's';
+  el.className = timeLeft <= 10 ? 'hud-timer danger' : 'hud-timer';
+}
+
+function handleTimeUp() {
+  const phase = state.game.phase;
+  if (phase === 'association') buildRecallPhase();
+  else if (phase === 'recall') buildFinalPhase();
+  else endGame();
+}
+
+// === RIVAL AI ===
+function startRivalAI() {
+  const rival = RIVALS[state.config.rival];
+  const diffMultiplier = { easy: 0.3, normal: 0.6, hard: 0.85, giga: 1.1 }[state.config.difficulty];
+
+  let rivalMsgIdx = 0;
+  rivalTimer = setInterval(() => {
+    // Rival gains points over time
+    const gain = Math.floor((5 + Math.random() * 20) * diffMultiplier);
+    state.game.rivalScore += gain;
+
+    // Update rival display
+    document.getElementById('rival-score-display').textContent = state.game.rivalScore + ' pts';
+    document.getElementById('rival-score-big').textContent = state.game.rivalScore;
+    const statuses = rival.status;
+    document.getElementById('rival-status').textContent = statuses[rivalMsgIdx % statuses.length];
+    rivalMsgIdx++;
+
+    // Sabotage
+    const canSabotage = { easy: false, normal: Math.random() < 0.05, hard: Math.random() < 0.15, giga: Math.random() < 0.25 }[state.config.difficulty];
+    if (canSabotage && !state.game.sabotageActive) {
+      state.game.sabotageActive = true;
+      document.getElementById('sabotage-warning').style.display = 'block';
+      timeLeft = Math.max(5, timeLeft - 20);
+      notify(`⚠️ ¡${rival.name} te ha saboteado! -20s`, 'red', 3000);
+      setTimeout(() => {
+        state.game.sabotageActive = false;
+        document.getElementById('sabotage-warning').style.display = 'none';
+      }, 5000);
+    }
+
+    updateHUD();
+  }, 3000 / diffMultiplier);
+}
+
+// === SHOP ===
+function toggleShop() {
+  const panel = document.getElementById('shop-panel');
+  const visible = panel.style.display !== 'none';
+  if (!visible) buildShop();
+  panel.style.display = visible ? 'none' : 'block';
+}
+
+function buildShop() {
+  const grid = document.getElementById('shop-grid');
+  grid.innerHTML = '';
+  SHOP_ITEMS.forEach(item => {
+    const remaining = item.uses - item.used;
+    const canAfford = state.game.coins >= item.price;
+    const soldOut = remaining <= 0;
+
+    const div = document.createElement('div');
+    div.className = `shop-item ${soldOut ? 'sold-out' : ''}`;
+    div.innerHTML = `
+      <div class="shop-emoji">${item.emoji}</div>
+      <div class="shop-name">${item.name}</div>
+      <div class="shop-desc">${item.desc}</div>
+      <div class="shop-price"><span class="coin">🪙</span>${item.price} <span style="font-size:10px; color:var(--text2)">(${remaining} restantes)</span></div>
+    `;
+    if (!soldOut) div.onclick = () => buyItem(item);
+    if (!canAfford && !soldOut) div.style.opacity = '0.5';
+    grid.appendChild(div);
+  });
+}
+
+function buyItem(item) {
+  if (state.game.coins < item.price) { notify('💸 No tienes coins suficientes, crack', 'red'); return; }
+  if (item.used >= item.uses) { notify('😭 Ya usaste todos los usos', 'red'); return; }
+
+  state.game.coins -= item.price;
+  item.used++;
+
+  switch(item.id) {
+    case 'hint': useHint(); break;
+    case 'freeze': activateFreeze(); break;
+    case 'sabotage': activateSabotage(); break;
+    case 'skip': activateSkip(); break;
+    case 'double': activateDouble(); break;
+    case 'reveal': activateReveal(); break;
+  }
+
+  updateHUD();
+  buildShop();
+  spawnCoin(window.innerWidth/2, window.innerHeight/3);
+}
+
+async function useHint() {
+  notify('💡 Cargando pista de la IA...', '', 2000);
+  try {
+    const point = state.selectedPoints[Math.floor(Math.random() * state.selectedPoints.length)];
+    const resp = await callGroq([{ role:'user', content:`Dame una pista corta y creativa (máx 20 palabras, con humor) para recordar que "${point.title}" se asocia con "${point.memeTrigger}". Sin revelar directamente la respuesta.` }], 100);
+    notify(`💡 PISTA: ${resp}`, '', 5000);
+  } catch {
+    notify('💡 Pista: Piensa en el meme asociado al concepto', '', 3000);
+  }
+}
+
+function activateFreeze() {
+  freezeActive = true;
+  notify('❄️ ¡FREEZE TIME! El tiempo está pausado 15 segundos', 'green', 3000);
+  setTimeout(() => { freezeActive = false; notify('❄️ Freeze acabado', '', 2000); }, 15000);
+}
+
+function activateSabotage() {
+  state.game.rivalScore = Math.max(0, state.game.rivalScore - 200);
+  document.getElementById('rival-score-display').textContent = state.game.rivalScore + ' pts';
+  document.getElementById('rival-score-big').textContent = state.game.rivalScore;
+  notify(`💣 ¡Sabotaje! ${RIVALS[state.config.rival].name} pierde 200 pts`, 'green', 3000);
+}
+
+function activateSkip() {
+  notify('⏭️ Skip activado - la siguiente pregunta fallida no cuenta', 'green', 3000);
+  state.game.skipNext = true;
+}
+
+function activateDouble() {
+  doubleXP = true;
+  notify('✖️2 ¡DOUBLE XP! La siguiente respuesta da el doble', 'green', 3000);
+}
+
+function activateReveal() {
+  const unmatched = state.selectedPoints.filter(p => !state.game.matched.has(p.id));
+  if (unmatched.length > 0) {
+    const p = unmatched[0];
+    notify(`👁️ REVEAL: "${p.title}" = ${p.memeEmoji} "${p.memeTrigger}"`, '', 5000);
+  } else {
+    notify('👁️ Ya lo tienes todo asociado, crack', '', 2000);
+  }
+}
+
+// === HUD UPDATE ===
+function updateHUD() {
+  const g = state.game;
+  document.getElementById('hud-score').textContent = g.playerScore;
+  document.getElementById('hud-coins').textContent = g.coins;
+  document.getElementById('player-score-big').textContent = g.playerScore;
+  document.getElementById('rival-score-big').textContent = g.rivalScore;
+  document.getElementById('player-detail').textContent = `${g.correctCount} correctas · racha ${g.streak}`;
+  document.getElementById('rival-detail').textContent = `Dificultad: ${state.config.difficulty}`;
+
+  const streak = document.getElementById('streak-indicator');
+  streak.textContent = `🔥 x${g.streak}`;
+  streak.className = `streak ${g.streak >= 3 ? 'hot' : ''}`;
+
+  // HP bars based on score difference
+  const maxScore = Math.max(g.playerScore + g.rivalScore + 100, 500);
+  const playerHP = Math.min(100, Math.max(10, (g.playerScore / maxScore) * 100 + 30));
+  const rivalHP = Math.min(100, Math.max(10, (g.rivalScore / maxScore) * 100 + 30));
+  document.getElementById('player-hp').style.width = playerHP + '%';
+  document.getElementById('rival-hp').style.width = rivalHP + '%';
+}
+
+// === PHASES ===
+function showPhase(phaseId) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  document.getElementById(phaseId).classList.add('active');
+  state.game.phase = phaseId.replace('phase-', '');
+}
+
+// === CHAT ===
+function toggleChat() {
+  document.getElementById('chat-panel').classList.toggle('open');
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  const msgs = document.getElementById('chat-messages');
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.textContent = msg;
+  msgs.appendChild(userMsg);
+
+  const loadingMsg = document.createElement('div');
+  loadingMsg.className = 'chat-msg ai typing';
+  loadingMsg.textContent = 'Pensando';
+  msgs.appendChild(loadingMsg);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  chatHistory.push({ role: 'user', content: msg });
+
+  try {
+    const resp = await callGroq(chatHistory, 300);
+    chatHistory.push({ role: 'assistant', content: resp });
+    loadingMsg.className = 'chat-msg ai';
+    loadingMsg.textContent = resp;
+  } catch {
+    loadingMsg.textContent = 'Error al conectar con la IA 😭';
+  }
+
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// === HOW TO PLAY ===
+function showHowTo() {
+  alert(`🧠 THE ASSOCIATION GAME - CÓMO JUGAR\n\n1. SUBE TU TEORÍA: PDF, texto, lo que sea\n2. La IA analiza y saca los puntos clave con memes\n3. SELECCIONA qué puntos quieres estudiar\n4. ¡JUEGA!\n\n📍 FASES DEL MODO CARRERA:\n- Fase 1: Asociación rápida (conecta conceptos con memes)\n- Fase 2: Memoria (¿recuerdas qué significa cada meme?)\n- Fase Final: Prueba de la IA - explica con tus palabras\n\n🏆 PUNTUACIÓN:\n- Racha correcta = puntos extra\n- Menos tiempo = más puntos\n- Derrotar a la IA = victoria\n\n🛒 SHOP:\n- Gana coins resolviendo ejercicios\n- Compra pistas, freeze time, sabotajes...\n\n💬 CHAT con IA durante la partida para pedir ayuda\n\n¡Suerte, crack!`);
+}
+
+// === UTILS ===
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// INIT
+document.getElementById('diff-btn-normal') && document.getElementById('diff-btn-normal').classList.add('active-normal');
+document.querySelectorAll('.diff-btn')[1]?.classList.add('active-normal');
+</script>
+</body>
+</html>
