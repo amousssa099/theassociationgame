@@ -887,6 +887,111 @@ body::after {
   to { box-shadow: var(--glow-yellow); }
 }
 
+/* === PROFILE CARDS === */
+.profile-card {
+  padding: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.15s;
+  position: relative;
+}
+.profile-card:hover { border-color: var(--accent4); }
+.profile-card.active-profile {
+  border-color: var(--accent);
+  background: rgba(0,255,136,0.04);
+  box-shadow: var(--glow-green);
+}
+.profile-card.active-profile::before {
+  content: '✓ ACTIVO';
+  position: absolute;
+  top: -1px; right: 10px;
+  font-family: var(--pixel);
+  font-size: 6px;
+  color: var(--accent);
+  background: var(--bg2);
+  padding: 2px 6px;
+  border: 1px solid var(--accent);
+  border-top: none;
+}
+.profile-avatar { font-size: 32px; flex-shrink: 0; }
+.profile-info { flex: 1; min-width: 0; }
+.profile-name { font-family: var(--pixel); font-size: 9px; color: var(--text); margin-bottom: 6px; }
+.profile-meta { font-size: 11px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
+.profile-tag {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 10px;
+  color: var(--text2);
+  white-space: nowrap;
+}
+.profile-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+
+.humor-card {
+  padding: 14px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.15s;
+  position: relative;
+}
+.humor-card.active-humor {
+  border-color: var(--accent3);
+  background: rgba(255,204,0,0.03);
+  box-shadow: var(--glow-yellow);
+}
+.humor-card.active-humor::before {
+  content: '✓ ACTIVO';
+  position: absolute;
+  top: -1px; right: 10px;
+  font-family: var(--pixel);
+  font-size: 6px;
+  color: var(--accent3);
+  background: var(--bg2);
+  padding: 2px 6px;
+  border: 1px solid var(--accent3);
+  border-top: none;
+}
+
+.custom-rival-card {
+  padding: 14px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.15s;
+  position: relative;
+}
+.custom-rival-card.active-rival {
+  border-color: var(--accent2);
+  background: rgba(255,51,102,0.04);
+  box-shadow: var(--glow-red);
+}
+.custom-rival-card.active-rival::before {
+  content: '✓ ACTIVO';
+  position: absolute;
+  top: -1px; right: 10px;
+  font-family: var(--pixel);
+  font-size: 6px;
+  color: var(--accent2);
+  background: var(--bg2);
+  padding: 2px 6px;
+  border: 1px solid var(--accent2);
+  border-top: none;
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -1001,6 +1106,7 @@ body::after {
   </div>
   <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:10px;">
     <button class="btn btn-green btn-big" onclick="showScreen('screen-setup')">▶ NUEVA PARTIDA</button>
+    <button class="btn btn-blue" onclick="showScreen('screen-config')">⚙️ CONFIGURACIÓN</button>
     <button class="btn btn-yellow" onclick="showHowTo()">❓ CÓMO JUGAR</button>
   </div>
   <div style="font-family:var(--pixel); font-size:7px; color:var(--text2); margin-top:20px; letter-spacing:1px;">v1.0 · POWERED BY GROQ AI · NO CAP</div>
@@ -1010,7 +1116,7 @@ body::after {
 <div class="screen" id="screen-setup">
   <div style="padding:20px 20px 0; display:flex; align-items:center; gap:16px;">
     <button class="btn btn-sm btn-red" onclick="showScreen('screen-title')">← BACK</button>
-    <div style="font-family:var(--pixel); font-size:10px; color:var(--accent3); letter-spacing:2px;">CONFIGURAR PARTIDA</div>
+    <div style="font-family:var(--pixel); font-size:10px; color:var(--accent3); letter-spacing:2px;">NUEVA PARTIDA</div>
   </div>
   <div class="setup-container" style="padding:20px; align-self:center;">
 
@@ -1034,85 +1140,267 @@ body::after {
         <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
       </div>
       <div id="tab-text-content" style="display:none;">
-        <textarea class="textarea-input" id="theory-text" placeholder="Pega aquí tus apuntes, el texto del tema, lo que tengas... La IA lo analiza y saca lo importante 🔥&#10;&#10;Por ejemplo: 'La fotosíntesis es el proceso por el cual...' o 'Los Reyes Católicos unificaron España en...'" rows="8"></textarea>
+        <textarea class="textarea-input" id="theory-text" placeholder="Pega aquí tus apuntes, el texto del tema, lo que tengas... 🔥" rows="8"></textarea>
         <div style="font-size:12px; color:var(--text2); margin-top:8px;">💡 Pro tip: cuanto más detallado, mejor el juego</div>
       </div>
     </div>
 
-    <!-- CONFIG -->
-    <div class="panel">
-      <div class="panel-title">⚙️ CONFIGURACIÓN</div>
-      <div class="config-grid">
-        <div class="config-item">
-          <label>🎮 MODO DE JUEGO</label>
-          <select class="select-input" id="game-mode">
-            <option value="career">Modo Carrera</option>
-          </select>
+    <!-- PERFIL DE CONFIGURACIÓN ACTIVO -->
+    <div class="panel" id="active-profile-panel">
+      <div class="panel-title">⚙️ PERFIL DE CONFIGURACIÓN</div>
+      <div id="no-profile-msg" style="font-size:13px; color:var(--text2); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <span>Sin perfil guardado. Usando valores por defecto.</span>
+        <button class="btn btn-sm btn-blue" onclick="showScreen('screen-config')">+ IR A CONFIGURACIÓN</button>
+      </div>
+      <div id="active-profile-card" style="display:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div id="ap-avatar" style="font-size:36px;">🤖</div>
+            <div>
+              <div id="ap-name" style="font-family:var(--pixel); font-size:9px; color:var(--accent); margin-bottom:4px;"></div>
+              <div id="ap-details" style="font-size:12px; color:var(--text2); line-height:1.8;"></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-sm btn-yellow" onclick="showScreen('screen-config')">✏️ EDITAR</button>
+            <button class="btn btn-sm btn-blue" onclick="showScreen('screen-config')">🔄 CAMBIAR</button>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- OVERRIDE RÁPIDO -->
+    <div class="panel">
+      <div class="panel-title">🎛️ AJUSTES RÁPIDOS (sobreescriben el perfil solo esta partida)</div>
+      <div class="config-grid">
         <div class="config-item">
           <label>⏱️ TIEMPO POR RONDA</label>
           <select class="select-input" id="time-config">
             <option value="60">60 segundos</option>
             <option value="90" selected>90 segundos</option>
             <option value="120">120 segundos</option>
-            <option value="180">Sin límite</option>
+            <option value="9999">Sin límite</option>
           </select>
         </div>
         <div class="config-item">
-          <label>🤖 RIVAL IA</label>
-          <select class="select-input" id="rival-config">
-            <optgroup label="⚡ Jujutsu Kaisen">
-              <option value="gojo">Gojo Satoru 🩵</option>
-              <option value="sukuna">Ryomen Sukuna 🩸</option>
-            </optgroup>
-            <optgroup label="🇪🇸 España Política">
-              <option value="pedro">Pedro Sánchez 🌹</option>
-              <option value="rajoy">Mariano Rajoy 🕶️</option>
-              <option value="susaneta">Susana Díaz 🌻</option>
-              <option value="epstein">Mr. No Lo Sé 🏝️</option>
-            </optgroup>
-            <optgroup label="🎭 Personajes Españoles">
-              <option value="calo">Caló Estudioso 🔥</option>
-              <option value="paquirrín">Paquirrín 🐃</option>
-              <option value="chiquito">Chiquito de la Calzada 🤏</option>
-              <option value="torrente">Torrente 🚔</option>
-              <option value="antoñito">El Sevilla (Antoñito) 🤡</option>
-            </optgroup>
-            <optgroup label="🎮 Internet / Streamers">
-              <option value="ibai">Ibai Llanos 🎮</option>
-              <option value="broncano">David Broncano 🎙️</option>
-              <option value="florentino">Florentino Pérez 🏟️</option>
-            </optgroup>
+          <label>💀 DIFICULTAD</label>
+          <select class="select-input" id="diff-quick">
+            <option value="easy">😴 Fácil</option>
+            <option value="normal" selected>😤 Normal</option>
+            <option value="hard">💀 Difícil</option>
+            <option value="giga">🗿 Giga Chad</option>
           </select>
         </div>
         <div class="config-item">
           <label>💰 MONEDAS INICIO</label>
           <select class="select-input" id="coins-config">
-            <option value="50">50 coins (Normal)</option>
-            <option value="100" selected>100 coins (Generoso)</option>
-            <option value="200">200 coins (Bocachancla)</option>
+            <option value="50">50 coins</option>
+            <option value="100" selected>100 coins</option>
+            <option value="200">200 coins</option>
           </select>
         </div>
-      </div>
-    </div>
-
-    <!-- DIFFICULTY -->
-    <div class="panel">
-      <div class="panel-title">💀 DIFICULTAD</div>
-      <div class="difficulty-btns">
-        <button class="diff-btn" data-diff="easy" onclick="setDiff('easy', this)">😴 FÁCIL</button>
-        <button class="diff-btn active-normal" data-diff="normal" onclick="setDiff('normal', this)">😤 NORMAL</button>
-        <button class="diff-btn" data-diff="hard" onclick="setDiff('hard', this)">💀 DIFÍCIL</button>
-        <button class="diff-btn" data-diff="giga" onclick="setDiff('giga', this)">🗿 GIGA CHAD</button>
-      </div>
-      <div id="diff-desc" style="margin-top:12px; font-size:13px; color:var(--text2);">
-        Normal: La IA es competente. Puede sabotearte 1 vez. 90s por ronda.
       </div>
     </div>
 
     <button class="btn btn-green btn-big" onclick="startAnalysis()" style="align-self:center;">
       🚀 ANALIZAR TEORÍA Y JUGAR
     </button>
+  </div>
+</div>
+
+<!-- ==================== SCREEN: CONFIG ==================== -->
+<div class="screen" id="screen-config">
+  <div style="padding:20px 20px 0; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+    <button class="btn btn-sm btn-red" onclick="showScreen('screen-title')">← INICIO</button>
+    <div style="font-family:var(--pixel); font-size:10px; color:var(--accent4); letter-spacing:2px;">⚙️ CONFIGURACIÓN</div>
+  </div>
+
+  <div class="setup-container" style="padding:20px; align-self:center;">
+
+    <!-- TABS CONFIG -->
+    <div class="tabs" style="margin-bottom:0;">
+      <button class="tab active" id="cfg-tab-profiles" onclick="switchCfgTab('profiles')">🗂️ PERFILES</button>
+      <button class="tab" id="cfg-tab-rival" onclick="switchCfgTab('rival')">🧬 CREAR RIVAL</button>
+      <button class="tab" id="cfg-tab-humor" onclick="switchCfgTab('humor')">😂 MI HUMOR</button>
+    </div>
+
+    <!-- ===== TAB: PERFILES ===== -->
+    <div id="cfg-content-profiles">
+      <div class="panel" style="margin-top:0; border-top:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div class="panel-title" style="margin-bottom:0;">🗂️ MIS PERFILES GUARDADOS</div>
+          <button class="btn btn-sm btn-green" onclick="openNewProfileForm()">+ NUEVO PERFIL</button>
+        </div>
+
+        <!-- Lista de perfiles -->
+        <div id="profiles-list"></div>
+        <div id="no-profiles-msg" style="font-size:13px; color:var(--text2); padding:24px; text-align:center; display:none;">
+          No hay perfiles guardados aún. Crea uno nuevo con el botón de arriba.
+        </div>
+
+        <!-- Formulario crear/editar perfil -->
+        <div id="profile-form" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+          <div style="font-family:var(--pixel); font-size:8px; color:var(--accent3); letter-spacing:1px; margin-bottom:16px;" id="profile-form-title">+ NUEVO PERFIL</div>
+
+          <div class="config-grid" style="margin-bottom:16px;">
+            <div class="config-item" style="grid-column:1/-1;">
+              <label>📛 NOMBRE DEL PERFIL</label>
+              <input type="text" id="pf-name" class="textarea-input" style="min-height:0;padding:10px;resize:none;" placeholder="Ej: Config examen literatura, Modo hardcore, Mi setup favorito...">
+            </div>
+            <div class="config-item">
+              <label>🤖 RIVAL</label>
+              <select class="select-input" id="pf-rival">
+                <optgroup label="⚡ Jujutsu Kaisen">
+                  <option value="gojo">Gojo Satoru 🩵</option>
+                  <option value="sukuna">Ryomen Sukuna 🩸</option>
+                </optgroup>
+                <optgroup label="🇪🇸 España Política">
+                  <option value="pedro">Pedro Sánchez 🌹</option>
+                  <option value="rajoy">Mariano Rajoy 🕶️</option>
+                  <option value="susaneta">Susana Díaz 🌻</option>
+                  <option value="epstein">Mr. No Lo Sé 🏝️</option>
+                </optgroup>
+                <optgroup label="🎭 Personajes Españoles">
+                  <option value="calo">Caló Estudioso 🔥</option>
+                  <option value="paquirrín">Paquirrín 🐃</option>
+                  <option value="chiquito">Chiquito de la Calzada 🤏</option>
+                  <option value="torrente">Torrente 🚔</option>
+                  <option value="antoñito">El Sevilla (Antoñito) 🤡</option>
+                </optgroup>
+                <optgroup label="🎮 Internet / Streamers">
+                  <option value="ibai">Ibai Llanos 🎮</option>
+                  <option value="broncano">David Broncano 🎙️</option>
+                  <option value="florentino">Florentino Pérez 🏟️</option>
+                </optgroup>
+                <optgroup label="⭐ Custom" id="pf-rival-custom-group" style="display:none;">
+                  <option value="__custom__" id="pf-rival-custom-opt">Mi rival personalizado</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="config-item">
+              <label>💀 DIFICULTAD</label>
+              <select class="select-input" id="pf-diff">
+                <option value="easy">😴 Fácil</option>
+                <option value="normal" selected>😤 Normal</option>
+                <option value="hard">💀 Difícil</option>
+                <option value="giga">🗿 Giga Chad</option>
+              </select>
+            </div>
+            <div class="config-item">
+              <label>⏱️ TIEMPO POR RONDA</label>
+              <select class="select-input" id="pf-time">
+                <option value="60">60 segundos</option>
+                <option value="90" selected>90 segundos</option>
+                <option value="120">120 segundos</option>
+                <option value="9999">Sin límite</option>
+              </select>
+            </div>
+            <div class="config-item">
+              <label>💰 MONEDAS INICIO</label>
+              <select class="select-input" id="pf-coins">
+                <option value="50">50 coins</option>
+                <option value="100" selected>100 coins</option>
+                <option value="200">200 coins</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Humor asociado -->
+          <div class="config-item" style="margin-bottom:16px;">
+            <label>😂 PERFIL DE HUMOR ASOCIADO</label>
+            <select class="select-input" id="pf-humor">
+              <option value="">Sin perfil de humor</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-green" onclick="saveProfile()" id="btn-save-profile">💾 GUARDAR PERFIL</button>
+            <button class="btn btn-sm btn-red" onclick="cancelProfileForm()">✕ CANCELAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: CREAR RIVAL ===== -->
+    <div id="cfg-content-rival" style="display:none;">
+      <div class="panel" style="margin-top:0; border-top:none;">
+        <div class="panel-title">🧬 CREAR RIVAL PERSONALIZADO</div>
+        <div style="font-size:13px; color:var(--text2); margin-bottom:16px;">
+          Describe a tu rival y la IA construye su personalidad completa. Se guarda y puedes usarlo en cualquier perfil.
+        </div>
+
+        <!-- Lista rivales custom guardados -->
+        <div id="custom-rivals-list" style="margin-bottom:16px;"></div>
+
+        <div style="font-family:var(--pixel); font-size:7px; color:var(--border); letter-spacing:1px; margin-bottom:12px; margin-top:4px;">── CREAR NUEVO ──</div>
+
+        <div style="display:grid; grid-template-columns:1fr 80px; gap:12px; margin-bottom:12px;">
+          <div class="config-item">
+            <label>👤 NOMBRE</label>
+            <input type="text" id="custom-rival-name" class="textarea-input" style="min-height:0;padding:10px;resize:none;" placeholder="El Profe García, Mi ex, Shakira...">
+          </div>
+          <div class="config-item">
+            <label>🎨 AVATAR</label>
+            <input type="text" id="custom-rival-emoji" class="textarea-input" style="min-height:0;padding:10px;resize:none;font-size:24px;text-align:center;" placeholder="🤖" maxlength="4">
+          </div>
+        </div>
+        <div class="config-item" style="margin-bottom:12px;">
+          <label>📝 DESCRIPCIÓN (cómo habla, sus manías, referencias...)</label>
+          <textarea id="custom-rival-desc" class="textarea-input" rows="5" placeholder="Ej: Es mi profe de historia, muy serio, siempre dice 'esto lo pregunto en el examen', se pone nervioso cuando alguien le contradice..."></textarea>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-purple" onclick="generateCustomRival()" id="btn-gen-rival">✨ GENERAR CON IA</button>
+          <div id="custom-rival-status" style="font-size:12px; color:var(--text2);"></div>
+        </div>
+        <div id="custom-rival-preview" style="display:none; margin-top:16px; padding:16px; background:var(--bg2); border:1px solid var(--purple); border-radius:2px;">
+          <div style="font-family:var(--pixel); font-size:7px; color:var(--purple); margin-bottom:12px;">👁️ PREVIEW</div>
+          <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:12px;">
+            <div id="prev-avatar" style="font-size:40px;">🤖</div>
+            <div>
+              <div id="prev-name" style="font-family:var(--pixel); font-size:9px; color:var(--accent2); margin-bottom:6px;"></div>
+              <div style="font-size:12px; color:var(--text2); margin-bottom:4px;">🏆 <span id="prev-win"></span></div>
+              <div style="font-size:12px; color:var(--text2); margin-bottom:4px;">💀 <span id="prev-lose"></span></div>
+              <div style="font-size:12px; color:var(--text2);">🎮 <span id="prev-status"></span></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-green btn-sm" onclick="saveCustomRival()">💾 GUARDAR RIVAL</button>
+            <button class="btn btn-sm btn-yellow" onclick="generateCustomRival()">🔄 REGENERAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: HUMOR ===== -->
+    <div id="cfg-content-humor" style="display:none;">
+      <div class="panel" style="margin-top:0; border-top:none;">
+        <div class="panel-title">😂 PERFILES DE HUMOR</div>
+        <div style="font-size:13px; color:var(--text2); margin-bottom:16px;">
+          Define tu estilo de humor y la IA lo usará en todo el juego: asociaciones, comentarios del juez, chat...
+        </div>
+
+        <!-- Lista humores guardados -->
+        <div id="humor-profiles-list" style="margin-bottom:16px;"></div>
+
+        <div style="font-family:var(--pixel); font-size:7px; color:var(--border); letter-spacing:1px; margin-bottom:12px;">── CREAR NUEVO ──</div>
+
+        <div class="config-item" style="margin-bottom:12px;">
+          <label>📛 NOMBRE DEL PERFIL DE HUMOR</label>
+          <input type="text" id="humor-profile-name" class="textarea-input" style="min-height:0;padding:10px;resize:none;" placeholder="Ej: Humor gitano, Modo streamer, Humor universitario...">
+        </div>
+        <div class="config-item" style="margin-bottom:12px;">
+          <label>🎭 DESCRIBE TU HUMOR</label>
+          <textarea id="humor-desc" class="textarea-input" rows="6" placeholder="Qué te hace gracia, referencias que usas, estilo de humor, qué evitar...&#10;&#10;Ej: Me mola el humor absurdo, las referencias a memes de Twitter español, chistes de Chiquito, situaciones de la vida española cotidiana. Me parece gracioso que la IA hable como un gitano de Sevilla o como Pedro Sánchez dando un decreto. Sin chistes de payaso."></textarea>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-yellow" onclick="saveHumorConfig()" id="btn-save-humor">💾 GUARDAR HUMOR</button>
+          <button class="btn btn-sm btn-blue" onclick="previewHumor()">👁️ PREVIEW</button>
+          <div id="humor-status" style="font-size:12px; color:var(--text2);"></div>
+        </div>
+        <div id="humor-preview-box" style="display:none; margin-top:12px; padding:12px; background:var(--bg2); border:1px solid var(--accent3); font-size:13px; font-style:italic; color:var(--accent3); border-radius:2px;"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1501,11 +1789,12 @@ async function startAnalysis() {
   }
   if (textInput) state.theory = textInput;
 
-  // read config
-  state.config.difficulty = document.querySelector('.diff-btn[class*="active-"]')?.dataset?.diff || 'normal';
+  // Quick overrides from setup screen (override active profile for this game only)
+  state.config.difficulty = document.getElementById('diff-quick').value;
   state.config.timePerRound = parseInt(document.getElementById('time-config').value);
-  state.config.rival = document.getElementById('rival-config').value;
   state.config.startCoins = parseInt(document.getElementById('coins-config').value);
+  // If no rival set yet, default to gojo
+  if (!state.config.rival) state.config.rival = 'gojo';
 
   showScreen('screen-processing');
   await runAnalysis();
@@ -1544,7 +1833,10 @@ EJEMPLOS DE BUENAS ASOCIACIONES (así de específico debes ser):
 
 Los objetos/triggers deben ser VISUALIZABLES, CONCRETOS y que al verlos te recuerden el concepto. Puedes usar emojis físicos: 🍷🗡️📜🔥💀🪙🏹⚔️📖🕯️🌪️🍞💀🎭🎪
 
-TEORÍA A ANALIZAR:
+${humorProfile ? `PERFIL DE HUMOR DEL JUGADOR (MUY IMPORTANTE - adapta TODO el contenido a este estilo):
+${humorProfile.instructions}
+
+` : ''}TEORÍA A ANALIZAR:
 ${state.theory.substring(0, 4000)}
 
 Responde SOLO en JSON válido (sin markdown, sin backticks, sin texto extra):
@@ -1685,7 +1977,7 @@ function startGame() {
 
   // Setup chat context
   chatHistory = [
-    { role: 'system', content: `Eres un asistente de estudio integrado en "The Association Game". El tema es: ${state.theorySubject}. Los puntos del temario son: ${state.selectedPoints.map(p => p.title + ': ' + p.description).join('; ')}. Responde de forma concisa, útil, con algo de humor pero sin ser pesado. Puedes dar pistas sutiles pero no revelar respuestas directamente.` }
+    { role: 'system', content: `Eres un asistente de estudio integrado en "The Association Game". El tema es: ${state.theorySubject}. Los puntos del temario son: ${state.selectedPoints.map(p => p.title + ': ' + p.description).join('; ')}. Responde de forma concisa, útil, con algo de humor pero sin ser pesado. Puedes dar pistas sutiles pero no revelar respuestas directamente.${humorProfile ? ' ESTILO DE HUMOR DEL USUARIO: ' + humorProfile.instructions : ''}` }
   ];
 
   showScreen('screen-game');
@@ -1907,14 +2199,14 @@ async function submitFinalAnswer() {
 
   const point = state.game.finalPoint;
   try {
-    const evalPrompt = `Eres un juez estricto pero con sentido del humor en "The Association Game". 
+    const evalPrompt = `Eres un juez estricto pero con sentido del humor en "The Association Game". ${humorProfile ? 'ESTILO DE HUMOR OBLIGATORIO: ' + humorProfile.instructions : 'Usa humor español contemporáneo.'}
 El jugador debe relacionar este meme/objeto: "${point.memeTrigger}" con el concepto "${point.title}": "${point.description}"
 
 La respuesta del jugador es: "${answer}"
 
 Evalúa si el jugador realmente entiende el concepto (no solo si copió palabras).
 Responde en JSON:
-{"score": [0-100], "verdict": "CORRECTO|PARCIAL|INCORRECTO", "feedback": "Comentario del juez de 2-3 frases con humor y referencias meme si encajan", "points_earned": [0-300]}`;
+{"score": [0-100], "verdict": "CORRECTO|PARCIAL|INCORRECTO", "feedback": "Comentario del juez de 2-3 frases con humor en el estilo indicado", "points_earned": [0-300]}`;
 
     const resp = await callGroq([{ role: 'user', content: evalPrompt }], 500);
     let clean = resp.trim().replace(/```json?\n?/g, '').replace(/```/g, '').trim();
@@ -2217,8 +2509,386 @@ function showHowTo() {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // INIT
-document.getElementById('diff-btn-normal') && document.getElementById('diff-btn-normal').classList.add('active-normal');
 document.querySelectorAll('.diff-btn')[1]?.classList.add('active-normal');
+
+// =============================================
+// === CONFIG SCREEN LOGIC ===
+// =============================================
+let savedProfiles = [];
+let savedCustomRivals = [];
+let savedHumorProfiles = [];
+let activeProfileId = null;
+let activeHumorId = null;
+let customRivalData = null;
+let humorProfile = null;
+let editingProfileId = null;
+
+function switchCfgTab(tab) {
+  ['profiles','rival','humor'].forEach(t => {
+    document.getElementById(`cfg-tab-${t}`).classList.toggle('active', t === tab);
+    document.getElementById(`cfg-content-${t}`).style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'profiles') renderProfiles();
+  if (tab === 'rival') renderCustomRivals();
+  if (tab === 'humor') renderHumorProfiles();
+}
+
+// ── PROFILES ──
+function renderProfiles() {
+  const list = document.getElementById('profiles-list');
+  const noMsg = document.getElementById('no-profiles-msg');
+  list.innerHTML = '';
+  if (savedProfiles.length === 0) { noMsg.style.display = 'block'; return; }
+  noMsg.style.display = 'none';
+  savedProfiles.forEach(p => {
+    const rivalKey = p.rivalKey;
+    let rivalObj = RIVALS[rivalKey] || { name: rivalKey, avatar: '🤖' };
+    if (rivalKey === '__custom__') {
+      const cr = savedCustomRivals.find(r => r.id === p.customRivalId);
+      if (cr) rivalObj = cr;
+    }
+    const humor = savedHumorProfiles.find(h => h.id === p.humorId);
+    const isActive = activeProfileId === p.id;
+    const card = document.createElement('div');
+    card.className = `profile-card ${isActive ? 'active-profile' : ''}`;
+    card.innerHTML = `
+      <div class="profile-avatar">${rivalObj.avatar || '🤖'}</div>
+      <div class="profile-info">
+        <div class="profile-name">${p.name}</div>
+        <div class="profile-meta">
+          <span class="profile-tag">🤖 ${rivalObj.name || rivalKey}</span>
+          <span class="profile-tag">💀 ${p.diff}</span>
+          <span class="profile-tag">⏱️ ${p.time == 9999 ? '∞' : p.time + 's'}</span>
+          <span class="profile-tag">💰 ${p.coins}</span>
+          ${humor ? `<span class="profile-tag" style="border-color:var(--accent3);color:var(--accent3);">😂 ${humor.name}</span>` : ''}
+        </div>
+      </div>
+      <div class="profile-actions">
+        ${!isActive
+          ? `<button class="btn btn-sm btn-green" onclick="selectProfile('${p.id}')">✓ USAR</button>`
+          : `<button class="btn btn-sm" style="color:var(--accent);border-color:var(--accent);cursor:default;">ACTIVO</button>`}
+        <button class="btn btn-sm btn-yellow" onclick="editProfile('${p.id}')">✏️</button>
+        <button class="btn btn-sm btn-red" onclick="deleteProfile('${p.id}')">🗑️</button>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function openNewProfileForm() {
+  editingProfileId = null;
+  document.getElementById('profile-form-title').textContent = '+ NUEVO PERFIL';
+  document.getElementById('btn-save-profile').textContent = '💾 GUARDAR PERFIL';
+  document.getElementById('pf-name').value = '';
+  document.getElementById('pf-rival').value = 'gojo';
+  document.getElementById('pf-diff').value = 'normal';
+  document.getElementById('pf-time').value = '90';
+  document.getElementById('pf-coins').value = '100';
+  refreshHumorSelectInProfile();
+  document.getElementById('pf-humor').value = '';
+  document.getElementById('profile-form').style.display = 'block';
+  document.getElementById('profile-form').scrollIntoView({ behavior:'smooth' });
+}
+
+function editProfile(id) {
+  const p = savedProfiles.find(x => x.id === id);
+  if (!p) return;
+  editingProfileId = id;
+  document.getElementById('profile-form-title').textContent = '✏️ EDITAR PERFIL';
+  document.getElementById('btn-save-profile').textContent = '💾 ACTUALIZAR';
+  document.getElementById('pf-name').value = p.name;
+  document.getElementById('pf-rival').value = p.rivalKey;
+  document.getElementById('pf-diff').value = p.diff;
+  document.getElementById('pf-time').value = p.time;
+  document.getElementById('pf-coins').value = p.coins;
+  refreshHumorSelectInProfile();
+  document.getElementById('pf-humor').value = p.humorId || '';
+  document.getElementById('profile-form').style.display = 'block';
+  document.getElementById('profile-form').scrollIntoView({ behavior:'smooth' });
+}
+
+function cancelProfileForm() {
+  editingProfileId = null;
+  document.getElementById('profile-form').style.display = 'none';
+}
+
+function saveProfile() {
+  const name = document.getElementById('pf-name').value.trim();
+  if (!name) { notify('⚠️ Ponle un nombre al perfil', 'red'); return; }
+  const data = {
+    id: editingProfileId || ('prof_' + Date.now()),
+    name,
+    rivalKey: document.getElementById('pf-rival').value,
+    diff: document.getElementById('pf-diff').value,
+    time: parseInt(document.getElementById('pf-time').value),
+    coins: parseInt(document.getElementById('pf-coins').value),
+    humorId: document.getElementById('pf-humor').value || null,
+  };
+  if (editingProfileId) {
+    const idx = savedProfiles.findIndex(p => p.id === editingProfileId);
+    savedProfiles[idx] = data;
+    notify('✅ Perfil actualizado', 'green');
+  } else {
+    savedProfiles.push(data);
+    notify('✅ Perfil guardado', 'green');
+  }
+  editingProfileId = null;
+  document.getElementById('profile-form').style.display = 'none';
+  renderProfiles();
+}
+
+function deleteProfile(id) {
+  if (!confirm('¿Eliminar este perfil?')) return;
+  savedProfiles = savedProfiles.filter(p => p.id !== id);
+  if (activeProfileId === id) { activeProfileId = null; }
+  renderProfiles();
+  updateSetupActiveProfile();
+  notify('🗑️ Perfil eliminado', '');
+}
+
+function selectProfile(id) {
+  const p = savedProfiles.find(x => x.id === id);
+  if (!p) return;
+  activeProfileId = id;
+  if (p.rivalKey === '__custom__') {
+    const cr = savedCustomRivals.find(r => r.id === p.customRivalId);
+    if (cr) { RIVALS['__custom__'] = cr; customRivalData = cr; }
+  }
+  if (p.humorId) {
+    const h = savedHumorProfiles.find(x => x.id === p.humorId);
+    if (h) { humorProfile = h; activeHumorId = p.humorId; }
+  } else { humorProfile = null; activeHumorId = null; }
+  state.config.rival = p.rivalKey;
+  state.config.difficulty = p.diff;
+  state.config.timePerRound = p.time;
+  state.config.startCoins = p.coins;
+  notify(`✅ Perfil "${p.name}" seleccionado`, 'green');
+  renderProfiles();
+  updateSetupActiveProfile();
+}
+
+function refreshHumorSelectInProfile() {
+  const sel = document.getElementById('pf-humor');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Sin perfil de humor</option>';
+  savedHumorProfiles.forEach(h => {
+    const opt = document.createElement('option');
+    opt.value = h.id; opt.textContent = `😂 ${h.name}`;
+    sel.appendChild(opt);
+  });
+}
+
+function updateSetupActiveProfile() {
+  const card = document.getElementById('active-profile-card');
+  const msg = document.getElementById('no-profile-msg');
+  if (!activeProfileId) { card.style.display='none'; msg.style.display='flex'; return; }
+  const p = savedProfiles.find(x => x.id === activeProfileId);
+  if (!p) { card.style.display='none'; msg.style.display='flex'; return; }
+  const rivalObj = RIVALS[p.rivalKey] || { name: p.rivalKey, avatar: '🤖' };
+  const humor = savedHumorProfiles.find(h => h.id === p.humorId);
+  document.getElementById('ap-avatar').textContent = rivalObj.avatar;
+  document.getElementById('ap-name').textContent = p.name;
+  document.getElementById('ap-details').innerHTML =
+    `🤖 ${rivalObj.name} &nbsp;·&nbsp; 💀 ${p.diff} &nbsp;·&nbsp; ⏱️ ${p.time==9999?'∞':p.time+'s'} &nbsp;·&nbsp; 💰 ${p.coins} coins` +
+    (humor ? `<br>😂 ${humor.name}` : '');
+  card.style.display='block'; msg.style.display='none';
+}
+
+// ── CUSTOM RIVALS ──
+function renderCustomRivals() {
+  const list = document.getElementById('custom-rivals-list');
+  list.innerHTML = '';
+  if (savedCustomRivals.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:8px 0 16px;">Aún no hay rivales custom. Crea uno abajo 👇</div>';
+    return;
+  }
+  savedCustomRivals.forEach(r => {
+    const isActive = state.config.rival === '__custom__' && customRivalData?.id === r.id;
+    const card = document.createElement('div');
+    card.className = `custom-rival-card ${isActive ? 'active-rival' : ''}`;
+    card.innerHTML = `
+      <div style="font-size:32px;flex-shrink:0;">${r.avatar}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:var(--pixel);font-size:8px;color:var(--accent2);margin-bottom:4px;">${r.name}</div>
+        <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🏆 ${r.msg_win}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        ${!isActive
+          ? `<button class="btn btn-sm btn-red" onclick="activateCustomRival('${r.id}')">⚡ USAR</button>`
+          : `<button class="btn btn-sm" style="color:var(--accent2);border-color:var(--accent2);cursor:default;">ACTIVO</button>`}
+        <button class="btn btn-sm" style="color:var(--text2);border-color:var(--border);" onclick="deleteCustomRival('${r.id}')">🗑️</button>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+async function generateCustomRival() {
+  const name = document.getElementById('custom-rival-name').value.trim();
+  const emoji = document.getElementById('custom-rival-emoji').value.trim() || '🤖';
+  const desc = document.getElementById('custom-rival-desc').value.trim();
+  if (!name || !desc) { notify('⚠️ Pon nombre y descripción del rival', 'red'); return; }
+  const btn = document.getElementById('btn-gen-rival');
+  btn.textContent = '⏳ Generando...'; btn.disabled = true;
+  document.getElementById('custom-rival-status').textContent = 'La IA está construyendo tu rival...';
+  try {
+    const resp = await callGroq([{ role:'user', content:
+      `Eres el generador de personajes de "The Association Game", juego de estudio español.
+El usuario quiere crear un rival:
+- Nombre: ${name}
+- Descripción: ${desc}
+Genera el perfil capturando EXACTAMENTE su forma de hablar y manías.
+Responde SOLO en JSON (sin markdown):
+{"name":"${name}","avatar":"${emoji}","msg_win":"Frase al ganar en su estilo (máx 15 palabras)","msg_lose":"Frase al perder en su estilo (máx 15 palabras)","status":["frase jugando 1","frase jugando 2","frase jugando 3","frase jugando 4"]}`
+    }], 500);
+    let clean = resp.trim().replace(/```json?\n?/g,'').replace(/```/g,'').trim();
+    customRivalData = { ...JSON.parse(clean), avatar: emoji, desc, id: 'cr_tmp' };
+    document.getElementById('prev-avatar').textContent = emoji;
+    document.getElementById('prev-name').textContent = customRivalData.name;
+    document.getElementById('prev-win').textContent = customRivalData.msg_win;
+    document.getElementById('prev-lose').textContent = customRivalData.msg_lose;
+    document.getElementById('prev-status').textContent = customRivalData.status.join(' / ');
+    document.getElementById('custom-rival-preview').style.display = 'block';
+    document.getElementById('custom-rival-status').textContent = '✓ Generado. Revisa el preview.';
+  } catch(e) {
+    document.getElementById('custom-rival-status').textContent = '❌ Error. Inténtalo de nuevo.';
+    console.error(e);
+  }
+  btn.textContent = '✨ GENERAR CON IA'; btn.disabled = false;
+}
+
+function saveCustomRival() {
+  if (!customRivalData) return;
+  const saved = { ...customRivalData, id: 'cr_' + Date.now() };
+  savedCustomRivals.push(saved);
+  RIVALS['__custom__'] = saved;
+  customRivalData = saved;
+  updateRivalSelectors();
+  notify(`✅ ${saved.name} guardado`, 'green');
+  document.getElementById('custom-rival-preview').style.display = 'none';
+  document.getElementById('custom-rival-name').value = '';
+  document.getElementById('custom-rival-emoji').value = '';
+  document.getElementById('custom-rival-desc').value = '';
+  document.getElementById('custom-rival-status').textContent = '';
+  renderCustomRivals();
+}
+
+function activateCustomRival(id) {
+  const r = savedCustomRivals.find(x => x.id === id);
+  if (!r) return;
+  customRivalData = r; RIVALS['__custom__'] = r;
+  state.config.rival = '__custom__';
+  notify(`⚡ ${r.name} activado`, 'green');
+  renderCustomRivals();
+}
+
+function deleteCustomRival(id) {
+  if (!confirm('¿Eliminar este rival?')) return;
+  savedCustomRivals = savedCustomRivals.filter(r => r.id !== id);
+  if (customRivalData?.id === id) customRivalData = null;
+  updateRivalSelectors(); renderCustomRivals();
+  notify('🗑️ Rival eliminado', '');
+}
+
+function updateRivalSelectors() {
+  const sel = document.getElementById('pf-rival');
+  if (!sel) return;
+  const grp = document.getElementById('pf-rival-custom-group');
+  if (savedCustomRivals.length > 0 && grp) {
+    grp.style.display = '';
+    const opt = document.getElementById('pf-rival-custom-opt');
+    if (opt) opt.textContent = savedCustomRivals.map(r => `${r.avatar} ${r.name}`).join(', ');
+  } else if (grp) grp.style.display = 'none';
+}
+
+function useCustomRival() { saveCustomRival(); }
+
+// ── HUMOR PROFILES ──
+function renderHumorProfiles() {
+  const list = document.getElementById('humor-profiles-list');
+  list.innerHTML = '';
+  if (savedHumorProfiles.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:8px 0 16px;">Aún no hay perfiles de humor. Crea uno abajo 👇</div>';
+    return;
+  }
+  savedHumorProfiles.forEach(h => {
+    const isActive = activeHumorId === h.id;
+    const card = document.createElement('div');
+    card.className = `humor-card ${isActive ? 'active-humor' : ''}`;
+    card.innerHTML = `
+      <div style="font-size:28px;flex-shrink:0;">😂</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:var(--pixel);font-size:8px;color:var(--accent3);margin-bottom:4px;">${h.name}</div>
+        <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.summary}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        ${!isActive
+          ? `<button class="btn btn-sm btn-yellow" onclick="activateHumor('${h.id}')">✓ USAR</button>`
+          : `<button class="btn btn-sm" style="color:var(--accent3);border-color:var(--accent3);cursor:default;">ACTIVO</button>`}
+        <button class="btn btn-sm" style="color:var(--text2);border-color:var(--border);" onclick="deleteHumorProfile('${h.id}')">🗑️</button>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+async function saveHumorConfig() {
+  const name = (document.getElementById('humor-profile-name')?.value || '').trim() || 'Mi humor';
+  const desc = document.getElementById('humor-desc').value.trim();
+  if (!desc) { notify('⚠️ Describe tu humor primero', 'red'); return; }
+  const btn = document.getElementById('btn-save-humor');
+  btn.textContent = '⏳ Procesando...'; btn.disabled = true;
+  document.getElementById('humor-status').textContent = 'La IA interpreta tu humor...';
+  try {
+    const resp = await callGroq([{ role:'user', content:
+      `Analiza este perfil de humor para un juego de estudio español: "${desc.substring(0,400)}"
+Responde SOLO en JSON (sin markdown):
+{"summary":"Resumen de 1 frase del humor","instructions":"Instrucciones para la IA: tono, referencias, estilo, ejemplos de frases, qué evitar. Va en todos los prompts del juego."}`
+    }], 400);
+    let clean = resp.trim().replace(/```json?\n?/g,'').replace(/```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    const profile = { id: 'hum_' + Date.now(), name, rawDesc: desc, ...parsed };
+    savedHumorProfiles.push(profile);
+    activateHumor(profile.id);
+    refreshHumorSelectInProfile();
+    renderHumorProfiles();
+    document.getElementById('humor-status').textContent = '✓ Guardado y activado';
+    notify(`😂 "${profile.name}" guardado y activo`, 'green', 3000);
+    if (document.getElementById('humor-profile-name')) document.getElementById('humor-profile-name').value = '';
+    document.getElementById('humor-desc').value = '';
+  } catch(e) {
+    document.getElementById('humor-status').textContent = '❌ Error. Reintenta.';
+    console.error(e);
+  }
+  btn.textContent = '💾 GUARDAR HUMOR'; btn.disabled = false;
+}
+
+async function previewHumor() {
+  const desc = document.getElementById('humor-desc').value.trim();
+  if (!desc) { notify('⚠️ Escribe tu humor primero', 'red'); return; }
+  const box = document.getElementById('humor-preview-box');
+  box.style.display = 'block'; box.textContent = '⏳ Generando ejemplo...';
+  try {
+    const resp = await callGroq([{ role:'user', content:
+      `Con este perfil de humor: "${desc.substring(0,300)}", genera una sola asociación meme graciosa para recordar que el Lazarillo de Tormes es un pícaro que sirve a varios amos. Una frase, sin explicación.`
+    }], 120);
+    box.textContent = '🎭 ' + resp.trim();
+  } catch { box.textContent = 'Error generando preview.'; }
+}
+
+function activateHumor(id) {
+  const h = savedHumorProfiles.find(x => x.id === id);
+  if (!h) return;
+  humorProfile = h; activeHumorId = id;
+  notify(`😂 Humor "${h.name}" activado`, 'green', 2000);
+  renderHumorProfiles();
+}
+
+function deleteHumorProfile(id) {
+  if (!confirm('¿Eliminar este perfil de humor?')) return;
+  savedHumorProfiles = savedHumorProfiles.filter(h => h.id !== id);
+  if (activeHumorId === id) { activeHumorId = null; humorProfile = null; }
+  refreshHumorSelectInProfile(); renderHumorProfiles();
+  notify('🗑️ Perfil de humor eliminado', '');
+}
+
 </script>
 </body>
 </html>
