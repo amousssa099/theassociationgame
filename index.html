@@ -336,133 +336,21 @@
   .assoc-block.dragging { opacity: 0.5; cursor: grabbing; }
   .assoc-block.highlighted { border-color: var(--pixel); background: rgba(240,224,64,0.1); }
 
-  /* PHASE1 FULLSCREEN OVERLAY */
-  #phase1-overlay {
-    position: fixed;
-    inset: 0;
-    top: 56px;
-    background: var(--bg);
-    z-index: 200;
-    display: none;
-  }
-  #phase1-overlay.open { display: flex; }
-  #p1-canvas {
-    flex: 1;
+  /* CANVAS AREA */
+  #assoc-canvas {
     position: relative;
+    width: 100%;
+    min-height: 340px;
+    background: var(--card);
+    border: 2px solid var(--border);
     overflow: hidden;
-    cursor: default;
   }
-  #p1-svg {
+  #assoc-canvas svg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-  }
-  #p1-right {
-    width: 300px;
-    background: var(--bg2);
-    border-left: 3px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  #p1-right-header {
-    padding: 12px 14px;
-    border-bottom: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  #p1-info-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .p1-info-item {
-    background: var(--card);
-    border: 2px solid var(--border);
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: border-color 0.1s, transform 0.1s;
-    user-select: none;
-  }
-  .p1-info-item:hover {
-    border-color: var(--pixel3);
-    transform: translateX(-2px);
-  }
-  .p1-info-item.on-canvas { border-color: var(--pixel5); opacity: 0.5; cursor: default; }
-  .p1-info-title { font-size: 7px; color: var(--pixel3); margin-bottom: 4px; }
-  .p1-info-text { font-family: "VT323", monospace; font-size: 15px; color: var(--white); line-height: 1.4; }
-  #p1-bottom {
-    padding: 10px 12px;
-    border-top: 2px solid var(--border);
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-  }
-  /* CANVAS NODES */
-  .c-node {
-    position: absolute;
-    background: var(--bg2);
-    border: 2px solid var(--border);
-    padding: 10px 14px;
-    cursor: move;
-    user-select: none;
-    min-width: 100px;
-    max-width: 220px;
-    box-shadow: 3px 3px 0 #000;
-    transition: border-color 0.1s;
-    z-index: 10;
-  }
-  .c-node:hover { border-color: var(--pixel3); }
-  .c-node.info-node { border-color: var(--pixel3); }
-  .c-node.idea-node { border-color: var(--pixel); }
-  .c-node.selected { border-color: var(--pixel2); box-shadow: 0 0 0 2px var(--pixel2), 3px 3px 0 #000; }
-  .c-node .node-tag { font-size: 7px; color: var(--gray); margin-bottom: 3px; }
-  .c-node .node-title { font-size: 8px; color: var(--pixel3); margin-bottom: 3px; }
-  .c-node .node-body { font-family: "VT323", monospace; font-size: 14px; color: var(--white); line-height: 1.3; }
-  .c-node .node-del { position: absolute; top: 3px; right: 5px; font-size: 9px; color: var(--gray); cursor: pointer; line-height: 1; }
-  .c-node .node-del:hover { color: var(--pixel6); }
-  /* CONTEXT MENU */
-  #ctx-menu {
-    position: fixed;
-    background: var(--bg2);
-    border: 2px solid var(--pixel);
-    box-shadow: 4px 4px 0 #000;
-    z-index: 9000;
-    display: none;
-    min-width: 180px;
-  }
-  #ctx-menu.open { display: block; }
-  .ctx-item {
-    padding: 8px 14px;
-    font-size: 8px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    color: var(--white);
-  }
-  .ctx-item:last-child { border-bottom: none; }
-  .ctx-item:hover { background: var(--pixel); color: #000; }
-  /* ASSOC SAVED PANEL */
-  #p1-saved {
-    padding: 8px;
-    border-top: 2px solid var(--border);
-    flex-shrink: 0;
-    max-height: 120px;
-    overflow-y: auto;
-  }
-  .saved-conn {
-    font-family: "VT323", monospace;
-    font-size: 13px;
-    color: var(--pixel5);
-    padding: 3px 0;
-    border-bottom: 1px solid var(--border);
   }
 
   /* CHAT */
@@ -890,8 +778,36 @@
   <!-- PHASE TITLE -->
   <div id="phase-title" class="sect-title" style="font-size:12px"></div>
 
-  <!-- PHASE 1: ASOCIACIÓN - FULLSCREEN INFINITE CRAFT STYLE -->
-  <div id="phase1-area" style="display:none"></div>
+  <!-- PHASE 1: ASOCIACIÓN -->
+  <div id="phase1-area" style="display:none">
+    <div style="font-size:8px;color:var(--gray);margin-bottom:12px">
+      Arrastra los bloques y crea tus asociaciones. ¡Cuantas más relaciones, más puntos!
+    </div>
+    <div class="flex gap-12 mb-12">
+      <div style="flex:1">
+        <div style="font-size:8px;color:var(--pixel3);margin-bottom:8px">▶ INFO A APRENDER:</div>
+        <div id="info-blocks" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+      <div style="width:200px">
+        <div style="font-size:8px;color:var(--pixel);margin-bottom:8px">▶ MIS IDEAS:</div>
+        <div id="idea-input-area">
+          <input type="text" id="idea-input" class="px-input mb-8" placeholder="Tu asociación...">
+          <button class="btn btn-yellow w-full" onclick="addIdea()">+ AÑADIR IDEA</button>
+        </div>
+        <div id="my-ideas" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+      </div>
+    </div>
+    <div id="assoc-canvas" class="mb-12">
+      <svg id="connections-svg"></svg>
+      <div id="canvas-blocks" style="position:absolute;inset:0;padding:12px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px"></div>
+    </div>
+    <div class="flex gap-8">
+      <button class="btn btn-green" onclick="connectMode()" id="connect-btn">🔗 MODO CONECTAR</button>
+      <button class="btn btn-gray" onclick="clearConnections()">✕ LIMPIAR LÍNEAS</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-yellow" onclick="endPhase1()">SIGUIENTE FASE →</button>
+    </div>
+  </div>
 
   <!-- PHASE 2: CONEXIONES -->
   <div id="phase2-area" style="display:none">
@@ -1434,360 +1350,139 @@ function startTimer(seconds, onEnd) {
 }
 
 // ── PHASE 1 ──
-// ═══════════════════════════════════════════
-// PHASE 1 — INFINITE CRAFT STYLE
-// ═══════════════════════════════════════════
-const p1 = {
-  nodes: [],        // {id, x, y, text, desc, type, el}
-  lines: [],        // {fromId, toId, svgEl}
-  selecting: null,  // id of node pending connection
-  pendingX: 0,
-  pendingY: 0,
-  dragNode: null,
-  dragOffX: 0,
-  dragOffY: 0,
-  savedAssoc: [],   // {from, to, label}
-};
-
 function startPhase1() {
-  // Reset game areas
+  document.getElementById('phase1-area').style.display='block';
   document.getElementById('phase2-area').style.display='none';
   document.getElementById('phase3-area').style.display='none';
   document.getElementById('answer-area').style.display='none';
+  document.getElementById('phase-title').textContent = 'FASE 1: ASOCIACIÓN';
   setPhaseIndicator(1);
   document.getElementById('rival-name-display').textContent = state.game.rival?.name || 'RIVAL';
   document.getElementById('rival-name-box').textContent = state.game.rival?.name || 'RIVAL';
   document.getElementById('rival-avatar-display').textContent = state.game.rival?.emoji || '🤖';
 
-  // Reset p1 state
-  p1.nodes = []; p1.lines = []; p1.selecting = null; p1.savedAssoc = [];
-
-  // Open fullscreen overlay
-  const overlay = document.getElementById('phase1-overlay');
-  overlay.classList.add('open');
-
-  // Clear canvas
-  const canvas = document.getElementById('p1-canvas');
-  canvas.querySelectorAll('.c-node').forEach(n=>n.remove());
-  document.getElementById('p1-svg').innerHTML = '';
-  document.getElementById('p1-saved-list').innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Ninguna aún...</div>';
-
-  // Build right panel with concepts (title + full info text)
+  // Build info blocks from selected puntos
   const t = state.game.temario;
   const selectedPuntos = t.puntos.filter(p=>state.game.selectedPuntos.includes(p.id));
-  const list = document.getElementById('p1-info-list');
-  list.innerHTML = '';
-  selectedPuntos.forEach(punto => {
-    // Section header
-    const hdr = document.createElement('div');
-    hdr.style.cssText = 'font-size:8px;color:var(--pixel2);padding:6px 8px 2px;border-bottom:1px solid var(--border)';
-    hdr.textContent = '▶ ' + punto.titulo;
-    list.appendChild(hdr);
-    // Info text block (draggable to canvas)
-    const infoEl = document.createElement('div');
-    infoEl.className = 'p1-info-item';
-    infoEl.dataset.id = 'info-' + punto.id;
-    infoEl.dataset.title = punto.titulo;
-    infoEl.dataset.body = punto.info;
-    infoEl.innerHTML = '<div class="p1-info-title">' + punto.titulo + ' — definición</div>'
-      + '<div class="p1-info-text">' + punto.info + '</div>';
-    infoEl.onclick = () => p1AddInfoNode(infoEl);
-    list.appendChild(infoEl);
-    // Each concept
-    punto.conceptos.forEach((c, ci) => {
-      const el = document.createElement('div');
-      el.className = 'p1-info-item';
-      el.dataset.id = 'c-' + punto.id + '-' + ci;
-      el.dataset.title = c;
-      el.dataset.body = c;
-      el.innerHTML = '<div class="p1-info-title">' + punto.titulo + '</div>'
-        + '<div class="p1-info-text">' + c + '</div>';
-      el.onclick = () => p1AddInfoNode(el);
-      list.appendChild(el);
-    });
-  });
+  const allConcepts = [];
+  selectedPuntos.forEach(p => p.conceptos.forEach(c => allConcepts.push({ text:c, punto:p.titulo })));
 
-  // Canvas right-click → context menu
-  const cvs = document.getElementById('p1-canvas');
-  cvs.oncontextmenu = (e) => {
-    e.preventDefault();
-    p1.pendingX = e.clientX;
-    p1.pendingY = e.clientY;
-    const menu = document.getElementById('ctx-menu');
-    menu.style.left = e.clientX + 'px';
-    menu.style.top  = e.clientY + 'px';
-    menu.classList.add('open');
-  };
-  document.addEventListener('click', closeCtxMenu, { once: false });
+  // Info blocks (left panel)
+  const ib = document.getElementById('info-blocks');
+  ib.innerHTML = allConcepts.map((c,i) => `
+    <div class="assoc-block pb2" id="info-${i}" onclick="selectBlockForCanvas(this,'${c.text.replace(/'/g,"\\'")}','info')">
+      <div style="font-size:7px;color:var(--pixel3);margin-bottom:2px">${c.punto.substring(0,12)}</div>
+      ${c.text}
+    </div>
+  `).join('');
 
-  // Canvas mousemove/up for drag
-  cvs.addEventListener('mousemove', p1OnMouseMove);
-  cvs.addEventListener('mouseup', p1OnMouseUp);
+  document.getElementById('canvas-blocks').innerHTML = '';
+  document.getElementById('connections-svg').innerHTML = '';
+  document.getElementById('my-ideas').innerHTML = '';
+  state.game.assocBlocks = [];
+  state.game.lines = [];
+  state.game.connectFrom = null;
+  state.game.connectMode = false;
+  document.getElementById('connect-btn').textContent = '🔗 MODO CONECTAR';
 
-  // Start timer
-  document.getElementById('p1-score').textContent = state.game.scorePlayer;
-  p1StartTimer(state.game.times.p1);
+  startTimer(state.game.times.p1, endPhase1);
 }
 
-function p1StartTimer(secs) {
-  clearInterval(state.game.timer);
-  state.game.timerVal = secs;
-  const el = document.getElementById('p1-timer');
-  el.className = 'px-timer';
-  const tick = () => {
-    if (state.game.timerVal <= 0) { clearInterval(state.game.timer); el.textContent = '0:00'; endPhase1(); return; }
-    const m = Math.floor(state.game.timerVal/60), s = state.game.timerVal%60;
-    el.textContent = m + ':' + String(s).padStart(2,'0');
-    if (state.game.timerVal <= 10) el.classList.add('danger');
-    state.game.timerVal--;
-  };
-  tick();
-  state.game.timer = setInterval(tick, 1000);
-}
-
-function closeCtxMenu(e) {
-  const menu = document.getElementById('ctx-menu');
-  if (!menu.contains(e.target)) menu.classList.remove('open');
-}
-
-function ctxCreateNode() {
-  document.getElementById('ctx-menu').classList.remove('open');
-  document.getElementById('node-label-input').value = '';
-  document.getElementById('node-desc-input').value = '';
-  const modal = document.getElementById('node-modal');
-  modal.style.display = 'flex';
-  setTimeout(() => document.getElementById('node-label-input').focus(), 50);
-}
-function ctxCancel() { document.getElementById('ctx-menu').classList.remove('open'); }
-
-function confirmNodeCreate() {
-  const label = document.getElementById('node-label-input').value.trim();
-  if (!label) return;
-  const desc = document.getElementById('node-desc-input').value.trim();
-  document.getElementById('node-modal').style.display = 'none';
-  const cvs = document.getElementById('p1-canvas');
-  const cr = cvs.getBoundingClientRect();
-  const x = Math.max(10, p1.pendingX - cr.left - 60);
-  const y = Math.max(10, p1.pendingY - cr.top - 30);
-  p1CreateNode(label, desc, 'idea', x, y);
-  state.game.scorePlayer += 15;
-  document.getElementById('p1-score').textContent = state.game.scorePlayer;
-  updateScoreUI();
-}
-
-function cancelNodeCreate() {
-  document.getElementById('node-modal').style.display = 'none';
-}
-
-// Enter key on modal
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('node-modal').style.display === 'flex') {
-    confirmNodeCreate();
-  }
-  if (e.key === 'Escape') {
-    cancelNodeCreate();
-    document.getElementById('ctx-menu').classList.remove('open');
-  }
-});
-
-function p1AddInfoNode(el) {
-  if (el.classList.contains('on-canvas')) return;
-  el.classList.add('on-canvas');
-  const cvs = document.getElementById('p1-canvas');
-  const cr = cvs.getBoundingClientRect();
-  // Spread nodes across canvas
-  const existing = p1.nodes.length;
-  const cols = 3;
-  const col = existing % cols;
-  const row = Math.floor(existing / cols);
-  const x = 30 + col * 220 + Math.random() * 30;
-  const y = 30 + row * 120 + Math.random() * 20;
-  p1CreateNode(el.dataset.title, el.dataset.body, 'info', x, y, el.dataset.id);
+function selectBlockForCanvas(el, text, type) {
+  // Add to canvas
+  const existing = state.game.assocBlocks.find(b=>b.text===text);
+  if (existing) { notify('Ya está en el canvas'); return; }
+  addBlockToCanvas(text, type);
+  showPtsPopup(10, 600, 200);
   state.game.scorePlayer += 10;
-  document.getElementById('p1-score').textContent = state.game.scorePlayer;
   updateScoreUI();
 }
 
-function p1CreateNode(title, body, type, x, y, dataId) {
-  const id = dataId || ('n-' + Date.now());
-  const cvs = document.getElementById('p1-canvas');
-  const el = document.createElement('div');
-  el.className = 'c-node ' + (type === 'info' ? 'info-node' : 'idea-node');
-  el.id = id;
-  el.style.left = x + 'px';
-  el.style.top  = y + 'px';
-  // Truncate body for display
-  const bodyShort = body && body.length > 80 ? body.substring(0, 80) + '…' : (body || '');
-  el.innerHTML = (type === 'info' ? '<div class="node-tag">INFO</div>' : '<div class="node-tag" style="color:var(--pixel)">IDEA</div>')
-    + '<div class="node-title">' + title + '</div>'
-    + (bodyShort && bodyShort !== title ? '<div class="node-body">' + bodyShort + '</div>' : '')
-    + '<span class="node-del" onclick="p1DeleteNode('' + id + '',event)">✕</span>';
-
-  // Drag
-  el.addEventListener('mousedown', e => {
-    if (e.target.classList.contains('node-del')) return;
-    e.preventDefault();
-    if (p1.selecting) {
-      // Connect to this node
-      if (p1.selecting !== id) {
-        p1ConnectNodes(p1.selecting, id, title);
-      }
-      document.getElementById(p1.selecting)?.classList.remove('selected');
-      p1.selecting = null;
-      return;
-    }
-    p1.dragNode = id;
-    const cr = cvs.getBoundingClientRect();
-    p1.dragOffX = e.clientX - cr.left - parseInt(el.style.left);
-    p1.dragOffY = e.clientY - cr.top  - parseInt(el.style.top);
-    el.style.zIndex = 50;
-  });
-
-  // Click to select for connection
-  el.addEventListener('click', e => {
-    if (e.target.classList.contains('node-del')) return;
-    if (p1.dragNode) return; // was dragging
-    if (!p1.selecting) {
-      p1.selecting = id;
-      el.classList.add('selected');
-      notify('Ahora haz click en otro nodo para conectarlos');
-    } else if (p1.selecting === id) {
-      el.classList.remove('selected');
-      p1.selecting = null;
-    } else {
-      p1ConnectNodes(p1.selecting, id, title);
-      document.getElementById(p1.selecting)?.classList.remove('selected');
-      p1.selecting = null;
-    }
-  });
-
-  cvs.appendChild(el);
-  p1.nodes.push({ id, x, y, title, body, type, el });
-  return el;
+function addBlockToCanvas(text, type='info') {
+  const canvas = document.getElementById('canvas-blocks');
+  const block = document.createElement('div');
+  block.className = 'assoc-block';
+  block.style.borderColor = type==='info' ? 'var(--pixel3)' : 'var(--pixel)';
+  block.dataset.text = text;
+  block.dataset.type = type;
+  const id = 'cb-' + Date.now() + Math.random().toString(36).substr(2,4);
+  block.id = id;
+  block.textContent = text;
+  block.onclick = () => onCanvasBlockClick(block);
+  canvas.appendChild(block);
+  state.game.assocBlocks.push({ id, text, type });
 }
 
-function p1OnMouseMove(e) {
-  if (!p1.dragNode) return;
-  const cvs = document.getElementById('p1-canvas');
-  const cr = cvs.getBoundingClientRect();
-  const nd = p1.nodes.find(n=>n.id===p1.dragNode);
-  if (!nd) return;
-  const nx = Math.max(0, Math.min(cr.width - 140, e.clientX - cr.left - p1.dragOffX));
-  const ny = Math.max(0, Math.min(cr.height - 80, e.clientY - cr.top - p1.dragOffY));
-  nd.el.style.left = nx + 'px';
-  nd.el.style.top  = ny + 'px';
-  nd.x = nx; nd.y = ny;
-  p1RedrawLines();
+function addIdea() {
+  const inp = document.getElementById('idea-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  addBlockToCanvas(val, 'idea');
+  const chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.style.borderColor = 'var(--pixel)';
+  chip.style.color = 'var(--pixel)';
+  chip.textContent = val;
+  document.getElementById('my-ideas').appendChild(chip);
+  inp.value = '';
+  showPtsPopup(15, 400, 200);
+  state.game.scorePlayer += 15;
+  updateScoreUI();
 }
 
-function p1OnMouseUp() {
-  if (p1.dragNode) {
-    const nd = p1.nodes.find(n=>n.id===p1.dragNode);
-    if (nd) nd.el.style.zIndex = 10;
-    p1.dragNode = null;
+function connectMode() {
+  state.game.connectMode = !state.game.connectMode;
+  state.game.connectFrom = null;
+  const btn = document.getElementById('connect-btn');
+  btn.textContent = state.game.connectMode ? '✕ CANCELAR CONEXIÓN' : '🔗 MODO CONECTAR';
+  btn.className = state.game.connectMode ? 'btn btn-orange' : 'btn btn-green';
+  document.querySelectorAll('.assoc-block').forEach(b => b.style.cursor = state.game.connectMode ? 'crosshair' : 'default');
+}
+
+function onCanvasBlockClick(block) {
+  if (!state.game.connectMode) return;
+  if (!state.game.connectFrom) {
+    state.game.connectFrom = block;
+    block.classList.add('highlighted');
+  } else {
+    if (state.game.connectFrom === block) { block.classList.remove('highlighted'); state.game.connectFrom=null; return; }
+    drawLine(state.game.connectFrom, block);
+    state.game.connectFrom.classList.remove('highlighted');
+    state.game.connectFrom = null;
+    showPtsPopup(25, 600, 250);
+    state.game.scorePlayer += 25;
+    updateScoreUI();
   }
 }
 
-function p1ConnectNodes(fromId, toId, toTitle) {
-  const fromNode = p1.nodes.find(n=>n.id===fromId);
-  const toNode   = p1.nodes.find(n=>n.id===toId);
-  if (!fromNode || !toNode) return;
-  // Check duplicate
-  const dup = p1.lines.find(l=>(l.fromId===fromId&&l.toId===toId)||(l.fromId===toId&&l.toId===fromId));
-  if (dup) { notify('Ya están conectados'); return; }
-  // Draw line
-  const svg = document.getElementById('p1-svg');
+function drawLine(from, to) {
+  const svg = document.getElementById('connections-svg');
+  const canvas = document.getElementById('assoc-canvas');
+  const cr = canvas.getBoundingClientRect();
+  const fr = from.getBoundingClientRect();
+  const tr = to.getBoundingClientRect();
+  const x1 = fr.left - cr.left + fr.width/2;
+  const y1 = fr.top - cr.top + fr.height/2;
+  const x2 = tr.left - cr.left + tr.width/2;
+  const y2 = tr.top - cr.top + tr.height/2;
   const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-  p1UpdateLine(line, fromNode, toNode);
+  line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+  line.setAttribute('x2',x2); line.setAttribute('y2',y2);
   line.setAttribute('stroke','var(--pixel)');
   line.setAttribute('stroke-width','2');
-  line.setAttribute('stroke-dasharray','5,3');
-  line.setAttribute('opacity','0.8');
+  line.setAttribute('stroke-dasharray','4,3');
   svg.appendChild(line);
-  p1.lines.push({ fromId, toId, svgEl: line });
-  // Save association
-  const assoc = { from: fromNode.title, to: toNode.title };
-  p1.savedAssoc.push(assoc);
-  state.game.lines.push(assoc);
-  // Update saved panel
-  const savedList = document.getElementById('p1-saved-list');
-  if (savedList.querySelector('[style*="gray"]')) savedList.innerHTML = '';
-  const row = document.createElement('div');
-  row.className = 'saved-conn';
-  row.textContent = fromNode.title.substring(0,18) + ' → ' + toNode.title.substring(0,18);
-  savedList.appendChild(row);
-  // Points
-  state.game.scorePlayer += 25;
-  document.getElementById('p1-score').textContent = state.game.scorePlayer;
-  updateScoreUI();
-  showPtsPopup(25, window.innerWidth/2, window.innerHeight/2);
-  notify('¡Conexión guardada! +25 PTS');
+  state.game.lines.push({ from: from.dataset.text, to: to.dataset.text });
 }
 
-function p1UpdateLine(line, fromNode, toNode) {
-  const fr = fromNode.el.getBoundingClientRect();
-  const tr = toNode.el.getBoundingClientRect();
-  const cvs = document.getElementById('p1-canvas');
-  const cr = cvs.getBoundingClientRect();
-  line.setAttribute('x1', fr.left - cr.left + fr.width/2);
-  line.setAttribute('y1', fr.top  - cr.top  + fr.height/2);
-  line.setAttribute('x2', tr.left - cr.left + tr.width/2);
-  line.setAttribute('y2', tr.top  - cr.top  + tr.height/2);
-}
-
-function p1RedrawLines() {
-  p1.lines.forEach(l => {
-    const fn = p1.nodes.find(n=>n.id===l.fromId);
-    const tn = p1.nodes.find(n=>n.id===l.toId);
-    if (fn && tn) p1UpdateLine(l.svgEl, fn, tn);
-  });
-}
-
-function p1DeleteNode(id, e) {
-  e.stopPropagation();
-  // Remove lines
-  p1.lines = p1.lines.filter(l => {
-    if (l.fromId===id||l.toId===id) { l.svgEl.remove(); return false; }
-    return true;
-  });
-  // Remove node
-  const idx = p1.nodes.findIndex(n=>n.id===id);
-  if (idx>-1) {
-    p1.nodes[idx].el.remove();
-    // Unmark info item
-    const infoEl = document.querySelector('[data-id="' + id + '"]');
-    if (infoEl) infoEl.classList.remove('on-canvas');
-    p1.nodes.splice(idx, 1);
-  }
-  if (p1.selecting===id) p1.selecting=null;
-}
-
-function p1ClearLines() {
-  p1.lines.forEach(l => l.svgEl.remove());
-  p1.lines = [];
+function clearConnections() {
+  document.getElementById('connections-svg').innerHTML = '';
   state.game.lines = [];
-  p1.savedAssoc = [];
-  document.getElementById('p1-saved-list').innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Ninguna aún...</div>';
 }
-
-function selectBlockForCanvas() {}
-function addBlockToCanvas() {}
-function addIdea() {}
-function connectMode() {}
-function onCanvasBlockClick() {}
-function drawLine() {}
-function clearConnections() {}
 
 function endPhase1() {
   clearInterval(state.game.timer);
-  // Close overlay
-  document.getElementById('phase1-overlay').classList.remove('open');
-  // Cleanup listeners
-  const cvs = document.getElementById('p1-canvas');
-  cvs.oncontextmenu = null;
-  const newCvs = cvs.cloneNode(false);
-  cvs.parentNode.replaceChild(newCvs, cvs);
-  state.game.scorePlayer += p1.lines.length * 5;
+  state.game.scorePlayer += state.game.lines.length * 10;
   updateScoreUI();
   startPhase2();
 }
@@ -2061,57 +1756,5 @@ document.addEventListener('keydown', e=>{
   }
 });
 </script>
-
-<!-- PHASE 1 FULLSCREEN OVERLAY -->
-<div id="phase1-overlay">
-  <div id="p1-canvas" oncontextmenu="return false">
-    <svg id="p1-svg"></svg>
-  </div>
-  <div id="p1-right">
-    <div id="p1-right-header">
-      <div style="flex:1">
-        <div style="font-size:8px;color:var(--pixel)">CONCEPTOS</div>
-        <div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Click para añadir al canvas</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:7px;color:var(--gray)">PUNTOS</div>
-        <div id="p1-score" style="font-family:VT323,monospace;font-size:22px;color:var(--pixel5)">0</div>
-      </div>
-    </div>
-    <div id="p1-info-list"></div>
-    <div id="p1-saved">
-      <div style="font-size:7px;color:var(--pixel4);margin-bottom:4px">ASOCIACIONES GUARDADAS:</div>
-      <div id="p1-saved-list"><div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Ninguna aún...</div></div>
-    </div>
-    <div id="p1-bottom">
-      <div style="font-size:7px;color:var(--gray);width:100%;margin-bottom:4px">CLIC DERECHO en el canvas para crear un nodo · CLIC en nodo para conectar</div>
-      <button class="btn btn-gray" style="font-size:7px;padding:6px 10px" onclick="p1ClearLines()">✕ LÍNEAS</button>
-      <div style="flex:1"></div>
-      <div class="px-timer" id="p1-timer" style="font-size:22px">--</div>
-      <button class="btn btn-yellow" style="font-size:8px;padding:8px 14px" onclick="endPhase1()">FASE 2 →</button>
-    </div>
-  </div>
-</div>
-
-<!-- CONTEXT MENU -->
-<div id="ctx-menu">
-  <div class="ctx-item" onclick="ctxCreateNode()">✦ Crear nodo de asociación</div>
-  <div class="ctx-item" onclick="ctxCancel()">✕ Cancelar</div>
-</div>
-
-<!-- NODE LABEL MODAL -->
-<div id="node-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9500;align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:3px solid var(--pixel);box-shadow:6px 6px 0 #000;padding:20px;min-width:300px">
-    <div style="font-size:9px;color:var(--pixel);margin-bottom:12px">✦ NOMBRE DE LA ASOCIACIÓN</div>
-    <input type="text" id="node-label-input" class="px-input mb-12" placeholder="Ej: Átomo, Mi abuela, La guerra de las galaxias...">
-    <div style="font-size:7px;color:var(--gray);margin-bottom:8px">Descripción (opcional):</div>
-    <input type="text" id="node-desc-input" class="px-input mb-12" placeholder="Por qué te recuerda esto...">
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-yellow" onclick="confirmNodeCreate()" style="flex:1">✔ CREAR</button>
-      <button class="btn btn-gray" onclick="cancelNodeCreate()">✕</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
