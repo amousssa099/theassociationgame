@@ -3,2892 +3,2115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>THE ASSOCIATION GAME 🧠</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<title>THE ASSOCIATION GAME</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-:root {
-  --bg: #0a0a0f;
-  --bg2: #111118;
-  --bg3: #1a1a25;
-  --panel: #14141e;
-  --border: #2a2a3a;
-  --accent: #00ff88;
-  --accent2: #ff3366;
-  --accent3: #ffcc00;
-  --accent4: #00ccff;
-  --purple: #9933ff;
-  --text: #e8e8f0;
-  --text2: #8888aa;
-  --pixel: 'Press Start 2P', monospace;
-  --ui: 'Rajdhani', sans-serif;
-  --title: 'Orbitron', sans-serif;
-  --glow-green: 0 0 10px #00ff8866, 0 0 20px #00ff8833;
-  --glow-red: 0 0 10px #ff336666, 0 0 20px #ff336633;
-  --glow-yellow: 0 0 10px #ffcc0066, 0 0 20px #ffcc0033;
-  --glow-blue: 0 0 10px #00ccff66, 0 0 20px #00ccff33;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow-x: hidden; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--ui);
-  font-size: 16px;
-  line-height: 1.5;
-  background-image:
-    radial-gradient(circle at 20% 50%, #9933ff0a 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, #00ff880a 0%, transparent 50%),
-    radial-gradient(circle at 50% 80%, #00ccff0a 0%, transparent 40%);
-  min-height: 100vh;
-}
+  :root {
+    --bg: #0a0a1a;
+    --bg2: #12122a;
+    --bg3: #1a1a3a;
+    --pixel: #f0e040;
+    --pixel2: #ff6b35;
+    --pixel3: #4ecdc4;
+    --pixel4: #a855f7;
+    --pixel5: #22c55e;
+    --pixel6: #ef4444;
+    --pixel7: #f97316;
+    --white: #e8e8f0;
+    --gray: #6b7280;
+    --border: #2a2a5a;
+    --card: #0f0f2a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    line-height: 1.8;
+    min-height: 100vh;
+    overflow-x: hidden;
+    image-rendering: pixelated;
+  }
+  /* SCANLINES */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+    pointer-events:none;
+    z-index:9999;
+  }
+  /* PIXEL BORDER MIXIN */
+  .pb {
+    border: 3px solid var(--pixel);
+    box-shadow: 4px 4px 0 #000, inset -2px -2px 0 rgba(0,0,0,0.5);
+  }
+  .pb2 { border: 3px solid var(--pixel3); box-shadow: 4px 4px 0 #000; }
+  .pb3 { border: 3px solid var(--pixel4); box-shadow: 4px 4px 0 #000; }
+  .pb4 { border: 3px solid var(--pixel2); box-shadow: 4px 4px 0 #000; }
+  .pb5 { border: 3px solid var(--pixel5); box-shadow: 4px 4px 0 #000; }
 
-/* === SCANLINES OVERLAY === */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
+  /* NAV */
+  #nav {
+    background: var(--bg2);
+    border-bottom: 3px solid var(--pixel);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  #nav .logo {
+    font-size: 11px;
+    color: var(--pixel);
+    text-shadow: 2px 2px 0 #ff6b35, 4px 4px 0 rgba(255,107,53,0.3);
+    letter-spacing: 2px;
+    flex: 1;
+    animation: titleFlicker 3s infinite;
+  }
+  @keyframes titleFlicker {
+    0%,95%,100%{opacity:1} 96%{opacity:0.8} 97%{opacity:1} 98%{opacity:0.7} 99%{opacity:1}
+  }
+  .nav-btn {
+    background: var(--bg3);
+    color: var(--gray);
+    border: 2px solid var(--border);
+    padding: 8px 14px;
+    font-family: 'Press Start 2P';
+    font-size: 8px;
+    cursor: pointer;
+    transition: all 0.1s;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0 #000;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--pixel);
+    color: #000;
+    border-color: var(--pixel);
+    box-shadow: 3px 3px 0 #000;
+    transform: translate(-1px,-1px);
+  }
+  .nav-btn.active { color: #000 !important; }
 
-/* === PIXEL GRID BG === */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image:
-    linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
+  /* SCREENS */
+  .screen { display:none; padding: 24px 20px; max-width: 1100px; margin: 0 auto; }
+  .screen.active { display:block; }
 
-/* === SCREENS === */
-.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
+  /* SECTION TITLE */
+  .sect-title {
+    font-size: 14px;
+    color: var(--pixel);
+    text-shadow: 2px 2px 0 var(--pixel2);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sect-title::after {
+    content:'';
+    flex:1;
+    height:3px;
+    background: linear-gradient(90deg, var(--pixel), transparent);
+  }
 
-/* === SCREEN: TITLE === */
-#screen-title {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 40px 20px;
-  gap: 30px;
-}
-.title-logo {
-  font-family: var(--title);
-  font-size: clamp(24px, 5vw, 52px);
-  font-weight: 900;
-  color: var(--accent);
-  text-shadow: var(--glow-green), 0 0 40px #00ff8855;
-  letter-spacing: 4px;
-  animation: pulse-glow 2s ease-in-out infinite;
-  line-height: 1.2;
-}
-@keyframes pulse-glow {
-  0%, 100% { text-shadow: var(--glow-green), 0 0 40px #00ff8855; }
-  50% { text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8899, 0 0 80px #00ff8844; }
-}
-.title-sub {
-  font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--accent3);
-  letter-spacing: 2px;
-  text-shadow: var(--glow-yellow);
-}
-.title-meme {
-  font-size: 80px;
-  animation: float 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(0,255,136,0.4));
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(-5deg); }
-  50% { transform: translateY(-15px) rotate(5deg); }
-}
+  /* PIXEL BUTTON */
+  .btn {
+    font-family: 'Press Start 2P';
+    font-size: 9px;
+    cursor: pointer;
+    padding: 10px 18px;
+    border: 3px solid;
+    box-shadow: 4px 4px 0 #000;
+    transition: all 0.08s;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 #000; }
+  .btn-yellow { background: var(--pixel); color: #000; border-color: #b8ab00; }
+  .btn-yellow:hover { background: #ffe840; }
+  .btn-cyan { background: var(--pixel3); color: #000; border-color: #2a9a92; }
+  .btn-cyan:hover { background: #6ee0d8; }
+  .btn-purple { background: var(--pixel4); color: #fff; border-color: #7c3aed; }
+  .btn-purple:hover { background: #c084fc; }
+  .btn-orange { background: var(--pixel2); color: #000; border-color: #c4500a; }
+  .btn-orange:hover { background: #ff8558; }
+  .btn-red { background: var(--pixel6); color: #fff; border-color: #b91c1c; }
+  .btn-green { background: var(--pixel5); color: #000; border-color: #16a34a; }
+  .btn-gray { background: var(--bg3); color: var(--white); border-color: var(--border); }
+  .btn-gray:hover { border-color: var(--pixel); color: var(--pixel); }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 #000; }
 
-/* === BUTTONS === */
-.btn {
-  font-family: var(--pixel);
-  font-size: 9px;
-  padding: 14px 28px;
-  border: 2px solid currentColor;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: currentColor;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.btn:hover::before { opacity: 0.1; }
-.btn:active { transform: scale(0.96); }
-.btn-green { color: var(--accent); box-shadow: var(--glow-green); }
-.btn-green:hover { box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8866; }
-.btn-red { color: var(--accent2); box-shadow: var(--glow-red); }
-.btn-red:hover { box-shadow: 0 0 20px #ff3366, 0 0 40px #ff336666; }
-.btn-yellow { color: var(--accent3); box-shadow: var(--glow-yellow); }
-.btn-yellow:hover { box-shadow: 0 0 20px #ffcc00, 0 0 40px #ffcc0066; }
-.btn-blue { color: var(--accent4); box-shadow: var(--glow-blue); }
-.btn-blue:hover { box-shadow: 0 0 20px #00ccff, 0 0 40px #00ccff66; }
-.btn-purple { color: var(--purple); box-shadow: 0 0 10px #9933ff66; }
-.btn-purple:hover { box-shadow: 0 0 20px #9933ff, 0 0 40px #9933ff66; }
-.btn-big { font-size: 11px; padding: 18px 40px; }
-.btn-sm { font-size: 7px; padding: 8px 16px; }
+  /* INPUT */
+  .px-input {
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    color: var(--white);
+    padding: 10px 14px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    width: 100%;
+    outline: none;
+    transition: border 0.1s;
+  }
+  .px-input:focus { border-color: var(--pixel3); }
+  .px-label { font-size: 8px; color: var(--pixel3); margin-bottom: 6px; display: block; }
 
-/* === PANELS === */
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 24px;
-  position: relative;
-}
-.panel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0.5;
-}
-.panel-title {
-  font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--accent);
-  letter-spacing: 2px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.panel-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--border), transparent);
-}
+  /* TEXTAREA */
+  .px-textarea {
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    color: var(--white);
+    padding: 10px 14px;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+    resize: vertical;
+    min-height: 120px;
+  }
+  .px-textarea:focus { border-color: var(--pixel3); }
 
-/* === SCREEN: SETUP === */
-#screen-setup {
-  padding: 30px 20px;
-  align-items: center;
-  gap: 24px;
-}
-.setup-container {
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+  /* SELECT */
+  .px-select {
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    color: var(--white);
+    padding: 10px 14px;
+    font-family: 'Press Start 2P';
+    font-size: 8px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+  }
+  .px-select:focus { border-color: var(--pixel); }
 
-/* === UPLOAD ZONE === */
-.upload-zone {
-  border: 2px dashed var(--accent);
-  border-radius: 2px;
-  padding: 40px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: rgba(0,255,136,0.02);
-  position: relative;
-}
-.upload-zone:hover {
-  background: rgba(0,255,136,0.05);
-  box-shadow: var(--glow-green);
-}
-.upload-zone.dragover {
-  background: rgba(0,255,136,0.08);
-  box-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8866;
-}
-.upload-icon { font-size: 48px; margin-bottom: 12px; }
-.upload-text { font-family: var(--pixel); font-size: 9px; color: var(--accent); letter-spacing: 1px; }
-.upload-sub { font-size: 13px; color: var(--text2); margin-top: 8px; }
-#file-input { display: none; }
+  /* CARDS GRID */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 
-.textarea-input {
-  width: 100%;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--ui);
-  font-size: 14px;
-  padding: 16px;
-  resize: vertical;
-  min-height: 120px;
-  border-radius: 2px;
-  transition: border-color 0.2s;
-}
-.textarea-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: var(--glow-green);
-}
-.textarea-input::placeholder { color: var(--text2); }
+  /* TEMARIO CARD */
+  .temario-card {
+    background: var(--card);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .temario-card:hover { transform: translate(-2px,-2px); }
+  .temario-card .t-name { font-size: 10px; color: var(--pixel); margin-bottom: 8px; }
+  .temario-card .t-pts { font-size: 8px; color: var(--pixel3); }
+  .temario-card .t-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--pixel4); color: #fff;
+    font-size: 7px; padding: 3px 6px;
+  }
 
-/* === CONFIG GRID === */
-.config-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-.config-item label {
-  font-family: var(--pixel);
-  font-size: 7px;
-  color: var(--text2);
-  letter-spacing: 1px;
-  display: block;
-  margin-bottom: 8px;
-}
-.select-input {
-  width: 100%;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--ui);
-  font-size: 14px;
-  padding: 10px;
-  border-radius: 2px;
-  cursor: pointer;
-}
-.select-input:focus { outline: none; border-color: var(--accent); }
-.select-input option { background: var(--bg2); }
+  /* PROGRESS BAR */
+  .px-progress {
+    height: 16px;
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .px-progress-fill {
+    height: 100%;
+    background: var(--pixel5);
+    transition: width 0.3s;
+    box-shadow: inset -2px 0 0 rgba(255,255,255,0.3);
+  }
 
-/* === DIFFICULTY SELECTOR === */
-.difficulty-btns {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.diff-btn {
-  font-family: var(--pixel);
-  font-size: 7px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 1px;
-}
-.diff-btn.active-easy { border-color: var(--accent); color: var(--accent); background: rgba(0,255,136,0.1); box-shadow: var(--glow-green); }
-.diff-btn.active-normal { border-color: var(--accent3); color: var(--accent3); background: rgba(255,204,0,0.1); box-shadow: var(--glow-yellow); }
-.diff-btn.active-hard { border-color: var(--accent2); color: var(--accent2); background: rgba(255,51,102,0.1); box-shadow: var(--glow-red); }
-.diff-btn.active-giga { border-color: var(--purple); color: var(--purple); background: rgba(153,51,255,0.1); box-shadow: 0 0 10px #9933ff66; }
+  /* SCORE */
+  .score-display {
+    font-family: 'VT323', monospace;
+    font-size: 32px;
+    color: var(--pixel);
+    text-shadow: 2px 2px 0 var(--pixel2);
+  }
 
-/* === AI PROCESSING === */
-#screen-processing {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 30px;
-  padding: 40px;
-}
-.loading-brain {
-  font-size: 80px;
-  animation: spin-brain 1s steps(8) infinite;
-}
-@keyframes spin-brain {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.loading-bar-wrap {
-  width: 400px;
-  max-width: 90vw;
-  height: 20px;
-  background: var(--bg2);
-  border: 1px solid var(--accent);
-  overflow: hidden;
-  position: relative;
-}
-.loading-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent4));
-  width: 0%;
-  transition: width 0.3s ease;
-  box-shadow: var(--glow-green);
-}
-.loading-status {
-  font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--accent);
-  letter-spacing: 1px;
-  animation: blink 1s step-end infinite;
-}
-@keyframes blink { 50% { opacity: 0; } }
+  /* STAT BOX */
+  .stat-box {
+    background: var(--card);
+    padding: 12px 16px;
+    text-align: center;
+    flex: 1;
+  }
+  .stat-label { font-size: 7px; color: var(--gray); margin-bottom: 6px; }
+  .stat-val { font-family: 'VT323', monospace; font-size: 28px; }
 
-/* === THEORY REVIEW === */
-#screen-theory {
-  padding: 20px;
-  align-items: center;
-  gap: 20px;
-}
-.theory-container {
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.theory-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.theory-points {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-height: 60vh;
-  overflow-y: auto;
-  padding-right: 8px;
-}
-.theory-points::-webkit-scrollbar { width: 4px; }
-.theory-points::-webkit-scrollbar-track { background: var(--bg2); }
-.theory-points::-webkit-scrollbar-thumb { background: var(--accent); }
-.theory-point {
-  padding: 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  transition: all 0.2s;
-  cursor: pointer;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-.theory-point:hover { border-color: var(--accent); background: rgba(0,255,136,0.04); }
-.theory-point.selected { border-color: var(--accent); background: rgba(0,255,136,0.08); box-shadow: var(--glow-green); }
-.point-num {
-  font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--accent3);
-  min-width: 30px;
-}
-.point-content { flex: 1; }
-.point-title { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; }
-.point-desc { font-size: 13px; color: var(--text2); }
-.point-checkbox {
-  width: 20px; height: 20px;
-  border: 2px solid var(--accent);
-  background: transparent;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent);
-  font-size: 12px;
-}
+  /* CHIPS */
+  .chip {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 8px;
+    border: 2px solid;
+    margin: 3px;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .chip:hover, .chip.selected {
+    transform: translate(-1px,-1px);
+    box-shadow: 2px 2px 0 #000;
+  }
 
-/* === GAME SCREEN === */
-#screen-game {
-  flex-direction: column;
-  padding: 0;
-  min-height: 100vh;
-}
+  /* NOTIFICATION */
+  #notif {
+    position: fixed;
+    top: 70px; right: 20px;
+    background: var(--pixel5);
+    color: #000;
+    padding: 10px 16px;
+    font-size: 8px;
+    z-index: 9000;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    transform: translateX(200%);
+    transition: transform 0.2s;
+    max-width: 280px;
+  }
+  #notif.show { transform: translateX(0); }
+  #notif.err { background: var(--pixel6); color: #fff; }
 
-/* HUD */
-.hud {
-  position: sticky;
-  top: 0;
-  background: rgba(10,10,15,0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  z-index: 100;
-  flex-wrap: wrap;
-}
-.hud-section { display: flex; align-items: center; gap: 8px; }
-.hud-label {
-  font-family: var(--pixel);
-  font-size: 7px;
-  color: var(--text2);
-  letter-spacing: 1px;
-}
-.hud-value {
-  font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--accent);
-  text-shadow: var(--glow-green);
-}
-.hud-sep { width: 1px; height: 30px; background: var(--border); }
-.hud-timer {
-  font-family: var(--pixel);
-  font-size: 14px;
-  color: var(--accent3);
-  text-shadow: var(--glow-yellow);
-  min-width: 60px;
-  text-align: center;
-}
-.hud-timer.danger { color: var(--accent2); text-shadow: var(--glow-red); animation: blink 0.5s step-end infinite; }
+  /* MODAL */
+  .modal-backdrop {
+    display: none;
+    position: fixed; inset:0;
+    background: rgba(0,0,0,0.85);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: var(--bg2);
+    border: 3px solid var(--pixel);
+    box-shadow: 6px 6px 0 #000;
+    padding: 24px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .modal-title { font-size: 12px; color: var(--pixel); margin-bottom: 16px; }
 
-/* PROGRESS BARS */
-.hp-bar-wrap {
-  flex: 1;
-  max-width: 150px;
-  height: 8px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.hp-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent2), var(--accent3), var(--accent));
-  transition: width 0.5s ease;
-}
+  /* TAG for puntos */
+  .px-tag {
+    background: var(--pixel2);
+    color: #000;
+    font-size: 7px;
+    padding: 2px 6px;
+    display: inline-block;
+  }
 
-/* GAME CONTENT */
-.game-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
+  /* LOADER */
+  .loader {
+    display: inline-block;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: var(--pixel3);
+    animation: blink 0.5s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-/* PHASES */
-.phase { display: none; flex-direction: column; gap: 20px; }
-.phase.active { display: flex; }
-.phase-title {
-  font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--accent3);
-  text-align: center;
-  letter-spacing: 2px;
-  text-shadow: var(--glow-yellow);
-}
+  /* ASSOCIATION BLOCKS */
+  .assoc-block {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 10px 14px;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.1s;
+    position: relative;
+    min-width: 120px;
+    text-align: center;
+    font-size: 8px;
+  }
+  .assoc-block:hover { border-color: var(--pixel3); transform: translate(-1px,-1px); box-shadow: 2px 2px 0 #000; }
+  .assoc-block.dragging { opacity: 0.5; cursor: grabbing; }
+  .assoc-block.highlighted { border-color: var(--pixel); background: rgba(240,224,64,0.1); }
 
-/* === ASSOCIATION PHASE === */
-.association-grid {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 20px;
-  align-items: start;
-}
-.assoc-column {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.assoc-col-title {
-  font-family: var(--pixel);
-  font-size: 7px;
-  color: var(--text2);
-  letter-spacing: 1px;
-  text-align: center;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-.assoc-item {
-  padding: 14px 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.15s;
-  font-size: 14px;
-  text-align: center;
-  position: relative;
-  user-select: none;
-  border-radius: 2px;
-}
-.assoc-item:hover { border-color: var(--accent4); background: rgba(0,204,255,0.05); }
-.assoc-item.selected-left { border-color: var(--accent3); background: rgba(255,204,0,0.1); box-shadow: var(--glow-yellow); }
-.assoc-item.selected-right { border-color: var(--purple); background: rgba(153,51,255,0.1); box-shadow: 0 0 10px #9933ff66; }
-.assoc-item.matched { border-color: var(--accent); background: rgba(0,255,136,0.08); cursor: default; }
-.assoc-item.wrong { border-color: var(--accent2); background: rgba(255,51,102,0.1); animation: shake 0.3s ease; }
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-.assoc-item .meme-badge {
-  position: absolute;
-  top: -8px; right: -8px;
-  font-size: 18px;
-  filter: drop-shadow(0 0 4px rgba(255,204,0,0.5));
-}
-.assoc-connector {
-  width: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 40px;
-  gap: 8px;
-}
-.connector-line {
-  width: 2px;
-  height: 40px;
-  background: linear-gradient(180deg, transparent, var(--accent), transparent);
-  opacity: 0.3;
-}
+  /* PHASE1 FULLSCREEN OVERLAY */
+  #phase1-overlay {
+    position: fixed;
+    inset: 0;
+    top: 56px;
+    background: var(--bg);
+    z-index: 200;
+    display: none;
+  }
+  #phase1-overlay.open { display: flex; }
+  #p1-canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+  }
+  #p1-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  #p1-right {
+    width: 300px;
+    background: var(--bg2);
+    border-left: 3px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #p1-right-header {
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  #p1-info-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .p1-info-item {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.1s, transform 0.1s;
+    user-select: none;
+  }
+  .p1-info-item:hover {
+    border-color: var(--pixel3);
+    transform: translateX(-2px);
+  }
+  .p1-info-item.on-canvas { border-color: var(--pixel5); opacity: 0.5; cursor: default; }
+  .p1-info-title { font-size: 7px; color: var(--pixel3); margin-bottom: 4px; }
+  .p1-info-text { font-family: "VT323", monospace; font-size: 15px; color: var(--white); line-height: 1.4; }
+  #p1-bottom {
+    padding: 10px 12px;
+    border-top: 2px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  /* CANVAS NODES */
+  .c-node {
+    position: absolute;
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    padding: 10px 14px;
+    cursor: move;
+    user-select: none;
+    min-width: 100px;
+    max-width: 220px;
+    box-shadow: 3px 3px 0 #000;
+    transition: border-color 0.1s;
+    z-index: 10;
+  }
+  .c-node:hover { border-color: var(--pixel3); }
+  .c-node.info-node { border-color: var(--pixel3); }
+  .c-node.idea-node { border-color: var(--pixel); }
+  .c-node.selected { border-color: var(--pixel2); box-shadow: 0 0 0 2px var(--pixel2), 3px 3px 0 #000; }
+  .c-node .node-tag { font-size: 7px; color: var(--gray); margin-bottom: 3px; }
+  .c-node .node-title { font-size: 8px; color: var(--pixel3); margin-bottom: 3px; }
+  .c-node .node-body { font-family: "VT323", monospace; font-size: 14px; color: var(--white); line-height: 1.3; }
+  .c-node .node-del { position: absolute; top: 3px; right: 5px; font-size: 9px; color: var(--gray); cursor: pointer; line-height: 1; }
+  .c-node .node-del:hover { color: var(--pixel6); }
+  /* CONTEXT MENU */
+  #ctx-menu {
+    position: fixed;
+    background: var(--bg2);
+    border: 2px solid var(--pixel);
+    box-shadow: 4px 4px 0 #000;
+    z-index: 9000;
+    display: none;
+    min-width: 180px;
+  }
+  #ctx-menu.open { display: block; }
+  .ctx-item {
+    padding: 8px 14px;
+    font-size: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    color: var(--white);
+  }
+  .ctx-item:last-child { border-bottom: none; }
+  .ctx-item:hover { background: var(--pixel); color: #000; }
+  /* ASSOC SAVED PANEL */
+  #p1-saved {
+    padding: 8px;
+    border-top: 2px solid var(--border);
+    flex-shrink: 0;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .saved-conn {
+    font-family: "VT323", monospace;
+    font-size: 13px;
+    color: var(--pixel5);
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+  }
 
-/* === RECALL PHASE === */
-.recall-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
-.recall-card {
-  aspect-ratio: 1;
-  background: var(--bg2);
-  border: 2px solid var(--border);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-  border-radius: 2px;
-}
-.recall-card::before {
-  content: '?';
-  font-family: var(--pixel);
-  font-size: 20px;
-  color: var(--text2);
-  position: absolute;
-}
-.recall-card.revealed::before { display: none; }
-.recall-card.revealed { background: rgba(0,255,136,0.05); border-color: var(--accent); }
-.recall-card:hover:not(.answered) { border-color: var(--accent4); transform: scale(1.02); }
-.recall-card .card-content { display: none; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 10px; }
-.recall-card.revealed .card-content { display: flex; }
-.card-emoji { font-size: 36px; }
-.card-label { font-size: 11px; color: var(--text2); font-weight: 600; line-height: 1.3; }
+  /* CHAT */
+  .chat-box {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 12px;
+    height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .chat-msg {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    padding: 6px 10px;
+    max-width: 85%;
+    border: 1px solid var(--border);
+  }
+  .chat-msg.user { align-self: flex-end; background: rgba(78,205,196,0.15); border-color: var(--pixel3); color: var(--pixel3); }
+  .chat-msg.ai { align-self: flex-start; background: rgba(168,85,247,0.1); border-color: var(--pixel4); color: var(--white); }
+  .chat-msg .who { font-family: 'Press Start 2P'; font-size: 7px; margin-bottom: 3px; opacity: 0.7; }
 
-/* === ANSWER INPUT === */
-.answer-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.answer-prompt {
-  padding: 20px;
-  background: rgba(153,51,255,0.08);
-  border: 1px solid var(--purple);
-  border-radius: 2px;
-  font-size: 15px;
-}
-.answer-prompt strong { color: var(--accent3); }
-.answer-input {
-  width: 100%;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--ui);
-  font-size: 15px;
-  padding: 16px;
-  border-radius: 2px;
-  resize: vertical;
-  min-height: 100px;
-}
-.answer-input:focus { outline: none; border-color: var(--purple); }
+  /* GAME PHASES */
+  .phase-indicator {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .phase-dot {
+    flex: 1;
+    height: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+  }
+  .phase-dot.done { background: var(--pixel5); }
+  .phase-dot.active { background: var(--pixel); animation: pulsePx 0.8s infinite; }
+  @keyframes pulsePx { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-/* === AI JUDGE === */
-.ai-judge {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 20px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-}
-.ai-judge::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--purple), var(--accent4));
-}
-.judge-avatar { font-size: 40px; flex-shrink: 0; }
-.judge-content { flex: 1; }
-.judge-name { font-family: var(--pixel); font-size: 7px; color: var(--purple); letter-spacing: 1px; margin-bottom: 8px; }
-.judge-text { font-size: 14px; color: var(--text); line-height: 1.6; }
-.judge-score {
-  font-family: var(--pixel);
-  font-size: 16px;
-  margin-top: 12px;
-  padding: 8px 16px;
-  display: inline-block;
-}
-.judge-score.good { color: var(--accent); border: 1px solid var(--accent); box-shadow: var(--glow-green); }
-.judge-score.ok { color: var(--accent3); border: 1px solid var(--accent3); box-shadow: var(--glow-yellow); }
-.judge-score.bad { color: var(--accent2); border: 1px solid var(--accent2); box-shadow: var(--glow-red); }
+  /* BATTLE */
+  #battle-area {
+    background: var(--card);
+    border: 3px solid var(--pixel2);
+    box-shadow: 6px 6px 0 #000;
+    padding: 20px;
+    text-align: center;
+  }
+  .battle-question { font-size: 11px; color: var(--pixel); line-height: 2; margin: 16px 0; min-height: 60px; }
+  .buzz-btn {
+    background: var(--pixel2);
+    color: #000;
+    border: 4px solid #c4500a;
+    font-family: 'Press Start 2P';
+    font-size: 14px;
+    padding: 20px 40px;
+    cursor: pointer;
+    box-shadow: 6px 6px 0 #000;
+    transition: all 0.08s;
+    animation: battlePulse 2s infinite;
+    text-transform: uppercase;
+  }
+  @keyframes battlePulse { 0%,100%{box-shadow:6px 6px 0 #000} 50%{box-shadow:8px 8px 0 #000, 0 0 20px rgba(255,107,53,0.4)} }
+  .buzz-btn:active { transform: translate(4px,4px); box-shadow: 2px 2px 0 #000; }
+  .buzz-btn:disabled { background: var(--gray); cursor: not-allowed; animation: none; box-shadow: 3px 3px 0 #000; }
 
-/* === SCOREBOARD === */
-.scoreboard {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-.score-card {
-  padding: 20px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  text-align: center;
-  border-radius: 2px;
-}
-.score-card.player-card { border-color: var(--accent); box-shadow: var(--glow-green); }
-.score-card.ai-card { border-color: var(--accent2); box-shadow: var(--glow-red); }
-.score-name { font-family: var(--pixel); font-size: 8px; letter-spacing: 1px; margin-bottom: 12px; }
-.player-card .score-name { color: var(--accent); }
-.ai-card .score-name { color: var(--accent2); }
-.score-num { font-family: var(--pixel); font-size: 32px; line-height: 1; }
-.player-card .score-num { color: var(--accent); text-shadow: var(--glow-green); }
-.ai-card .score-num { color: var(--accent2); text-shadow: var(--glow-red); }
-.score-detail { font-size: 12px; color: var(--text2); margin-top: 8px; }
+  /* RIVAL AVATAR */
+  .rival-box {
+    background: var(--card);
+    padding: 12px;
+    text-align: center;
+    border: 2px solid var(--pixel4);
+  }
+  .rival-avatar {
+    width: 64px; height: 64px;
+    border: 2px solid var(--pixel4);
+    object-fit: cover;
+    image-rendering: pixelated;
+    margin: 0 auto 8px;
+    display: block;
+    background: var(--bg3);
+    font-size: 28px;
+    line-height: 64px;
+    text-align: center;
+  }
 
-/* === SHOP === */
-.shop-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
-}
-.shop-item {
-  padding: 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 2px;
-  position: relative;
-}
-.shop-item:hover:not(.sold-out) { border-color: var(--accent3); background: rgba(255,204,0,0.05); }
-.shop-item.sold-out { opacity: 0.4; cursor: not-allowed; }
-.shop-emoji { font-size: 32px; margin-bottom: 8px; }
-.shop-name { font-family: var(--pixel); font-size: 7px; color: var(--text); letter-spacing: 1px; margin-bottom: 4px; }
-.shop-desc { font-size: 11px; color: var(--text2); margin-bottom: 8px; }
-.shop-price {
-  font-family: var(--pixel);
-  font-size: 9px;
-  color: var(--accent3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-.coin { font-size: 14px; }
+  /* TIMER */
+  .px-timer {
+    font-family: 'VT323', monospace;
+    font-size: 36px;
+    color: var(--pixel);
+    text-shadow: 2px 2px 0 #000;
+  }
+  .px-timer.danger { color: var(--pixel6); animation: blink 0.4s infinite; }
 
-/* === CHAT === */
-.chat-panel {
-  position: fixed;
-  right: -360px;
-  top: 60px;
-  width: 340px;
-  height: calc(100vh - 80px);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-right: none;
-  display: flex;
-  flex-direction: column;
-  transition: right 0.3s ease;
-  z-index: 200;
-}
-.chat-panel.open { right: 0; }
-.chat-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.chat-title { font-family: var(--pixel); font-size: 8px; color: var(--accent4); letter-spacing: 1px; }
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.chat-msg {
-  padding: 10px 14px;
-  border-radius: 2px;
-  max-width: 85%;
-  font-size: 13px;
-  line-height: 1.5;
-  animation: msg-in 0.2s ease;
-}
-@keyframes msg-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.chat-msg.user { background: rgba(0,255,136,0.1); border: 1px solid var(--accent); align-self: flex-end; color: var(--text); }
-.chat-msg.ai { background: rgba(153,51,255,0.1); border: 1px solid var(--purple); align-self: flex-start; color: var(--text); }
-.chat-msg.ai::before { content: '🤖 '; }
-.chat-input-row { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-.chat-input {
-  flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--ui);
-  font-size: 13px;
-  padding: 10px;
-  border-radius: 2px;
-}
-.chat-input:focus { outline: none; border-color: var(--accent4); }
-.chat-toggle {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: 56px; height: 56px;
-  background: var(--panel);
-  border: 2px solid var(--accent4);
-  border-radius: 50%;
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 201;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--glow-blue);
-  transition: all 0.2s;
-}
-.chat-toggle:hover { transform: scale(1.1); }
-.chat-toggle.visible { display: flex; }
+  /* STORE */
+  .store-item {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .store-item:hover { border-color: var(--pixel); transform: translate(-1px,-1px); box-shadow: 2px 2px 0 #000; }
+  .store-item .si-icon { font-size: 24px; margin-bottom: 6px; }
+  .store-item .si-name { font-size: 8px; color: var(--pixel3); margin-bottom: 4px; }
+  .store-item .si-cost { font-size: 8px; color: var(--pixel); }
 
-/* === NOTIFICATION === */
-.notification {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: var(--panel);
-  border: 1px solid var(--accent3);
-  padding: 12px 24px;
-  font-family: var(--pixel);
-  font-size: 8px;
-  color: var(--accent3);
-  letter-spacing: 1px;
-  z-index: 500;
-  opacity: 0;
-  transition: all 0.3s;
-  pointer-events: none;
-  text-align: center;
-  max-width: 90vw;
-}
-.notification.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-.notification.green { border-color: var(--accent); color: var(--accent); }
-.notification.red { border-color: var(--accent2); color: var(--accent2); }
+  /* DIVIDER */
+  .px-divider { border: none; border-top: 2px solid var(--border); margin: 20px 0; }
 
-/* === RESULTS SCREEN === */
-#screen-results {
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  gap: 30px;
-  text-align: center;
-}
-.result-title {
-  font-family: var(--pixel);
-  font-size: clamp(12px, 3vw, 24px);
-  letter-spacing: 4px;
-  animation: pulse-glow 2s infinite;
-}
-.result-win { color: var(--accent); }
-.result-lose { color: var(--accent2); }
-.result-draw { color: var(--accent3); }
-.result-emoji { font-size: 80px; animation: float 2s ease-in-out infinite; }
-.result-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 100%;
-  max-width: 600px;
-}
-.stat-box {
-  padding: 20px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  text-align: center;
-}
-.stat-label { font-family: var(--pixel); font-size: 7px; color: var(--text2); letter-spacing: 1px; margin-bottom: 8px; }
-.stat-value { font-family: var(--pixel); font-size: 20px; color: var(--accent3); }
+  /* GRID UTILS */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .gap-20 { gap: 20px; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .justify-center { justify-content: center; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-12 { margin-bottom: 12px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-20 { margin-bottom: 20px; }
+  .w-full { width: 100%; }
+  .text-center { text-align: center; }
+  .col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 
-/* === AI RIVAL === */
-.rival-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: rgba(255,51,102,0.05);
-  border: 1px solid rgba(255,51,102,0.3);
-  border-radius: 2px;
-}
-.rival-avatar { font-size: 40px; animation: float 2s ease-in-out infinite; }
-.rival-info { flex: 1; }
-.rival-name { font-family: var(--pixel); font-size: 8px; color: var(--accent2); letter-spacing: 1px; margin-bottom: 4px; }
-.rival-status { font-size: 12px; color: var(--text2); }
-.rival-action {
-  font-family: var(--pixel);
-  font-size: 7px;
-  padding: 6px 12px;
-  background: rgba(255,51,102,0.1);
-  border: 1px solid var(--accent2);
-  color: var(--accent2);
-  border-radius: 2px;
-}
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--pixel); }
 
-/* === POWER-UP EFFECTS === */
-.powerup-active {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  z-index: 300;
-  animation: powerup-flash 0.5s ease;
-}
-@keyframes powerup-flash {
-  0% { background: rgba(255,204,0,0.3); }
-  100% { background: transparent; }
-}
+  /* POINTS POPUP */
+  .pts-popup {
+    position: fixed;
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--pixel5);
+    text-shadow: 2px 2px 0 #000;
+    pointer-events: none;
+    z-index: 8000;
+    animation: floatUp 1.2s ease-out forwards;
+  }
+  @keyframes floatUp { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-80px)} }
 
-/* === STREAK INDICATOR === */
-.streak {
-  font-family: var(--pixel);
-  font-size: 9px;
-  padding: 4px 12px;
-  background: rgba(255,204,0,0.1);
-  border: 1px solid var(--accent3);
-  color: var(--accent3);
-}
-.streak.hot { animation: streak-pulse 0.5s ease infinite alternate; }
-@keyframes streak-pulse {
-  from { box-shadow: none; }
-  to { box-shadow: var(--glow-yellow); }
-}
+  /* HUMOR SLIDER */
+  .humor-bar { display: flex; align-items: center; gap: 12px; }
+  .humor-track {
+    flex:1; height: 16px;
+    background: linear-gradient(90deg, #22c55e, #f0e040, #f97316, #ef4444, #a855f7);
+    border: 2px solid var(--border);
+    position: relative;
+    cursor: pointer;
+  }
+  .humor-thumb {
+    position: absolute;
+    top: -4px;
+    width: 10px; height: 24px;
+    background: #fff;
+    border: 2px solid #000;
+    transform: translateX(-50%);
+    cursor: grab;
+  }
 
-/* === PROFILE CARDS === */
-.profile-card {
-  padding: 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: all 0.15s;
-  position: relative;
-}
-.profile-card:hover { border-color: var(--accent4); }
-.profile-card.active-profile {
-  border-color: var(--accent);
-  background: rgba(0,255,136,0.04);
-  box-shadow: var(--glow-green);
-}
-.profile-card.active-profile::before {
-  content: '✓ ACTIVO';
-  position: absolute;
-  top: -1px; right: 10px;
-  font-family: var(--pixel);
-  font-size: 6px;
-  color: var(--accent);
-  background: var(--bg2);
-  padding: 2px 6px;
-  border: 1px solid var(--accent);
-  border-top: none;
-}
-.profile-avatar { font-size: 32px; flex-shrink: 0; }
-.profile-info { flex: 1; min-width: 0; }
-.profile-name { font-family: var(--pixel); font-size: 9px; color: var(--text); margin-bottom: 6px; }
-.profile-meta { font-size: 11px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
-.profile-tag {
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  font-size: 10px;
-  color: var(--text2);
-  white-space: nowrap;
-}
-.profile-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+  /* RESULTS SCREEN */
+  #results-screen { display: none; }
+  #results-screen.active { display: block; }
 
-.humor-card {
-  padding: 14px 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  transition: all 0.15s;
-  position: relative;
-}
-.humor-card.active-humor {
-  border-color: var(--accent3);
-  background: rgba(255,204,0,0.03);
-  box-shadow: var(--glow-yellow);
-}
-.humor-card.active-humor::before {
-  content: '✓ ACTIVO';
-  position: absolute;
-  top: -1px; right: 10px;
-  font-family: var(--pixel);
-  font-size: 6px;
-  color: var(--accent3);
-  background: var(--bg2);
-  padding: 2px 6px;
-  border: 1px solid var(--accent3);
-  border-top: none;
-}
+  .winner-text {
+    font-size: 20px;
+    text-align: center;
+    padding: 20px;
+    text-shadow: 3px 3px 0 var(--pixel2), 6px 6px 0 rgba(255,107,53,0.3);
+    animation: winnerPulse 1s infinite;
+  }
+  @keyframes winnerPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.02)} }
 
-.custom-rival-card {
-  padding: 14px 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: all 0.15s;
-  position: relative;
-}
-.custom-rival-card.active-rival {
-  border-color: var(--accent2);
-  background: rgba(255,51,102,0.04);
-  box-shadow: var(--glow-red);
-}
-.custom-rival-card.active-rival::before {
-  content: '✓ ACTIVO';
-  position: absolute;
-  top: -1px; right: 10px;
-  font-family: var(--pixel);
-  font-size: 6px;
-  color: var(--accent2);
-  background: var(--bg2);
-  padding: 2px 6px;
-  border: 1px solid var(--accent2);
-  border-top: none;
-}
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-/* RESPONSIVE */
-@media (max-width: 600px) {
-  .association-grid { grid-template-columns: 1fr; }
-  .assoc-connector { display: none; }
-  .scoreboard { grid-template-columns: 1fr; }
-  .result-stats { grid-template-columns: 1fr 1fr; }
-}
-
-/* === TYPING ANIMATION === */
-.typing::after {
-  content: '|';
-  animation: blink 0.7s step-end infinite;
-}
-
-/* === COIN ANIMATION === */
-@keyframes coin-pop {
-  0% { transform: scale(0) rotate(0deg); opacity: 1; }
-  50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
-  100% { transform: scale(0) rotate(360deg) translateY(-40px); opacity: 0; }
-}
-.coin-pop {
-  position: fixed;
-  font-size: 24px;
-  pointer-events: none;
-  animation: coin-pop 0.8s ease forwards;
-  z-index: 400;
-}
-
-/* TABS */
-.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-.tab {
-  font-family: var(--pixel);
-  font-size: 7px;
-  padding: 10px 16px;
-  border: none;
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  letter-spacing: 1px;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-/* BADGE */
-.badge {
-  font-family: var(--pixel);
-  font-size: 6px;
-  padding: 3px 8px;
-  border-radius: 2px;
-  letter-spacing: 1px;
-}
-.badge-green { background: rgba(0,255,136,0.15); color: var(--accent); border: 1px solid var(--accent); }
-.badge-red { background: rgba(255,51,102,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
-.badge-yellow { background: rgba(255,204,0,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
-
-/* SABOTAGE INDICATOR */
-.sabotage-warning {
-  padding: 10px 16px;
-  background: rgba(255,51,102,0.1);
-  border: 1px solid var(--accent2);
-  font-family: var(--pixel);
-  font-size: 7px;
-  color: var(--accent2);
-  letter-spacing: 1px;
-  animation: blink 0.3s step-end infinite;
-  text-align: center;
-}
-
+  /* HOME */
+  #home-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .home-logo {
+    font-size: 22px;
+    color: var(--pixel);
+    text-shadow: 3px 3px 0 var(--pixel2), 6px 6px 0 rgba(255,107,53,0.3);
+    margin-bottom: 8px;
+    animation: titleFlicker 3s infinite;
+    line-height: 1.6;
+  }
+  .home-sub {
+    font-size: 9px;
+    color: var(--pixel3);
+    margin-bottom: 40px;
+    animation: blink 1.5s infinite;
+  }
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .home-card {
+    background: var(--card);
+    border: 3px solid;
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.1s;
+    text-align: center;
+  }
+  .home-card:hover { transform: translate(-3px,-3px); box-shadow: 5px 5px 0 #000; }
+  .home-card .hc-icon { font-size: 32px; margin-bottom: 12px; }
+  .home-card .hc-title { font-size: 9px; margin-bottom: 8px; }
+  .home-card .hc-desc { font-size: 7px; color: var(--gray); line-height: 2; }
 </style>
 </head>
 <body>
 
-<!-- NOTIFICATION -->
-<div class="notification" id="notification"></div>
+<div id="notif"></div>
 
-<!-- CHAT TOGGLE -->
-<button class="chat-toggle" id="chat-toggle" onclick="toggleChat()">🤖</button>
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">★ THE ASSOCIATION GAME</div>
+  <button class="nav-btn active" onclick="showScreen('home')">HOME</button>
+  <button class="nav-btn" onclick="showScreen('temarios')">TEMARIOS</button>
+  <button class="nav-btn" onclick="showScreen('config')">CONFIG</button>
+  <button class="nav-btn" id="nav-play-btn" onclick="showScreen('play-setup')" style="display:none">JUGAR</button>
+</nav>
 
-<!-- CHAT PANEL -->
-<div class="chat-panel" id="chat-panel">
-  <div class="chat-header">
-    <span class="chat-title">💬 PREGUNTA A LA IA</span>
-    <button class="btn btn-sm btn-red" onclick="toggleChat()">✕</button>
+<!-- ═══════════════════ HOME ═══════════════════ -->
+<div id="home-screen" class="screen active">
+  <div class="home-logo">THE<br>ASSOCIATION<br>GAME</div>
+  <div class="home-sub">▶ ASOCIA · CONECTA · DOMINA ◀</div>
+  <div class="home-grid">
+    <div class="home-card pb4" onclick="showScreen('play-setup')" style="border-color:var(--pixel2)">
+      <div class="hc-icon">⚔</div>
+      <div class="hc-title" style="color:var(--pixel2)">JUGAR</div>
+      <div class="hc-desc">Crea una partida, elige tu rival y demuestra tu memoria</div>
+    </div>
+    <div class="home-card pb2" onclick="showScreen('temarios')" style="border-color:var(--pixel3)">
+      <div class="hc-icon">📚</div>
+      <div class="hc-title" style="color:var(--pixel3)">TEMARIOS</div>
+      <div class="hc-desc">Sube tus apuntes y la IA los convierte en armas de estudio</div>
+    </div>
+    <div class="home-card pb3" onclick="showScreen('config')" style="border-color:var(--pixel4)">
+      <div class="hc-icon">⚙</div>
+      <div class="hc-title" style="color:var(--pixel4)">CONFIG</div>
+      <div class="hc-desc">Crea rivales, ajusta el humor y personaliza la experiencia</div>
+    </div>
   </div>
-  <div class="chat-messages" id="chat-messages">
-    <div class="chat-msg ai">Soy tu asistente de estudio. Puedo ayudarte a entender el tema, darte pistas o explicar conceptos. ¿Qué quieres saber? 🧠</div>
-  </div>
-  <div class="chat-input-row">
-    <input class="chat-input" id="chat-input" placeholder="Pregunta algo..." onkeydown="if(event.key==='Enter') sendChat()">
-    <button class="btn btn-sm btn-blue" onclick="sendChat()">▶</button>
+  <div style="margin-top:32px; font-size:8px; color:var(--gray)">
+    <span id="home-stats-temarios">0</span> TEMARIOS · 
+    <span id="home-stats-rivales">1</span> RIVALES · 
+    <span id="home-stats-partidas">0</span> PARTIDAS JUGADAS
   </div>
 </div>
 
-<!-- ==================== SCREEN: TITLE ==================== -->
-<div class="screen active" id="screen-title">
-  <div class="title-meme">🧠</div>
-  <div class="title-logo">THE ASSOCIATION<br>GAME</div>
-  <div class="title-sub">► STUDY LIKE A CHAD ◄</div>
-  <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
-    <span style="font-size:28px" title="Jujutsu Kaisen approved">⚡</span>
-    <span style="font-size:28px" title="Based">💀</span>
-    <span style="font-size:28px" title="Giga IQ">🗿</span>
-    <span style="font-size:28px" title="No pasa nada">🤌</span>
-    <span style="font-size:28px" title="W">👑</span>
-  </div>
-  <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:10px;">
-    <button class="btn btn-green btn-big" onclick="showScreen('screen-setup')">▶ NUEVA PARTIDA</button>
-    <button class="btn btn-blue" onclick="showScreen('screen-config')">⚙️ CONFIGURACIÓN</button>
-    <button class="btn btn-yellow" onclick="showHowTo()">❓ CÓMO JUGAR</button>
-  </div>
-  <div style="font-family:var(--pixel); font-size:7px; color:var(--text2); margin-top:20px; letter-spacing:1px;">v1.0 · POWERED BY GROQ AI · NO CAP</div>
-</div>
+<!-- ═══════════════════ TEMARIOS ═══════════════════ -->
+<div id="temarios-screen" class="screen">
+  <div class="sect-title">📚 TEMARIOS</div>
 
-<!-- ==================== SCREEN: SETUP ==================== -->
-<div class="screen" id="screen-setup">
-  <div style="padding:20px 20px 0; display:flex; align-items:center; gap:16px;">
-    <button class="btn btn-sm btn-red" onclick="showScreen('screen-title')">← BACK</button>
-    <div style="font-family:var(--pixel); font-size:10px; color:var(--accent3); letter-spacing:2px;">NUEVA PARTIDA</div>
-  </div>
-  <div class="setup-container" style="padding:20px; align-self:center;">
-
+  <div class="col-2" style="align-items:start">
     <!-- UPLOAD -->
-    <div class="panel">
-      <div class="panel-title">📁 SUBE TU TEMARIO</div>
-      <div class="tabs">
-        <button class="tab active" id="tab-upload" onclick="switchTab('upload')">ARCHIVO</button>
-        <button class="tab" id="tab-text" onclick="switchTab('text')">TEXTO</button>
-      </div>
-      <div id="tab-upload-content">
-        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()"
-          ondragover="event.preventDefault(); this.classList.add('dragover')"
-          ondragleave="this.classList.remove('dragover')"
-          ondrop="handleDrop(event)">
-          <div class="upload-icon">📄</div>
-          <div class="upload-text">DRAG & DROP O CLICK</div>
-          <div class="upload-sub">PDF, TXT, DOCX, imágenes, lo que sea 🗿</div>
-          <div id="upload-status" style="margin-top:12px; font-size:12px; color:var(--accent);"></div>
+    <div>
+      <div class="pb2" style="padding:16px; background:var(--card); margin-bottom:16px">
+        <div style="font-size:9px; color:var(--pixel3); margin-bottom:12px">✦ SUBIR APUNTES</div>
+        <label class="px-label">NOMBRE DEL TEMARIO</label>
+        <input type="text" id="t-name" class="px-input mb-12" placeholder="Ej: Historia Medieval...">
+        <label class="px-label">PEGA TU TEXTO AQUÍ</label>
+        <textarea id="t-text" class="px-textarea mb-12" placeholder="Pega tus apuntes, teoría, definiciones... La IA los procesará y creará el temario con puntos clave."></textarea>
+        <label class="px-label">O SUBE UN ARCHIVO (.txt / .pdf)</label>
+        <input type="file" id="t-file" accept=".txt,.pdf" style="display:none" onchange="loadFile(event)">
+        <button class="btn btn-gray w-full mb-8" onclick="document.getElementById('t-file').click()">📎 SUBIR ARCHIVO (.TXT / .PDF)</button>
+        <div id="pdf-progress-wrap" style="display:none;margin-bottom:10px">
+          <div style="font-size:7px;color:var(--pixel3);margin-bottom:4px">EXTRAYENDO TEXTO DEL PDF... <span id="pdf-page-info"></span></div>
+          <div class="px-progress"><div class="px-progress-fill" id="pdf-progress-fill" style="width:0%"></div></div>
         </div>
-        <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
+        <div id="pdf-result-info" style="display:none;font-size:7px;color:var(--pixel5);margin-bottom:8px"></div>
+        <button class="btn btn-cyan w-full" onclick="processTemario()" id="process-btn">
+          <span id="process-btn-txt">⚡ PROCESAR CON IA</span>
+        </button>
       </div>
-      <div id="tab-text-content" style="display:none;">
-        <textarea class="textarea-input" id="theory-text" placeholder="Pega aquí tus apuntes, el texto del tema, lo que tengas... 🔥" rows="8"></textarea>
-        <div style="font-size:12px; color:var(--text2); margin-top:8px;">💡 Pro tip: cuanto más detallado, mejor el juego</div>
-      </div>
-    </div>
-
-    <!-- PERFIL DE CONFIGURACIÓN ACTIVO -->
-    <div class="panel" id="active-profile-panel">
-      <div class="panel-title">⚙️ PERFIL DE CONFIGURACIÓN</div>
-      <div id="no-profile-msg" style="font-size:13px; color:var(--text2); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-        <span>Sin perfil guardado. Usando valores por defecto.</span>
-        <button class="btn btn-sm btn-blue" onclick="showScreen('screen-config')">+ IR A CONFIGURACIÓN</button>
-      </div>
-      <div id="active-profile-card" style="display:none;">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-          <div style="display:flex; align-items:center; gap:16px;">
-            <div id="ap-avatar" style="font-size:36px;">🤖</div>
-            <div>
-              <div id="ap-name" style="font-family:var(--pixel); font-size:9px; color:var(--accent); margin-bottom:4px;"></div>
-              <div id="ap-details" style="font-size:12px; color:var(--text2); line-height:1.8;"></div>
-            </div>
-          </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn btn-sm btn-yellow" onclick="showScreen('screen-config')">✏️ EDITAR</button>
-            <button class="btn btn-sm btn-blue" onclick="showScreen('screen-config')">🔄 CAMBIAR</button>
-          </div>
+      <!-- CHAT -->
+      <div class="pb3" style="padding:16px; background:var(--card)" id="temario-chat-container" style="display:none">
+        <div style="font-size:9px; color:var(--pixel4); margin-bottom:8px">✦ CHAT CON LA IA</div>
+        <div class="chat-box" id="temario-chat"></div>
+        <div class="flex gap-8" style="margin-top:8px">
+          <input type="text" id="chat-input" class="px-input" placeholder="Pregunta o edita el temario..." style="flex:1" onkeydown="if(event.key==='Enter') sendTemarioChat()">
+          <button class="btn btn-purple" onclick="sendTemarioChat()">▶</button>
         </div>
       </div>
     </div>
 
-    <!-- OVERRIDE RÁPIDO -->
-    <div class="panel">
-      <div class="panel-title">🎛️ AJUSTES RÁPIDOS (sobreescriben el perfil solo esta partida)</div>
-      <div class="config-grid">
-        <div class="config-item">
-          <label>⏱️ TIEMPO POR RONDA</label>
-          <select class="select-input" id="time-config">
-            <option value="60">60 segundos</option>
-            <option value="90" selected>90 segundos</option>
-            <option value="120">120 segundos</option>
-            <option value="9999">Sin límite</option>
-          </select>
-        </div>
-        <div class="config-item">
-          <label>💀 DIFICULTAD</label>
-          <select class="select-input" id="diff-quick">
-            <option value="easy">😴 Fácil</option>
-            <option value="normal" selected>😤 Normal</option>
-            <option value="hard">💀 Difícil</option>
-            <option value="giga">🗿 Giga Chad</option>
-          </select>
-        </div>
-        <div class="config-item">
-          <label>💰 MONEDAS INICIO</label>
-          <select class="select-input" id="coins-config">
-            <option value="50">50 coins</option>
-            <option value="100" selected>100 coins</option>
-            <option value="200">200 coins</option>
-          </select>
+    <!-- LIST -->
+    <div>
+      <div style="font-size:9px; color:var(--pixel); margin-bottom:12px">✦ MIS TEMARIOS (<span id="temarios-count">0</span>)</div>
+      <div id="temarios-list" style="display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:8px; color:var(--gray); text-align:center; padding:40px 0">
+          Aún no tienes temarios.<br>¡Sube tus apuntes!
         </div>
       </div>
-    </div>
-
-    <button class="btn btn-green btn-big" onclick="startAnalysis()" style="align-self:center;">
-      🚀 ANALIZAR TEORÍA Y JUGAR
-    </button>
-  </div>
-</div>
-
-<!-- ==================== SCREEN: CONFIG ==================== -->
-<div class="screen" id="screen-config">
-  <div style="padding:20px 20px 0; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
-    <button class="btn btn-sm btn-red" onclick="showScreen('screen-title')">← INICIO</button>
-    <div style="font-family:var(--pixel); font-size:10px; color:var(--accent4); letter-spacing:2px;">⚙️ CONFIGURACIÓN</div>
-  </div>
-
-  <div class="setup-container" style="padding:20px; align-self:center;">
-
-    <!-- TABS CONFIG -->
-    <div class="tabs" style="margin-bottom:0;">
-      <button class="tab active" id="cfg-tab-profiles" onclick="switchCfgTab('profiles')">🗂️ PERFILES</button>
-      <button class="tab" id="cfg-tab-rival" onclick="switchCfgTab('rival')">🧬 CREAR RIVAL</button>
-      <button class="tab" id="cfg-tab-humor" onclick="switchCfgTab('humor')">😂 MI HUMOR</button>
-    </div>
-
-    <!-- ===== TAB: PERFILES ===== -->
-    <div id="cfg-content-profiles">
-      <div class="panel" style="margin-top:0; border-top:none;">
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
-          <div class="panel-title" style="margin-bottom:0;">🗂️ MIS PERFILES GUARDADOS</div>
-          <button class="btn btn-sm btn-green" onclick="openNewProfileForm()">+ NUEVO PERFIL</button>
-        </div>
-
-        <!-- Lista de perfiles -->
-        <div id="profiles-list"></div>
-        <div id="no-profiles-msg" style="font-size:13px; color:var(--text2); padding:24px; text-align:center; display:none;">
-          No hay perfiles guardados aún. Crea uno nuevo con el botón de arriba.
-        </div>
-
-        <!-- Formulario crear/editar perfil -->
-        <div id="profile-form" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
-          <div style="font-family:var(--pixel); font-size:8px; color:var(--accent3); letter-spacing:1px; margin-bottom:16px;" id="profile-form-title">+ NUEVO PERFIL</div>
-
-          <div class="config-grid" style="margin-bottom:16px;">
-            <div class="config-item" style="grid-column:1/-1;">
-              <label>📛 NOMBRE DEL PERFIL</label>
-              <input type="text" id="pf-name" class="textarea-input" style="min-height:0;padding:10px;resize:none;" placeholder="Ej: Config examen literatura, Modo hardcore, Mi setup favorito...">
-            </div>
-            <div class="config-item">
-              <label>🤖 RIVAL</label>
-              <select class="select-input" id="pf-rival">
-                <optgroup label="⚡ Jujutsu Kaisen">
-                  <option value="gojo">Gojo Satoru 🩵</option>
-                  <option value="sukuna">Ryomen Sukuna 🩸</option>
-                </optgroup>
-                <optgroup label="🇪🇸 España Política">
-                  <option value="pedro">Pedro Sánchez 🌹</option>
-                  <option value="rajoy">Mariano Rajoy 🕶️</option>
-                  <option value="susaneta">Susana Díaz 🌻</option>
-                  <option value="epstein">Mr. No Lo Sé 🏝️</option>
-                </optgroup>
-                <optgroup label="🎭 Personajes Españoles">
-                  <option value="calo">Caló Estudioso 🔥</option>
-                  <option value="paquirrín">Paquirrín 🐃</option>
-                  <option value="chiquito">Chiquito de la Calzada 🤏</option>
-                  <option value="torrente">Torrente 🚔</option>
-                  <option value="antoñito">El Sevilla (Antoñito) 🤡</option>
-                </optgroup>
-                <optgroup label="🎮 Internet / Streamers">
-                  <option value="ibai">Ibai Llanos 🎮</option>
-                  <option value="broncano">David Broncano 🎙️</option>
-                  <option value="florentino">Florentino Pérez 🏟️</option>
-                </optgroup>
-                <optgroup label="⭐ Custom" id="pf-rival-custom-group" style="display:none;">
-                  <option value="__custom__" id="pf-rival-custom-opt">Mi rival personalizado</option>
-                </optgroup>
-              </select>
-            </div>
-            <div class="config-item">
-              <label>💀 DIFICULTAD</label>
-              <select class="select-input" id="pf-diff">
-                <option value="easy">😴 Fácil</option>
-                <option value="normal" selected>😤 Normal</option>
-                <option value="hard">💀 Difícil</option>
-                <option value="giga">🗿 Giga Chad</option>
-              </select>
-            </div>
-            <div class="config-item">
-              <label>⏱️ TIEMPO POR RONDA</label>
-              <select class="select-input" id="pf-time">
-                <option value="60">60 segundos</option>
-                <option value="90" selected>90 segundos</option>
-                <option value="120">120 segundos</option>
-                <option value="9999">Sin límite</option>
-              </select>
-            </div>
-            <div class="config-item">
-              <label>💰 MONEDAS INICIO</label>
-              <select class="select-input" id="pf-coins">
-                <option value="50">50 coins</option>
-                <option value="100" selected>100 coins</option>
-                <option value="200">200 coins</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Humor asociado -->
-          <div class="config-item" style="margin-bottom:16px;">
-            <label>😂 PERFIL DE HUMOR ASOCIADO</label>
-            <select class="select-input" id="pf-humor">
-              <option value="">Sin perfil de humor</option>
-            </select>
-          </div>
-
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-green" onclick="saveProfile()" id="btn-save-profile">💾 GUARDAR PERFIL</button>
-            <button class="btn btn-sm btn-red" onclick="cancelProfileForm()">✕ CANCELAR</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== TAB: CREAR RIVAL ===== -->
-    <div id="cfg-content-rival" style="display:none;">
-      <div class="panel" style="margin-top:0; border-top:none;">
-        <div class="panel-title">🧬 CREAR RIVAL PERSONALIZADO</div>
-        <div style="font-size:13px; color:var(--text2); margin-bottom:16px;">
-          Describe a tu rival y la IA construye su personalidad completa. Se guarda y puedes usarlo en cualquier perfil.
-        </div>
-
-        <!-- Lista rivales custom guardados -->
-        <div id="custom-rivals-list" style="margin-bottom:16px;"></div>
-
-        <div style="font-family:var(--pixel); font-size:7px; color:var(--border); letter-spacing:1px; margin-bottom:12px; margin-top:4px;">── CREAR NUEVO ──</div>
-
-        <div style="display:grid; grid-template-columns:1fr 80px; gap:12px; margin-bottom:12px;">
-          <div class="config-item">
-            <label>👤 NOMBRE</label>
-            <input type="text" id="custom-rival-name" class="textarea-input" style="min-height:0;padding:10px;resize:none;" placeholder="El Profe García, Mi ex, Shakira...">
-          </div>
-          <div class="config-item">
-            <label>🎨 AVATAR</label>
-            <input type="text" id="custom-rival-emoji" class="textarea-input" style="min-height:0;padding:10px;resize:none;font-size:24px;text-align:center;" placeholder="🤖" maxlength="4">
-          </div>
-        </div>
-        <div class="config-item" style="margin-bottom:12px;">
-          <label>📝 DESCRIPCIÓN (cómo habla, sus manías, referencias...)</label>
-          <textarea id="custom-rival-desc" class="textarea-input" rows="5" placeholder="Ej: Es mi profe de historia, muy serio, siempre dice 'esto lo pregunto en el examen', se pone nervioso cuando alguien le contradice..."></textarea>
-        </div>
-        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <button class="btn btn-purple" onclick="generateCustomRival()" id="btn-gen-rival">✨ GENERAR CON IA</button>
-          <div id="custom-rival-status" style="font-size:12px; color:var(--text2);"></div>
-        </div>
-        <div id="custom-rival-preview" style="display:none; margin-top:16px; padding:16px; background:var(--bg2); border:1px solid var(--purple); border-radius:2px;">
-          <div style="font-family:var(--pixel); font-size:7px; color:var(--purple); margin-bottom:12px;">👁️ PREVIEW</div>
-          <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:12px;">
-            <div id="prev-avatar" style="font-size:40px;">🤖</div>
-            <div>
-              <div id="prev-name" style="font-family:var(--pixel); font-size:9px; color:var(--accent2); margin-bottom:6px;"></div>
-              <div style="font-size:12px; color:var(--text2); margin-bottom:4px;">🏆 <span id="prev-win"></span></div>
-              <div style="font-size:12px; color:var(--text2); margin-bottom:4px;">💀 <span id="prev-lose"></span></div>
-              <div style="font-size:12px; color:var(--text2);">🎮 <span id="prev-status"></span></div>
-            </div>
-          </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn btn-green btn-sm" onclick="saveCustomRival()">💾 GUARDAR RIVAL</button>
-            <button class="btn btn-sm btn-yellow" onclick="generateCustomRival()">🔄 REGENERAR</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== TAB: HUMOR ===== -->
-    <div id="cfg-content-humor" style="display:none;">
-      <div class="panel" style="margin-top:0; border-top:none;">
-        <div class="panel-title">😂 PERFILES DE HUMOR</div>
-        <div style="font-size:13px; color:var(--text2); margin-bottom:16px;">
-          Define tu estilo de humor y la IA lo usará en todo el juego: asociaciones, comentarios del juez, chat...
-        </div>
-
-        <!-- Lista humores guardados -->
-        <div id="humor-profiles-list" style="margin-bottom:16px;"></div>
-
-        <div style="font-family:var(--pixel); font-size:7px; color:var(--border); letter-spacing:1px; margin-bottom:12px;">── CREAR NUEVO ──</div>
-
-        <div class="config-item" style="margin-bottom:12px;">
-          <label>📛 NOMBRE DEL PERFIL DE HUMOR</label>
-          <input type="text" id="humor-profile-name" class="textarea-input" style="min-height:0;padding:10px;resize:none;" placeholder="Ej: Humor gitano, Modo streamer, Humor universitario...">
-        </div>
-        <div class="config-item" style="margin-bottom:12px;">
-          <label>🎭 DESCRIBE TU HUMOR</label>
-          <textarea id="humor-desc" class="textarea-input" rows="6" placeholder="Qué te hace gracia, referencias que usas, estilo de humor, qué evitar...&#10;&#10;Ej: Me mola el humor absurdo, las referencias a memes de Twitter español, chistes de Chiquito, situaciones de la vida española cotidiana. Me parece gracioso que la IA hable como un gitano de Sevilla o como Pedro Sánchez dando un decreto. Sin chistes de payaso."></textarea>
-        </div>
-        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <button class="btn btn-yellow" onclick="saveHumorConfig()" id="btn-save-humor">💾 GUARDAR HUMOR</button>
-          <button class="btn btn-sm btn-blue" onclick="previewHumor()">👁️ PREVIEW</button>
-          <div id="humor-status" style="font-size:12px; color:var(--text2);"></div>
-        </div>
-        <div id="humor-preview-box" style="display:none; margin-top:12px; padding:12px; background:var(--bg2); border:1px solid var(--accent3); font-size:13px; font-style:italic; color:var(--accent3); border-radius:2px;"></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ==================== SCREEN: PROCESSING ==================== -->
-<div class="screen" id="screen-processing">
-  <div class="loading-brain">🧠</div>
-  <div style="font-family:var(--pixel); font-size:12px; color:var(--accent3); letter-spacing:2px;">ANALIZANDO TEORÍA</div>
-  <div class="loading-bar-wrap">
-    <div class="loading-bar" id="loading-bar"></div>
-  </div>
-  <div class="loading-status" id="loading-status">Cargando neurona...</div>
-  <div style="font-size:13px; color:var(--text2); max-width:400px; text-align:center; line-height:1.8;" id="loading-meme">
-    🗿 La IA está asimilando tu temario como Sukuna asimila a Yuji...
-  </div>
-</div>
-
-<!-- ==================== SCREEN: THEORY ==================== -->
-<div class="screen" id="screen-theory">
-  <div class="theory-container">
-    <div class="theory-header">
-      <div style="font-family:var(--pixel); font-size:10px; color:var(--accent3); letter-spacing:2px;">📚 TEORÍA ANALIZADA</div>
-      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <span style="font-size:12px; color:var(--text2);">Selecciona los puntos para el juego:</span>
-        <button class="btn btn-sm btn-green" onclick="selectAll()">TODOS</button>
-        <button class="btn btn-sm btn-red" onclick="selectNone()">NINGUNO</button>
-      </div>
-    </div>
-
-    <div class="panel" style="padding:12px 16px;">
-      <div style="font-size:13px; color:var(--text2);" id="theory-summary"></div>
-    </div>
-
-    <div class="theory-points" id="theory-points-list"></div>
-
-    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding-bottom:20px;">
-      <button class="btn btn-green btn-big" onclick="startGame()">⚡ EMPEZAR PARTIDA</button>
-      <button class="btn btn-yellow" onclick="showScreen('screen-setup')">← CAMBIAR CONFIG</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== SCREEN: GAME ==================== -->
-<div class="screen" id="screen-game">
-  <!-- HUD -->
-  <div class="hud">
-    <div class="hud-section">
+<!-- ═══════════════════ CONFIG ═══════════════════ -->
+<div id="config-screen" class="screen">
+  <div class="sect-title">⚙ CONFIGURACIÓN</div>
+
+  <div class="col-2" style="align-items:start; gap:20px">
+    <!-- HUMOR -->
+    <div class="pb" style="padding:20px; background:var(--card)">
+      <div style="font-size:9px; color:var(--pixel); margin-bottom:16px">✦ HUMOR DEL JUEGO</div>
+      <div style="font-size:8px; color:var(--gray); margin-bottom:12px; line-height:2">
+        Controla cómo de loco es el humor de tu rival IA:
+      </div>
+      <div class="flex gap-8 mb-8" style="justify-content:space-between; font-size:7px">
+        <span style="color:var(--pixel5)">SERIO</span>
+        <span style="color:var(--pixel)">NORMAL</span>
+        <span style="color:var(--pixel2)">OSCURO</span>
+        <span style="color:var(--pixel4)">ABSURDO</span>
+      </div>
+      <input type="range" min="0" max="100" value="50" id="humor-slider" class="w-full" oninput="updateHumor(this.value)" style="accent-color:var(--pixel)">
+      <div style="text-align:center; margin-top:8px">
+        <span id="humor-label" style="font-size:8px; color:var(--pixel)">NORMAL (50)</span>
+      </div>
+      <hr class="px-divider">
+      <div style="font-size:8px; color:var(--gray); margin-bottom:8px">GROQ API KEY:</div>
+      <input type="password" id="api-key" class="px-input mb-8" placeholder="gsk_..." value="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">
+      <button class="btn btn-yellow w-full" onclick="saveConfig()">💾 GUARDAR CONFIG</button>
+    </div>
+
+    <!-- RIVALES -->
+    <div>
+      <div class="pb4" style="padding:20px; background:var(--card); margin-bottom:16px">
+        <div style="font-size:9px; color:var(--pixel2); margin-bottom:16px">✦ CREAR RIVAL</div>
+        <label class="px-label">NOMBRE DEL RIVAL</label>
+        <input type="text" id="rival-name" class="px-input mb-8" placeholder="Ej: El Profesor Chaos...">
+        <label class="px-label">PERSONALIDAD / DESCRIPCIÓN</label>
+        <textarea id="rival-desc" class="px-textarea mb-8" placeholder="Ej: Un rival sarcástico que se burla de tus errores pero te da pistas..." style="min-height:80px"></textarea>
+        <label class="px-label">EMOJI / ICONO DEL RIVAL</label>
+        <input type="text" id="rival-emoji" class="px-input mb-8" placeholder="🤖 ó cualquier emoji" maxlength="4">
+        <button class="btn btn-orange w-full" onclick="createRival()">⚡ CREAR RIVAL</button>
+      </div>
+      <div style="font-size:9px; color:var(--pixel); margin-bottom:12px">✦ MIS RIVALES</div>
+      <div id="rivals-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PLAY SETUP ═══════════════════ -->
+<div id="play-setup-screen" class="screen">
+  <div class="sect-title">⚔ NUEVA PARTIDA</div>
+  <div class="col-2" style="align-items:start">
+    <div>
+      <div class="pb" style="padding:20px;background:var(--card);margin-bottom:16px">
+        <div style="font-size:9px;color:var(--pixel);margin-bottom:16px">✦ ELIGE TEMARIO</div>
+        <div id="setup-temarios" style="display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:8px;color:var(--gray)">Primero crea un temario en la sección TEMARIOS</div>
+        </div>
+      </div>
+      <div class="pb2" style="padding:20px;background:var(--card);margin-bottom:16px">
+        <div style="font-size:9px;color:var(--pixel3);margin-bottom:16px">✦ PUNTOS A ESTUDIAR</div>
+        <div id="setup-puntos" style="font-size:8px;color:var(--gray)">Selecciona primero un temario</div>
+      </div>
+    </div>
+    <div>
+      <div class="pb3" style="padding:20px;background:var(--card);margin-bottom:16px">
+        <div style="font-size:9px;color:var(--pixel4);margin-bottom:16px">✦ RIVAL</div>
+        <div id="setup-rivals" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="pb4" style="padding:20px;background:var(--card);margin-bottom:16px">
+        <div style="font-size:9px;color:var(--pixel2);margin-bottom:16px">✦ TIEMPO POR FASE</div>
+        <div class="flex gap-12 items-center mb-8">
+          <span style="font-size:8px;flex:1">FASE 1 - ASOCIACIÓN</span>
+          <input type="number" id="time-p1" value="120" min="30" max="600" class="px-input" style="width:80px">
+          <span style="font-size:8px">seg</span>
+        </div>
+        <div class="flex gap-12 items-center mb-8">
+          <span style="font-size:8px;flex:1">FASE 2 - CONEXIONES</span>
+          <input type="number" id="time-p2" value="90" min="30" max="600" class="px-input" style="width:80px">
+          <span style="font-size:8px">seg</span>
+        </div>
+        <div class="flex gap-12 items-center">
+          <span style="font-size:8px;flex:1">FASE 3 - BATALLA</span>
+          <input type="number" id="time-p3" value="10" min="5" max="30" class="px-input" style="width:80px">
+          <span style="font-size:8px">seg/preg</span>
+        </div>
+      </div>
+      <button class="btn btn-orange w-full" style="font-size:11px;padding:16px" onclick="startGame()">
+        ⚔ ¡EMPEZAR PARTIDA!
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ GAME SCREEN ═══════════════════ -->
+<div id="game-screen" class="screen">
+  <!-- PHASE HEADER -->
+  <div class="flex items-center justify-between mb-16">
+    <div class="phase-indicator" style="flex:1;margin-right:20px">
+      <div class="phase-dot" id="pdot1"></div>
+      <div class="phase-dot" id="pdot2"></div>
+      <div class="phase-dot" id="pdot3"></div>
+    </div>
+    <div class="flex gap-12 items-center">
+      <div class="stat-box pb" style="min-width:90px">
+        <div class="stat-label">TÚ</div>
+        <div class="stat-val" id="g-score-player" style="color:var(--pixel5)">0</div>
+      </div>
+      <div class="px-timer" id="g-timer">--</div>
+      <div class="stat-box pb3" style="min-width:90px">
+        <div class="stat-label" id="rival-name-display">RIVAL</div>
+        <div class="stat-val" id="g-score-rival" style="color:var(--pixel6)">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE TITLE -->
+  <div id="phase-title" class="sect-title" style="font-size:12px"></div>
+
+  <!-- PHASE 1: ASOCIACIÓN - FULLSCREEN INFINITE CRAFT STYLE -->
+  <div id="phase1-area" style="display:none"></div>
+
+  <!-- PHASE 2: CONEXIONES -->
+  <div id="phase2-area" style="display:none">
+    <div style="font-size:8px;color:var(--gray);margin-bottom:12px">
+      Conecta la info con cosas cotidianas. ¡Cuanto más loco y personal, mejor lo recordarás!
+    </div>
+    <div class="col-2" style="align-items:start">
       <div>
-        <div class="hud-label">TU PUNTUACIÓN</div>
-        <div class="hud-value" id="hud-score">0</div>
+        <div style="font-size:8px;color:var(--pixel);margin-bottom:8px">▶ ELEMENTOS DE TU TEMARIO:</div>
+        <div id="p2-concepts" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
-    </div>
-    <div class="hud-sep"></div>
-    <div class="hud-section" style="flex-direction:column; gap:2px;">
-      <div class="hud-label">TÚ</div>
-      <div class="hp-bar-wrap"><div class="hp-bar-fill" id="player-hp" style="width:100%"></div></div>
-    </div>
-    <div class="hud-section" style="flex-direction:column; gap:2px;">
-      <div class="hud-label" id="rival-hud-name">IA</div>
-      <div class="hp-bar-wrap"><div class="hp-bar-fill" id="rival-hp" style="width:100%; background:linear-gradient(90deg,#ff3366,#9933ff)"></div></div>
-    </div>
-    <div class="hud-sep"></div>
-    <div class="hud-section">
       <div>
-        <div class="hud-label">⏱️ TIEMPO</div>
-        <div class="hud-timer" id="hud-timer">--</div>
+        <div style="font-size:8px;color:var(--pixel3);margin-bottom:8px">▶ CREA UNA CONEXIÓN COTIDIANA:</div>
+        <div id="selected-concept" class="mb-8" style="font-size:8px;color:var(--pixel4);padding:8px;background:var(--bg3);border:1px solid var(--border)">
+          ← Selecciona un concepto
+        </div>
+        <input type="text" id="p2-cotidiano" class="px-input mb-8" placeholder="¿Con qué lo relacionas? (ej: mi abuela, la peli X...)">
+        <textarea id="p2-why" class="px-textarea mb-8" placeholder="¿Por qué esta conexión? Cuanto más descriptivo, más puntos..." style="min-height:70px"></textarea>
+        <button class="btn btn-cyan w-full" onclick="addConnection()">⚡ +50 PTS - AÑADIR CONEXIÓN</button>
       </div>
     </div>
-    <div class="hud-sep"></div>
-    <div class="hud-section">
+    <div id="p2-connections" style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px"></div>
+    <hr class="px-divider">
+    <button class="btn btn-yellow" onclick="endPhase2()" style="float:right">BATALLA FINAL →</button>
+  </div>
+
+  <!-- PHASE 3: BATALLA -->
+  <div id="phase3-area" style="display:none">
+    <div class="col-2" style="align-items:start;gap:20px">
       <div>
-        <div class="hud-label">💰 COINS</div>
-        <div class="hud-value" id="hud-coins" style="color:var(--accent3)">0</div>
+        <div id="battle-area" class="mb-12">
+          <div style="font-size:8px;color:var(--pixel3);margin-bottom:8px">PREGUNTA <span id="q-num">1</span>/<span id="q-total">?</span></div>
+          <div class="battle-question" id="battle-question"><span class="loader">CARGANDO...</span></div>
+          <div class="flex gap-8 justify-center">
+            <button class="buzz-btn" id="buzz-btn" onclick="buzzIn()">⚡ ¡BUZZ!</button>
+          </div>
+        </div>
+        <!-- TIENDA -->
+        <div class="pb" style="padding:12px;background:var(--card)">
+          <div style="font-size:8px;color:var(--pixel);margin-bottom:8px">🏪 TIENDA <span style="font-size:7px;color:var(--gray)">(gasta tus puntos)</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+            <div class="store-item" onclick="buyItem('hint',30)">
+              <div class="si-icon">💡</div>
+              <div class="si-name">PISTA</div>
+              <div class="si-cost">30 PTS</div>
+            </div>
+            <div class="store-item" onclick="buyItem('freeze',50)">
+              <div class="si-icon">❄</div>
+              <div class="si-name">CONGELAR</div>
+              <div class="si-cost">50 PTS</div>
+            </div>
+            <div class="store-item" onclick="buyItem('double',80)">
+              <div class="si-icon">✕2</div>
+              <div class="si-name">x2 PUNTOS</div>
+              <div class="si-cost">80 PTS</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="hud-sep"></div>
-    <div class="hud-section">
-      <div class="streak" id="streak-indicator">🔥 x0</div>
-    </div>
-    <div style="margin-left:auto; display:flex; gap:8px;">
-      <button class="btn btn-sm btn-yellow" onclick="toggleShop()">🛒 SHOP</button>
-      <button class="btn btn-sm btn-red" onclick="if(confirm('¿Abandonar?')) showScreen(\'screen-title\')">✕ SALIR</button>
+      <div>
+        <div style="font-size:8px;color:var(--pixel4);margin-bottom:8px">RIVAL:</div>
+        <div class="rival-box mb-12" id="rival-display-box">
+          <div class="rival-avatar" id="rival-avatar-display">🤖</div>
+          <div style="font-size:8px;color:var(--pixel4)" id="rival-name-box">RIVAL IA</div>
+          <div id="rival-thinking" style="font-family:'VT323';font-size:14px;color:var(--gray);margin-top:6px;min-height:20px"></div>
+        </div>
+        <div class="pb3" style="padding:12px;background:var(--card)">
+          <div style="font-size:8px;color:var(--pixel3);margin-bottom:8px">HISTORIAL:</div>
+          <div id="battle-log" style="font-family:'VT323';font-size:14px;display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- GAME CONTENT -->
-  <div class="game-content">
-
-    <!-- RIVAL INFO -->
-    <div class="rival-section" id="rival-section">
-      <div class="rival-avatar" id="rival-avatar">🤖</div>
-      <div class="rival-info">
-        <div class="rival-name" id="rival-name-display">RIVAL IA</div>
-        <div class="rival-status" id="rival-status">Pensando...</div>
-      </div>
-      <div class="rival-action" id="rival-action">🎮 EN JUEGO</div>
-      <div class="hud-value" style="font-size:16px;" id="rival-score-display">0 pts</div>
+  <!-- ANSWER INPUT (shared) -->
+  <div id="answer-area" style="display:none;margin-top:16px">
+    <div style="font-size:8px;color:var(--pixel);margin-bottom:8px">¡RESPONDE RÁPIDO!</div>
+    <div class="flex gap-8">
+      <input type="text" id="answer-input" class="px-input" placeholder="Tu respuesta..." onkeydown="if(event.key==='Enter') submitAnswer()">
+      <button class="btn btn-green" onclick="submitAnswer()">✔ ENVIAR</button>
     </div>
-
-    <!-- SABOTAGE WARNING -->
-    <div class="sabotage-warning" id="sabotage-warning" style="display:none;">
-      ⚠️ ¡SABOTAJE ACTIVO! TU TIEMPO SE REDUCE ⚠️
-    </div>
-
-    <!-- PHASE: ASSOCIATION -->
-    <div class="phase active" id="phase-association">
-      <div class="phase-title">FASE 1 · ASOCIACIÓN RÁPIDA</div>
-      <div style="font-size:13px; color:var(--text2); text-align:center;">
-        Conecta cada concepto con su definición/meme. Click en uno de cada columna para asociarlos.
-      </div>
-      <div class="association-grid" id="association-grid">
-        <div class="assoc-column" id="left-col">
-          <div class="assoc-col-title">📖 CONCEPTOS</div>
-        </div>
-        <div class="assoc-connector">
-          <div class="connector-line"></div>
-          <span style="font-size:20px;">⚡</span>
-          <div class="connector-line"></div>
-        </div>
-        <div class="assoc-column" id="right-col">
-          <div class="assoc-col-title">🎯 DEFINICIONES / MEMES</div>
-        </div>
-      </div>
-      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-        <button class="btn btn-green" id="btn-check-assoc" onclick="checkAssociations()" disabled>✓ COMPROBAR</button>
-        <div id="assoc-progress" style="font-family:var(--pixel); font-size:8px; color:var(--text2); display:flex; align-items:center;">0/0 asociadas</div>
-      </div>
-    </div>
-
-    <!-- PHASE: RECALL -->
-    <div class="phase" id="phase-recall">
-      <div class="phase-title">FASE 2 · MEMORIA - ¿RECUERDAS?</div>
-      <div style="font-size:13px; color:var(--text2); text-align:center;">
-        Se te mostrarán los objetos/memes. Dices a qué concepto corresponde.
-      </div>
-      <div class="recall-grid" id="recall-grid"></div>
-      <div style="display:flex; justify-content:center; gap:12px; margin-top:8px;">
-        <button class="btn btn-blue" onclick="nextRecallCard()">SIGUIENTE CARD ▶</button>
-      </div>
-    </div>
-
-    <!-- PHASE: FINAL TEST -->
-    <div class="phase" id="phase-final">
-      <div class="phase-title">FASE FINAL · PRUEBA DEFINITIVA 🗿</div>
-      <div class="ai-judge" style="margin-bottom:8px;">
-        <div class="judge-avatar">⚖️</div>
-        <div class="judge-content">
-          <div class="judge-name">JUEZ IA · MODO ESTRICTO</div>
-          <div class="judge-text" id="final-question">Preparando pregunta definitiva...</div>
-        </div>
-      </div>
-      <div class="answer-section">
-        <div class="answer-prompt" id="final-prompt"></div>
-        <textarea class="answer-input" id="final-answer" placeholder="Explica con tus propias palabras. Justifica. No hagas copy-paste o el juez te pillará. 🗿"></textarea>
-        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-          <button class="btn btn-purple btn-big" onclick="submitFinalAnswer()">📝 ENVIAR RESPUESTA</button>
-        </div>
-      </div>
-      <div class="ai-judge" id="final-feedback" style="display:none; border-color:var(--purple);">
-        <div class="judge-avatar" id="feedback-avatar">🤖</div>
-        <div class="judge-content">
-          <div class="judge-name">VEREDICTO DEL JUEZ</div>
-          <div class="judge-text" id="feedback-text"></div>
-          <div class="judge-score" id="feedback-score"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SHOP PANEL (hidden by default) -->
-    <div id="shop-panel" style="display:none;">
-      <div class="panel">
-        <div class="panel-title">🛒 TIENDA DE POWER-UPS</div>
-        <div class="shop-grid" id="shop-grid"></div>
-      </div>
-    </div>
-
-    <!-- SCOREBOARD MINI -->
-    <div class="scoreboard">
-      <div class="score-card player-card">
-        <div class="score-name">👤 TÚ</div>
-        <div class="score-num" id="player-score-big">0</div>
-        <div class="score-detail" id="player-detail">0 correctas · 0 racha</div>
-      </div>
-      <div class="score-card ai-card">
-        <div class="score-name" id="rival-score-name">🤖 RIVAL</div>
-        <div class="score-num" id="rival-score-big">0</div>
-        <div class="score-detail" id="rival-detail">0 correctas · calculando...</div>
-      </div>
-    </div>
-
   </div>
 </div>
 
-<!-- ==================== SCREEN: RESULTS ==================== -->
-<div class="screen" id="screen-results">
-  <div class="result-emoji" id="result-emoji">🏆</div>
-  <div class="result-title" id="result-title">RESULTADO</div>
-  <div class="result-stats">
-    <div class="stat-box">
-      <div class="stat-label">TU PUNTUACIÓN</div>
-      <div class="stat-value" id="res-score">0</div>
+<!-- ═══════════════════ RESULTS ═══════════════════ -->
+<div id="results-screen" class="screen">
+  <div class="sect-title">🏆 RESULTADOS</div>
+  <div id="winner-display" class="winner-text mb-20"></div>
+  <div class="col-3 mb-20">
+    <div class="stat-box pb5">
+      <div class="stat-label">TUS PUNTOS</div>
+      <div class="stat-val" id="final-player-score" style="color:var(--pixel5)">0</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">PUNTUACIÓN IA</div>
-      <div class="stat-value" id="res-ai-score">0</div>
+    <div class="stat-box pb">
+      <div class="stat-label">CONEXIONES</div>
+      <div class="stat-val" id="final-connections" style="color:var(--pixel)">0</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">TIEMPO</div>
-      <div class="stat-value" id="res-time">0s</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">PRECISIÓN</div>
-      <div class="stat-value" id="res-accuracy">0%</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">RACHA MÁXIMA</div>
-      <div class="stat-value" id="res-streak">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">COINS GANADOS</div>
-      <div class="stat-value" id="res-coins">0</div>
+    <div class="stat-box pb3">
+      <div class="stat-label">PUNTOS RIVAL</div>
+      <div class="stat-val" id="final-rival-score" style="color:var(--pixel6)">0</div>
     </div>
   </div>
-  <div class="ai-judge" style="max-width:600px; width:100%;">
-    <div class="judge-avatar" id="result-rival-avatar">🤖</div>
-    <div class="judge-content">
-      <div class="judge-name">MENSAJE DEL RIVAL</div>
-      <div class="judge-text" id="result-rival-msg">...</div>
-    </div>
-  </div>
-  <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
-    <button class="btn btn-green btn-big" onclick="startGame()">🔄 REVANCHA</button>
-    <button class="btn btn-yellow" onclick="showScreen('screen-setup')">📚 NUEVO TEMA</button>
-    <button class="btn btn-red" onclick="showScreen('screen-title')">🏠 INICIO</button>
+  <div id="final-ai-comment" class="pb2" style="padding:16px;background:var(--card);margin-bottom:20px;font-family:'VT323';font-size:18px;line-height:1.8;min-height:80px"></div>
+  <div class="flex gap-12 justify-center">
+    <button class="btn btn-yellow" onclick="showScreen('play-setup')">⚔ OTRA PARTIDA</button>
+    <button class="btn btn-gray" onclick="showScreen('home')">🏠 HOME</button>
   </div>
 </div>
 
 <script>
-const GROQ_KEY = "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";
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_API_KEY = document.getElementById('api-key')?.value || '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';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
-// === STATE ===
+// STATE
 let state = {
-  theory: '',
-  theoryPoints: [],
-  selectedPoints: [],
-  config: { difficulty: 'normal', timePerRound: 90, rival: 'gojo', startCoins: 100 },
+  temarios: [],
+  rivals: [{ id: 1, name: 'SÓCRATES.EXE', emoji: '🤖', desc: 'Un rival filosófico que nunca te da respuestas directas, solo preguntas.' }],
+  config: { humor: 50, apiKey: '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' },
   game: {
-    playerScore: 0, rivalScore: 0, coins: 100,
-    streak: 0, maxStreak: 0, correctCount: 0, totalCount: 0,
-    timeUsed: 0, phase: 'association',
-    associations: [], // {left, right, leftId, rightId}
-    matched: new Set(), selectedLeft: null, selectedRight: null,
-    recallIndex: 0, finalPassed: false,
-    sabotageActive: false, hintsUsed: 0,
-    startTime: 0
-  }
+    temario: null,
+    selectedPuntos: [],
+    rival: null,
+    times: { p1:120, p2:90, p3:10 },
+    phase: 0,
+    scorePlayer: 0,
+    scoreRival: 0,
+    connections: [],
+    assocBlocks: [],
+    lines: [],
+    connectMode: false,
+    connectFrom: null,
+    battleQuestions: [],
+    currentQ: 0,
+    buzzed: false,
+    doubleActive: false,
+    freezeActive: false,
+    timer: null,
+    timerVal: 0,
+  },
+  chatHistory: [],
+  partidas: 0,
 };
 
-const RIVALS = {
-  gojo:      { name: 'Gojo Satoru',        avatar: '🩵', msg_win: "Por supuesto que yo gané. Soy el más fuerte. Next.", msg_lose: "Heh... no está mal. Pero yo podría haberlo hecho con los ojos vendados.", status: ['Usando Infinito para estudiar...', 'Técnica Prohibida: Memorización Perfecta', 'Ojo Violeta activado 👁️'] },
-  sukuna:    { name: 'Ryomen Sukuna',       avatar: '🩸', msg_win: "¿Eso es todo? Patético. Ni siquiera sudé.", msg_lose: "Tsk... Reconozco el poder cuando lo veo. Solo esta vez.", status: ['Asimilando conocimiento con Malevolent Shrine', 'Desfingeriendo conceptos en 0.01s', 'Domain Expansion: Estudio Perfecto'] },
-  pedro:     { name: 'Pedro Sánchez',       avatar: '🌹', msg_win: "España va bien, yo voy mejor. Decreto aprobado.", msg_lose: "Esto es una investidura fallida. Pero yo sigo siendo presidente.", status: ['Consultando con la SEPI', 'Usando fondos europeos para estudiar', 'Redactando decreto de aprobado', 'Enviando carta a mi mujer sobre lo injusto que es esto'] },
-  epstein:   { name: 'Mr. No Lo Sé',        avatar: '🏝️', msg_win: "No recuerdo nada... pero gané. Qué curioso.", msg_lose: "No tengo ninguna relación con ese resultado.", status: ['En la isla estudiando', 'Los documentos se perdieron', 'Lista de estudiantes confidencial', 'No aparezco en ningún registro'] },
-  calo:      { name: 'Caló Estudioso',      avatar: '🔥', msg_win: "Arsa mi niño, esto es mío. Palabra de caló.", msg_lose: "Que sepas que te ayudé yo. Que quede claro, primo.", status: ['Repasando apuntes al compás de la zambomba', 'Técnica especial: memoria aflamencá', 'Por mi mare que me lo sé', 'Estudiando en el chiscón'] },
-  paquirrín: { name: 'Paquirrín',           avatar: '🐃', msg_win: "¡Toma ya! ¡Soy el número uno, lo flipas!", msg_lose: "Bueno, se me fue la pinza. Pero lo vuelvo a intentar, ¿eh?", status: ['Estudiando con Kiko Rivera de fondo', 'Repasando apuntes en Cantora', 'Técnica del torero: esquivar preguntas', 'Llamando a Julio Iglesias por si sabe'] },
-  florentino:{ name: 'Florentino Pérez',    avatar: '🏟️', msg_win: "El Madrid siempre gana. Y yo también. Que quede claro.", msg_lose: "Esto está amañado. Pido el VAR.", status: ['Fichando neuronas del mercado', 'Presupuesto ilimitado para estudiar', 'Reunión de urgencia con Benzema', 'Remodelando el Bernabéu para estudiar mejor'] },
-  torrente:  { name: 'Torrente',            avatar: '🚔', msg_win: "¡Chúpate esa, inmigrante intelectual!", msg_lose: "Esto está mal planteao. Yo lo haría diferente, ¿me entiendes?", status: ['Estudiando con una cerveza en la mano', 'Técnica de investigación: el chivatazo', 'Fumando en la biblioteca', 'Buscando el tramposo del examen'] },
-  broncano:  { name: 'David Broncano',      avatar: '🎙️', msg_win: "¿Cuánto dinero tienes? ¿Con cuántas personas te has acostado? Gané yo.", msg_lose: "Me lo podría haber preguntado la Resistencia. Habría quedado mejor.", status: ['Preguntando cuánto dinero tiene la teoría', 'Haciendo test de personalidad al temario', 'Con Grison revisando los apuntes', 'La Resistencia estudia contigo esta noche'] },
-  rajoy:     { name: 'Mariano Rajoy',       avatar: '🕶️', msg_win: "Spain is different. Y yo soy más different que tú.", msg_lose: "Bueno. Y a mí qué me cuentas.", status: ['Enviando SMS a Bárcenas sobre los apuntes', 'Rajoy no contesta a los conceptos difíciles', 'En Pontevedra repasando sin prisa', '"Esto es lo que hay"'] },
-  chiquito:  { name: 'Chiquito de la Calzada', avatar: '🤏', msg_win: "¡Pecador de la pradera! ¡Ganééé, jarl!", msg_lose: "¡Fistro! ¡Me has ganao de la calzada! ¡Cobarde!", status: ['¡Estudiando con el testarrudo ese!', '¡No puedorl con tanto temario!', 'Técnica del chiquito: repetir hasta que entre', '¡Hasta luego, Lucas, que me voy a repasar!'] },
-  ibai:      { name: 'Ibai Llanos',         avatar: '🎮', msg_win: "¡La hostia! ¡Gané! ¡Viva la vida, compañeros!", msg_lose: "Uy, me han ganao. Respeto total, te lo juro por mi madre.", status: ['Haciendo stream de los apuntes', 'Estudiando en el KOI con Piqué', 'Retransmitiendo el examen en directo', 'La Velada del Estudio 4 confirmed'] },
-  susaneta:  { name: 'Susana Díaz',         avatar: '🌻', msg_win: "Andalucía siempre gana, cariño. Así de claro.", msg_lose: "No pasa nada, que aquí quien manda mando yo.", status: ['Gestionando los ERE del temario', 'Estudiando con fondos de la Junta', 'Técnica: subsidio de aprendizaje', 'En Sevilla repasando tranquilamente'] },
-  antoñito:  { name: 'El Sevilla (Antoñito)',avatar: '🤡', msg_win: "¡Soy el maaaás grande! ¡Soy el crack!", msg_lose: "¡Que me han hecho trampa! ¡Que yo lo sabía!", status: ['Soñando con ser listo', 'Técnica de memoria: liarla y escapar', 'Haciendo el tonto para que no le pregunten', 'Estudiando en Los Morancos University'] },
-};
-
-const SHOP_ITEMS = [
-  { id: 'hint', emoji: '💡', name: 'PISTA', desc: 'La IA te da una pista sobre la asociación correcta', price: 30, uses: 3, used: 0 },
-  { id: 'freeze', emoji: '❄️', name: 'FREEZE TIME', desc: 'Pausa el tiempo 15 segundos', price: 40, uses: 2, used: 0 },
-  { id: 'sabotage', emoji: '💣', name: 'SABOTAJE', desc: 'Reduce el tiempo del rival 20 segundos', price: 50, uses: 1, used: 0 },
-  { id: 'skip', emoji: '⏭️', name: 'SKIP', desc: 'Salta una pregunta sin perder puntos', price: 45, uses: 2, used: 0 },
-  { id: 'double', emoji: '✖️2', name: 'DOUBLE XP', desc: 'Doble puntos en la siguiente ronda', price: 60, uses: 1, used: 0 },
-  { id: 'reveal', emoji: '👁️', name: 'REVEAL', desc: 'Muestra una asociación correcta al azar', price: 35, uses: 2, used: 0 },
-];
-
-let timer = null;
-let timeLeft = 90;
-let doubleXP = false;
-let freezeActive = false;
-let chatHistory = [];
-let rivalTimer = null;
-
-// === HELPERS ===
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (id === 'screen-game') {
-    document.getElementById('chat-toggle').classList.add('visible');
-  } else {
-    document.getElementById('chat-toggle').classList.remove('visible');
-    document.getElementById('chat-panel').classList.remove('open');
-  }
-}
-
-function notify(msg, type='', duration=3000) {
-  const el = document.getElementById('notification');
-  el.textContent = msg;
-  el.className = `notification show ${type}`;
-  setTimeout(() => el.className = 'notification', duration);
-}
-
-function setDiff(diff, btn) {
-  document.querySelectorAll('.diff-btn').forEach(b => b.className = 'diff-btn');
-  btn.classList.add(`active-${diff}`);
-  state.config.difficulty = diff;
-  const descs = {
-    easy: 'Fácil: La IA es torpe. Sin sabotajes. 120s por ronda. Para arrancar con buen ritmo.',
-    normal: 'Normal: La IA es competente. Puede sabotearte 1 vez. 90s por ronda.',
-    hard: 'Difícil: La IA es rápida. Sabotajes frecuentes. 60s por ronda. Giga IQ required.',
-    giga: '🗿 GIGA CHAD: La IA usa técnicas prohibidas. Sin piedad. 45s. No para normies.'
-  };
-  document.getElementById('diff-desc').textContent = descs[diff];
-}
-
-function switchTab(tab) {
-  document.getElementById('tab-upload-content').style.display = tab === 'upload' ? 'block' : 'none';
-  document.getElementById('tab-text-content').style.display = tab === 'text' ? 'block' : 'none';
-  document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
-  document.getElementById('tab-text').classList.toggle('active', tab === 'text');
-}
-
-function spawnCoin(x, y) {
-  const el = document.createElement('div');
-  el.className = 'coin-pop';
-  el.textContent = '🪙';
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 800);
-}
-
-// === FILE HANDLING ===
-function handleFileSelect(e) {
-  const file = e.target.files[0];
-  if (file) processFile(file);
-}
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('upload-zone').classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file) processFile(file);
-}
-function processFile(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    state.theory = e.target.result;
-    document.getElementById('upload-status').textContent = `✓ Cargado: ${file.name} (${(file.size/1024).toFixed(1)}KB)`;
-    notify(`📁 ${file.name} cargado. ¡Ready!`, 'green');
-  };
-  if (file.type.includes('text')) reader.readAsText(file);
-  else reader.readAsDataURL(file);
-}
-
-// === GROQ API ===
-async function callGroq(messages, maxTokens=1500) {
-  const resp = await fetch(GROQ_URL, {
+// ── GROQ CALL ──
+async function groqCall(messages, maxTokens=800) {
+  const key = (document.getElementById('api-key').value || '').trim();
+  if (!key) throw new Error('Sin API key. Ve a CONFIG.');
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + key
+    },
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
+      messages: messages,
       max_tokens: maxTokens,
-      temperature: 0.7,
-      messages
+      temperature: 0.85
     })
   });
-  if (!resp.ok) throw new Error(`Groq error: ${resp.status}`);
-  const data = await resp.json();
+  if (!res.ok) {
+    let errMsg = 'HTTP ' + res.status;
+    try { const e = await res.json(); errMsg += ': ' + (e.error?.message || JSON.stringify(e)); } catch(_) {}
+    throw new Error(errMsg);
+  }
+  const data = await res.json();
   return data.choices[0].message.content;
 }
 
-// === ANALYSIS ===
-async function startAnalysis() {
-  const textInput = document.getElementById('theory-text').value.trim();
-  if (!state.theory && !textInput) {
-    notify('⚠️ Sube un archivo o escribe el temario primero, crack', 'red');
-    return;
-  }
-  if (textInput) state.theory = textInput;
-
-  // Quick overrides from setup screen (override active profile for this game only)
-  state.config.difficulty = document.getElementById('diff-quick').value;
-  state.config.timePerRound = parseInt(document.getElementById('time-config').value);
-  state.config.startCoins = parseInt(document.getElementById('coins-config').value);
-  // If no rival set yet, default to gojo
-  if (!state.config.rival) state.config.rival = 'gojo';
-
-  showScreen('screen-processing');
-  await runAnalysis();
+function getHumorDesc(h) {
+  if (h < 20) return 'serio y académico';
+  if (h < 40) return 'levemente sarcástico';
+  if (h < 60) return 'divertido y animado';
+  if (h < 80) return 'oscuro y sarcástico con humor negro';
+  return 'absolutamente absurdo, caótico y surrealista';
 }
 
-async function runAnalysis() {
-  const steps = [
-    { text: 'Leyendo apuntes como si fueran memes...', pct: 15 },
-    { text: 'Extrayendo conceptos clave...', pct: 35 },
-    { text: 'Generando asociaciones y memes...', pct: 60 },
-    { text: 'Calibrando nivel de caos...', pct: 80 },
-    { text: 'Preparando el ring de batalla...', pct: 95 },
-  ];
+// ── NAV ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id + '-screen').classList.add('active');
+  const nb = document.querySelector(`.nav-btn[onclick*="${id}"]`);
+  if (nb) nb.classList.add('active');
+  if (id === 'play-setup') renderSetup();
+  if (id === 'home') renderHomeStats();
+}
 
-  for (const step of steps) {
-    document.getElementById('loading-status').textContent = step.text;
-    document.getElementById('loading-bar').style.width = step.pct + '%';
-    await sleep(300 + Math.random() * 400);
+function renderHomeStats() {
+  document.getElementById('home-stats-temarios').textContent = state.temarios.length;
+  document.getElementById('home-stats-rivales').textContent = state.rivals.length;
+  document.getElementById('home-stats-partidas').textContent = state.partidas;
+}
+
+// ── NOTIF ──
+function notify(msg, err=false) {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.className = 'show' + (err ? ' err' : '');
+  setTimeout(() => n.className = '', 2500);
+}
+
+function showPtsPopup(pts, x, y) {
+  const el = document.createElement('div');
+  el.className = 'pts-popup';
+  el.textContent = (pts > 0 ? '+' : '') + pts + ' PTS';
+  el.style.left = (x || 400) + 'px';
+  el.style.top = (y || 300) + 'px';
+  if (pts < 0) el.style.color = 'var(--pixel6)';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+
+// ── FILE LOAD ──
+async function loadFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const nameField = document.getElementById('t-name');
+  if (!nameField.value) nameField.value = file.name.replace(/\.[^.]+$/, '');
+
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+    await extractPDF(file);
+  } else {
+    const reader = new FileReader();
+    reader.onload = r => {
+      document.getElementById('t-text').value = r.target.result.substring(0, 8000);
+      notify('Archivo .txt cargado ✓');
+    };
+    reader.readAsText(file);
   }
+  // reset so same file can be re-selected
+  e.target.value = '';
+}
+
+async function extractPDF(file) {
+  const progressWrap = document.getElementById('pdf-progress-wrap');
+  const progressFill = document.getElementById('pdf-progress-fill');
+  const pageInfo    = document.getElementById('pdf-page-info');
+  const resultInfo  = document.getElementById('pdf-result-info');
+
+  progressWrap.style.display = 'block';
+  resultInfo.style.display   = 'none';
+  progressFill.style.width   = '0%';
+  pageInfo.textContent       = '';
 
   try {
-    const prompt = `Eres el analizador de "The Association Game", un juego de estudio gamificado español con cultura meme, humor ibérico y referencias a Jujutsu Kaisen, política española e internet.
+    // Set worker path from CDN
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-Tu misión: analizar la teoría y para CADA concepto clave, crear un OBJETO FÍSICO o SITUACIÓN CONCRETA Y GRACIOSA que ayude a recordarlo. NO uses descripciones abstractas. Usa objetos reales, situaciones cotidianas, referencias culturales españolas, memes, personajes.
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const totalPages = pdf.numPages;
+    let fullText = '';
 
-EJEMPLOS DE BUENAS ASOCIACIONES (así de específico debes ser):
-- El Lazarillo sirve al ciego → objeto: "Una botella de vino con mordisco" (el ciego le pegó con el jarro de vino)
-- La Celestina alcahueta → objeto: "Un teléfono con WhatsApp de ligue"  
-- Don Quijote confunde molinos con gigantes → objeto: "Un molino de viento con capa de superhéroe"
-- La picaresca → objeto: "Una cartera vacía con agujero"
-- Pedro Sánchez → objeto: "Una carta de reflexión de 5 folios"
-- La mística de San Juan → objeto: "Una vela negra a medianoche"
-- El Barroco → objeto: "Un churro con demasiado azúcar encima"
-- El Romanticismo → objeto: "Un paraguas roto bajo la lluvia llorando"
-- Góngora culteranismo → objeto: "Un libro con 40 adjetivos en una frase"
+    for (let i = 1; i <= totalPages; i++) {
+      pageInfo.textContent = `Página ${i} / ${totalPages}`;
+      progressFill.style.width = Math.round((i / totalPages) * 100) + '%';
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(item => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
 
-Los objetos/triggers deben ser VISUALIZABLES, CONCRETOS y que al verlos te recuerden el concepto. Puedes usar emojis físicos: 🍷🗡️📜🔥💀🪙🏹⚔️📖🕯️🌪️🍞💀🎭🎪
+    fullText = fullText.trim();
+    if (!fullText) {
+      notify('El PDF no tiene texto extraíble (puede ser imagen escaneada)', true);
+      progressWrap.style.display = 'none';
+      return;
+    }
 
-${humorProfile ? `PERFIL DE HUMOR DEL JUGADOR (MUY IMPORTANTE - adapta TODO el contenido a este estilo):
-${humorProfile.instructions}
+    // Put in textarea (cap at 8000 chars for Groq)
+    document.getElementById('t-text').value = fullText.substring(0, 8000);
 
-` : ''}TEORÍA A ANALIZAR:
-${state.theory.substring(0, 4000)}
+    progressWrap.style.display = 'none';
+    resultInfo.style.display   = 'block';
+    const words = fullText.split(/\s+/).length;
+    resultInfo.textContent = `✔ PDF extraído: ${totalPages} págs · ~${words} palabras${fullText.length > 8000 ? ' (truncado a 8000 chars para la IA)' : ''}`;
+    notify(`PDF "${file.name}" extraído ✓`);
+  } catch (err) {
+    progressWrap.style.display = 'none';
+    notify('Error extrayendo PDF: ' + err.message, true);
+  }
+}
 
-Responde SOLO en JSON válido (sin markdown, sin backticks, sin texto extra):
+// ── PROCESS TEMARIO ──
+async function processTemario() {
+  const name = document.getElementById('t-name').value.trim();
+  const text = document.getElementById('t-text').value.trim();
+  if (!name || !text) { notify('Necesitas nombre y texto', true); return; }
+  const btn = document.getElementById('process-btn');
+  document.getElementById('process-btn-txt').innerHTML = '<span class="loader">PROCESANDO...</span>';
+  btn.disabled = true;
+  try {
+    const prompt = `Eres un asistente de estudio. El usuario te da apuntes/texto y debes procesarlos y devolver un JSON estructurado con el siguiente formato EXACTO (sin markdown, solo JSON puro):
 {
-  "summary": "Resumen del tema en 2-3 frases con tono de 'te lo explico mientras nos tomamos algo'",
-  "subject": "Nombre del tema",
-  "points": [
+  "resumen": "resumen general en 2-3 frases",
+  "puntos": [
     {
       "id": 1,
-      "title": "Nombre exacto del concepto",
-      "description": "Explicación clara del concepto en 1-2 frases",
-      "memeTrigger": "OBJETO FÍSICO O SITUACIÓN: descripción concreta de qué objeto/situación lo representa y POR QUÉ (ej: 'Una botella de vino rota - porque el ciego le pegó con el jarro de vino a Lázaro')",
-      "memeEmoji": "Emoji del objeto físico",
-      "objectLabel": "Nombre corto del objeto para mostrar en la carta (ej: 'Botella de vino' o 'Carta de Pedro' o 'Molino gigante')",
-      "importance": "alta|media|baja",
-      "keywords": ["palabra1", "palabra2", "palabra3"]
+      "titulo": "Nombre del punto",
+      "conceptos": ["concepto clave 1", "concepto clave 2", "..."],
+      "info": "explicación breve del punto"
     }
   ]
 }
-
-Genera entre 7 y 10 puntos. OBLIGATORIO: cada memeTrigger debe mencionar un objeto FÍSICO o situación VISUAL concreta. Nada de "representa la dualidad de" - eso es abstracto y aburrido. Dame el objeto concreto.`;
-
-    const response = await callGroq([{ role: 'user', content: prompt }], 2000);
-
-    let clean = response.trim();
-    if (clean.startsWith('```')) clean = clean.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
-
-    const parsed = JSON.parse(clean);
-    state.theoryPoints = parsed.points;
-    state.theorySummary = parsed.summary;
-    state.theorySubject = parsed.subject;
-
-    document.getElementById('loading-bar').style.width = '100%';
-    await sleep(300);
-    showTheory();
-
-  } catch (err) {
-    console.error(err);
-    // Fallback con datos de ejemplo
-    state.theoryPoints = generateFallbackPoints();
-    state.theorySummary = "Análisis generado (modo offline). Los puntos son aproximados.";
-    state.theorySubject = "Tu Tema";
-    showTheory();
-    notify('⚠️ Error API - usando modo demo', 'red');
-  }
-}
-
-function generateFallbackPoints() {
-  return [
-    { id:1, title:"Concepto Principal", description:"El concepto más importante del tema", memeTrigger:"Como Gojo diciendo 'Soy el más fuerte' - este concepto manda en todo", memeEmoji:"🩵", importance:"alta", keywords:["principal"] },
-    { id:2, title:"Segundo Concepto", description:"El segundo punto clave", memeTrigger:"Como Sukuna absorbiendo a Yuji - este concepto absorbe al resto", memeEmoji:"🩸", importance:"alta", keywords:["segundo"] },
-    { id:3, title:"Tercer Elemento", description:"Tercer punto importante", memeTrigger:"Pedro Sánchez lo decreto por ley: es fundamental", memeEmoji:"🌹", importance:"media", keywords:["tercero"] },
-    { id:4, title:"Cuarto Factor", description:"Cuarto elemento del tema", memeTrigger:"Nadie sabe dónde está pero existe, como Mr. No Lo Sé", memeEmoji:"🏝️", importance:"media", keywords:["cuarto"] },
-    { id:5, title:"Quinta Clave", description:"Quinto punto relevante", memeTrigger:"Arsa mi niño, esto es lo más básico del temario", memeEmoji:"🔥", importance:"baja", keywords:["quinto"] },
-    { id:6, title:"Sexto Concepto", description:"Sexto elemento para completar", memeTrigger:"Como Domain Expansion - crea su propio espacio en el temario", memeEmoji:"⚫", importance:"alta", keywords:["sexto"] },
-  ];
-}
-
-function showTheory() {
-  document.getElementById('theory-summary').innerHTML = `<strong style="color:var(--accent)">${state.theorySubject || 'Tu Tema'}</strong>: ${state.theorySummary}`;
-
-  const list = document.getElementById('theory-points-list');
-  list.innerHTML = '';
-  state.selectedPoints = [...state.theoryPoints];
-
-  state.theoryPoints.forEach(point => {
-    const div = document.createElement('div');
-    div.className = 'theory-point selected';
-    div.dataset.id = point.id;
-    div.innerHTML = `
-      <div class="point-checkbox" id="chk-${point.id}">✓</div>
-      <div class="point-content">
-        <div class="point-title">${point.memeEmoji} ${point.title} <span class="badge badge-${point.importance === 'alta' ? 'red' : point.importance === 'media' ? 'yellow' : 'green'}">${point.importance.toUpperCase()}</span></div>
-        <div class="point-desc">${point.description}</div>
-        <div style="font-size:12px; color:var(--accent4); margin-top:4px;">🎭 ${point.memeTrigger}</div>
-      </div>
-    `;
-    div.onclick = () => togglePoint(point.id, div);
-    list.appendChild(div);
-  });
-
-  showScreen('screen-theory');
-}
-
-function togglePoint(id, div) {
-  const idx = state.selectedPoints.findIndex(p => p.id === id);
-  if (idx >= 0) {
-    state.selectedPoints.splice(idx, 1);
-    div.classList.remove('selected');
-    document.getElementById(`chk-${id}`).textContent = '';
-  } else {
-    state.selectedPoints.push(state.theoryPoints.find(p => p.id === id));
-    div.classList.add('selected');
-    document.getElementById(`chk-${id}`).textContent = '✓';
-  }
-}
-
-function selectAll() { state.theoryPoints.forEach(p => { state.selectedPoints = [...state.theoryPoints]; document.querySelectorAll('.theory-point').forEach(d => { d.classList.add('selected'); d.querySelector('.point-checkbox').textContent = '✓'; }); }); }
-function selectNone() { state.selectedPoints = []; document.querySelectorAll('.theory-point').forEach(d => { d.classList.remove('selected'); d.querySelector('.point-checkbox').textContent = ''; }); }
-
-// === GAME ===
-function startGame() {
-  if (state.selectedPoints.length < 3) {
-    notify('⚠️ Selecciona al menos 3 puntos, crack', 'red');
-    return;
-  }
-
-  // Reset game state
-  const g = state.game;
-  g.playerScore = 0; g.rivalScore = 0;
-  g.coins = state.config.startCoins;
-  g.streak = 0; g.maxStreak = 0;
-  g.correctCount = 0; g.totalCount = 0;
-  g.timeUsed = 0; g.phase = 'association';
-  g.matched = new Set(); g.selectedLeft = null; g.selectedRight = null;
-  g.sabotageActive = false; g.hintsUsed = 0;
-  g.startTime = Date.now();
-  g.recallIndex = 0; g.finalPassed = false;
-
-  doubleXP = false; freezeActive = false;
-
-  // Reset shop
-  SHOP_ITEMS.forEach(i => i.used = 0);
-
-  // Setup rival
-  const rival = RIVALS[state.config.rival];
-  document.getElementById('rival-avatar').textContent = rival.avatar;
-  document.getElementById('rival-name-display').textContent = rival.name;
-  document.getElementById('rival-hud-name').textContent = rival.name;
-  document.getElementById('rival-score-name').textContent = `${rival.avatar} ${rival.name}`;
-
-  updateHUD();
-  buildAssociationPhase();
-  showPhase('phase-association');
-  showScreen('screen-game');
-  startTimer(state.config.timePerRound);
-  startRivalAI();
-
-  // Setup chat context
-  chatHistory = [
-    { role: 'system', content: `Eres un asistente de estudio integrado en "The Association Game". El tema es: ${state.theorySubject}. Los puntos del temario son: ${state.selectedPoints.map(p => p.title + ': ' + p.description).join('; ')}. Responde de forma concisa, útil, con algo de humor pero sin ser pesado. Puedes dar pistas sutiles pero no revelar respuestas directamente.${humorProfile ? ' ESTILO DE HUMOR DEL USUARIO: ' + humorProfile.instructions : ''}` }
-  ];
-
-  showScreen('screen-game');
-}
-
-function buildAssociationPhase() {
-  const points = [...state.selectedPoints].slice(0, Math.min(8, state.selectedPoints.length));
-  const leftCol = document.getElementById('left-col');
-  const rightCol = document.getElementById('right-col');
-
-  leftCol.innerHTML = '<div class="assoc-col-title">📖 CONCEPTOS</div>';
-  rightCol.innerHTML = '<div class="assoc-col-title">🎯 DEFINICIONES / MEMES</div>';
-
-  state.game.associations = [];
-  state.game.matched = new Set();
-  state.game.selectedLeft = null;
-  state.game.selectedRight = null;
-
-  const shuffledRight = [...points].sort(() => Math.random() - 0.5);
-
-  points.forEach((p, i) => {
-    const leftEl = document.createElement('div');
-    leftEl.className = 'assoc-item';
-    leftEl.dataset.id = p.id;
-    leftEl.dataset.side = 'left';
-    leftEl.innerHTML = `<span class="meme-badge">${p.memeEmoji}</span>${p.title}`;
-    leftEl.onclick = () => selectAssocItem(leftEl, 'left', p.id);
-    leftCol.appendChild(leftEl);
-  });
-
-  shuffledRight.forEach((p, i) => {
-    const rightEl = document.createElement('div');
-    rightEl.className = 'assoc-item';
-    rightEl.dataset.id = p.id;
-    rightEl.dataset.side = 'right';
-    // Show either description or meme trigger
-    const showMeme = Math.random() > 0.4;
-    rightEl.textContent = showMeme ? p.memeTrigger : p.description;
-    rightEl.dataset.meme = showMeme ? '1' : '0';
-    rightEl.onclick = () => selectAssocItem(rightEl, 'right', p.id);
-    rightCol.appendChild(rightEl);
-  });
-
-  state.game.totalAssociations = points.length;
-  updateAssocProgress();
-  document.getElementById('btn-check-assoc').disabled = true;
-}
-
-function selectAssocItem(el, side, id) {
-  if (el.classList.contains('matched')) return;
-  const g = state.game;
-
-  if (side === 'left') {
-    document.querySelectorAll('.assoc-item.selected-left').forEach(e => e.classList.remove('selected-left'));
-    if (g.selectedLeft === id) { g.selectedLeft = null; return; }
-    g.selectedLeft = id;
-    el.classList.add('selected-left');
-  } else {
-    document.querySelectorAll('.assoc-item.selected-right').forEach(e => e.classList.remove('selected-right'));
-    if (g.selectedRight === id) { g.selectedRight = null; return; }
-    g.selectedRight = id;
-    el.classList.add('selected-right');
-  }
-
-  // Auto-check when both selected
-  if (g.selectedLeft !== null && g.selectedRight !== null) {
-    setTimeout(() => checkPair(), 200);
-  }
-}
-
-function checkPair() {
-  const g = state.game;
-  const correct = g.selectedLeft === g.selectedRight;
-
-  if (correct) {
-    g.matched.add(g.selectedLeft);
-    g.correctCount++;
-    g.streak++;
-    if (g.streak > g.maxStreak) g.maxStreak = g.streak;
-
-    const pts = (100 + g.streak * 20) * (doubleXP ? 2 : 1);
-    g.playerScore += pts;
-    g.coins += 10;
-    doubleXP = false;
-
-    document.querySelectorAll(`.assoc-item[data-id="${g.selectedLeft}"]`).forEach(e => {
-      e.classList.remove('selected-left', 'selected-right');
-      e.classList.add('matched');
-      e.onclick = null;
-    });
-
-    spawnCoin(window.innerWidth/2, 200);
-    notify(`+${pts} pts! 🔥 ${g.streak > 1 ? `RACHA x${g.streak}!` : ''}`, 'green', 1500);
-  } else {
-    g.streak = 0;
-    g.totalCount++;
-
-    document.querySelectorAll('.assoc-item.selected-left, .assoc-item.selected-right').forEach(e => {
-      e.classList.add('wrong');
-      setTimeout(() => e.classList.remove('wrong'), 400);
-    });
-    notify('❌ No es correcto... -10 pts', 'red', 1500);
-    g.playerScore = Math.max(0, g.playerScore - 10);
-  }
-
-  g.selectedLeft = null; g.selectedRight = null;
-  g.totalCount++;
-  updateHUD();
-  updateAssocProgress();
-
-  if (g.matched.size >= g.totalAssociations) {
-    clearInterval(timer);
-    notify('✅ ¡Todas asociadas! Pasando a Fase 2...', 'green', 2000);
-    setTimeout(() => buildRecallPhase(), 2000);
-  }
-}
-
-function checkAssociations() { checkPair(); }
-
-function updateAssocProgress() {
-  const g = state.game;
-  const prog = document.getElementById('assoc-progress');
-  if (prog) prog.textContent = `${g.matched.size}/${g.totalAssociations || state.selectedPoints.length} asociadas`;
-}
-
-function buildRecallPhase() {
-  const g = state.game;
-  showPhase('phase-recall');
-  startTimer(state.config.timePerRound);
-  g.recallIndex = 0;
-
-  const recallGrid = document.getElementById('recall-grid');
-  recallGrid.innerHTML = '';
-  const points = state.selectedPoints.slice(0, Math.min(6, state.selectedPoints.length));
-
-  points.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'recall-card';
-    card.id = `recall-${i}`;
-    card.innerHTML = `
-      <div class="card-content">
-        <div class="card-emoji">${p.memeEmoji}</div>
-        <div class="card-label">${p.memeTrigger}</div>
-      </div>
-    `;
-    card.onclick = () => revealCard(card, p, i);
-    recallGrid.appendChild(card);
-  });
-
-  notify('Fase 2: ¿Recuerdas qué significan los memes/objetos?', '', 3000);
-}
-
-function revealCard(card, point, idx) {
-  if (card.classList.contains('answered')) return;
-  card.classList.add('revealed');
-  card.classList.add('answered');
-
-  // Ask player to name the concept
-  const answer = prompt(`🎭 ${point.memeEmoji} "${point.memeTrigger}"\n\n¿A qué concepto del temario corresponde este meme/objeto?`);
-  if (!answer) return;
-
-  const correct = point.title.toLowerCase().split(' ').some(w => w.length > 3 && answer.toLowerCase().includes(w)) ||
-                  answer.toLowerCase().includes(point.title.toLowerCase().substring(0, 5));
-
-  if (correct) {
-    state.game.playerScore += 150;
-    state.game.coins += 15;
-    state.game.streak++;
-    card.style.borderColor = 'var(--accent)';
-    spawnCoin(card.getBoundingClientRect().left, card.getBoundingClientRect().top);
-    notify(`✅ Correcto! +150 pts 🔥`, 'green', 2000);
-  } else {
-    state.game.streak = 0;
-    state.game.playerScore = Math.max(0, state.game.playerScore - 20);
-    card.style.borderColor = 'var(--accent2)';
-    notify(`❌ Era: "${point.title}"`, 'red', 2500);
-  }
-  updateHUD();
-
-  // Check if all cards answered
-  const allAnswered = document.querySelectorAll('.recall-card:not(.answered)').length === 0;
-  if (allAnswered) {
-    clearInterval(timer);
-    setTimeout(() => buildFinalPhase(), 2000);
-  }
-}
-
-function nextRecallCard() {
-  const cards = document.querySelectorAll('.recall-card:not(.answered)');
-  if (cards.length > 0) cards[0].click();
-  else buildFinalPhase();
-}
-
-async function buildFinalPhase() {
-  showPhase('phase-final');
-  startTimer(state.config.timePerRound * 2);
-
-  const randomPoint = state.selectedPoints[Math.floor(Math.random() * state.selectedPoints.length)];
-  state.game.finalPoint = randomPoint;
-
-  document.getElementById('final-question').textContent = '⚖️ El juez te va a hacer la prueba final. Prepárate...';
-  document.getElementById('final-prompt').innerHTML = `
-    <strong>🎯 OBJETO/MEME:</strong> ${randomPoint.memeEmoji} "${randomPoint.memeTrigger}"<br><br>
-    <strong>📝 TU TAREA:</strong> Explica con tus propias palabras a qué concepto del temario se refiere esto y por qué es importante. Justifica tu respuesta.
-  `;
-
-  notify('🗿 PRUEBA FINAL - Explica lo que sabes, no hagas copy paste', '', 3000);
-}
-
-async function submitFinalAnswer() {
-  const answer = document.getElementById('final-answer').value.trim();
-  if (!answer || answer.length < 20) {
-    notify('⚠️ Escribe algo más que "no sé" amigo', 'red');
-    return;
-  }
-
-  document.getElementById('final-feedback').style.display = 'flex';
-  document.getElementById('feedback-text').textContent = '⏳ El juez está evaluando tu respuesta...';
-
-  const point = state.game.finalPoint;
-  try {
-    const evalPrompt = `Eres un juez estricto pero con sentido del humor en "The Association Game". ${humorProfile ? 'ESTILO DE HUMOR OBLIGATORIO: ' + humorProfile.instructions : 'Usa humor español contemporáneo.'}
-El jugador debe relacionar este meme/objeto: "${point.memeTrigger}" con el concepto "${point.title}": "${point.description}"
-
-La respuesta del jugador es: "${answer}"
-
-Evalúa si el jugador realmente entiende el concepto (no solo si copió palabras).
-Responde en JSON:
-{"score": [0-100], "verdict": "CORRECTO|PARCIAL|INCORRECTO", "feedback": "Comentario del juez de 2-3 frases con humor en el estilo indicado", "points_earned": [0-300]}`;
-
-    const resp = await callGroq([{ role: 'user', content: evalPrompt }], 500);
-    let clean = resp.trim().replace(/```json?\n?/g, '').replace(/```/g, '').trim();
-    const eval_result = JSON.parse(clean);
-
-    const scoreClass = eval_result.score >= 70 ? 'good' : eval_result.score >= 40 ? 'ok' : 'bad';
-    const pts = eval_result.points_earned * (doubleXP ? 2 : 1);
-    state.game.playerScore += pts;
-    state.game.coins += Math.floor(pts / 10);
-
-    document.getElementById('feedback-avatar').textContent = eval_result.score >= 70 ? '🏆' : eval_result.score >= 40 ? '🤔' : '💀';
-    document.getElementById('feedback-text').textContent = eval_result.feedback;
-    document.getElementById('feedback-score').className = `judge-score ${scoreClass}`;
-    document.getElementById('feedback-score').textContent = `${eval_result.verdict} · +${pts} PTS`;
-
-    updateHUD();
-    spawnCoin(window.innerWidth/2, window.innerHeight/2);
-
-    setTimeout(() => endGame(), 4000);
-
+Máximo 6 puntos, máximo 5 conceptos por punto. Apuntes a procesar:\n${text.substring(0,4000)}`;
+    const resp = await groqCall([{ role:'user', content: prompt }], 1200);
+    let parsed;
+    try {
+      const clean = resp.replace(/```json|```/g,'').trim();
+      parsed = JSON.parse(clean);
+    } catch { notify('Error parseando IA, intenta de nuevo', true); btn.disabled=false; document.getElementById('process-btn-txt').textContent='⚡ PROCESAR CON IA'; return; }
+    const temario = { id: Date.now(), name, raw: text, ...parsed };
+    state.temarios.push(temario);
+    renderTemarios();
+    renderSetup();
+    notify(`✓ Temario "${name}" creado con ${parsed.puntos.length} puntos`);
+    // Show chat
+    document.getElementById('temario-chat-container').style.display = 'block';
+    state.chatHistory = [{ role:'system', content:`Eres un asistente de estudio con humor ${getHumorDesc(state.config.humor)}. Tienes este temario procesado: ${JSON.stringify(parsed)}. Ayuda al usuario a entenderlo, editarlo o responde dudas. Sé conciso.` }];
+    addChatMsg('ai', `¡Temario "${name}" procesado con ${parsed.puntos.length} puntos! ¿Tienes alguna duda o quieres que edite algo?`);
   } catch(err) {
-    // Fallback evaluation
-    const keywords = [point.title, ...point.keywords].map(k => k.toLowerCase());
-    const matchCount = keywords.filter(k => answer.toLowerCase().includes(k)).length;
-    const pct = Math.min(100, (matchCount / keywords.length) * 100 + (answer.length > 100 ? 20 : 0));
-    const pts = Math.floor(pct * 3);
-    state.game.playerScore += pts;
-
-    document.getElementById('feedback-text').textContent = `Tu respuesta menciona ${matchCount} conceptos clave. ${pct > 60 ? '🗿 No está mal, crack.' : '💀 Puedes hacerlo mejor, socio.'}`;
-    document.getElementById('feedback-score').className = `judge-score ${pct > 60 ? 'good' : 'ok'}`;
-    document.getElementById('feedback-score').textContent = `+${pts} PTS`;
-    updateHUD();
-    setTimeout(() => endGame(), 4000);
+    notify('Error con Groq API: ' + err.message, true);
   }
+  btn.disabled = false;
+  document.getElementById('process-btn-txt').textContent = '⚡ PROCESAR CON IA';
 }
 
-function endGame() {
-  clearInterval(timer);
-  clearInterval(rivalTimer);
-
-  const g = state.game;
-  const timeUsed = Math.floor((Date.now() - g.startTime) / 1000);
-  const accuracy = g.totalCount > 0 ? Math.floor((g.correctCount / g.totalCount) * 100) : 0;
-  const rival = RIVALS[state.config.rival];
-
-  document.getElementById('res-score').textContent = g.playerScore;
-  document.getElementById('res-ai-score').textContent = g.rivalScore;
-  document.getElementById('res-time').textContent = timeUsed + 's';
-  document.getElementById('res-accuracy').textContent = accuracy + '%';
-  document.getElementById('res-streak').textContent = g.maxStreak;
-  document.getElementById('res-coins').textContent = g.coins;
-
-  const win = g.playerScore > g.rivalScore;
-  const draw = g.playerScore === g.rivalScore;
-
-  document.getElementById('result-emoji').textContent = win ? '🏆' : draw ? '🤝' : '💀';
-  document.getElementById('result-title').className = `result-title ${win ? 'result-win' : draw ? 'result-draw' : 'result-lose'}`;
-  document.getElementById('result-title').textContent = win ? '¡VICTORIA! W KING' : draw ? '¡EMPATE! RESPETABLE' : '¡DERROTA! SKILL ISSUE';
-  document.getElementById('result-rival-avatar').textContent = rival.avatar;
-  document.getElementById('result-rival-msg').textContent = win ? rival.msg_lose : rival.msg_win;
-
-  showScreen('screen-results');
-  document.getElementById('chat-toggle').classList.remove('visible');
+function addChatMsg(who, text) {
+  const box = document.getElementById('temario-chat');
+  const msg = document.createElement('div');
+  msg.className = `chat-msg ${who}`;
+  msg.innerHTML = `<div class="who">${who==='ai'?'▶ IA':'◀ TÚ'}</div>${text}`;
+  box.appendChild(msg);
+  box.scrollTop = box.scrollHeight;
 }
 
-// === TIMER ===
-function startTimer(seconds) {
-  clearInterval(timer);
-  timeLeft = seconds;
-  updateTimerDisplay();
-
-  timer = setInterval(() => {
-    if (!freezeActive) {
-      timeLeft--;
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        notify('⏰ ¡TIEMPO! Pasando a siguiente fase...', 'red', 2000);
-        handleTimeUp();
-      }
-      updateTimerDisplay();
-    }
-  }, 1000);
-}
-
-function updateTimerDisplay() {
-  const el = document.getElementById('hud-timer');
-  el.textContent = timeLeft + 's';
-  el.className = timeLeft <= 10 ? 'hud-timer danger' : 'hud-timer';
-}
-
-function handleTimeUp() {
-  const phase = state.game.phase;
-  if (phase === 'association') buildRecallPhase();
-  else if (phase === 'recall') buildFinalPhase();
-  else endGame();
-}
-
-// === RIVAL AI ===
-function startRivalAI() {
-  const rival = RIVALS[state.config.rival];
-  const diffMultiplier = { easy: 0.3, normal: 0.6, hard: 0.85, giga: 1.1 }[state.config.difficulty];
-
-  let rivalMsgIdx = 0;
-  rivalTimer = setInterval(() => {
-    // Rival gains points over time
-    const gain = Math.floor((5 + Math.random() * 20) * diffMultiplier);
-    state.game.rivalScore += gain;
-
-    // Update rival display
-    document.getElementById('rival-score-display').textContent = state.game.rivalScore + ' pts';
-    document.getElementById('rival-score-big').textContent = state.game.rivalScore;
-    const statuses = rival.status;
-    document.getElementById('rival-status').textContent = statuses[rivalMsgIdx % statuses.length];
-    rivalMsgIdx++;
-
-    // Sabotage
-    const canSabotage = { easy: false, normal: Math.random() < 0.05, hard: Math.random() < 0.15, giga: Math.random() < 0.25 }[state.config.difficulty];
-    if (canSabotage && !state.game.sabotageActive) {
-      state.game.sabotageActive = true;
-      document.getElementById('sabotage-warning').style.display = 'block';
-      timeLeft = Math.max(5, timeLeft - 20);
-      notify(`⚠️ ¡${rival.name} te ha saboteado! -20s`, 'red', 3000);
-      setTimeout(() => {
-        state.game.sabotageActive = false;
-        document.getElementById('sabotage-warning').style.display = 'none';
-      }, 5000);
-    }
-
-    updateHUD();
-  }, 3000 / diffMultiplier);
-}
-
-// === SHOP ===
-function toggleShop() {
-  const panel = document.getElementById('shop-panel');
-  const visible = panel.style.display !== 'none';
-  if (!visible) buildShop();
-  panel.style.display = visible ? 'none' : 'block';
-}
-
-function buildShop() {
-  const grid = document.getElementById('shop-grid');
-  grid.innerHTML = '';
-  SHOP_ITEMS.forEach(item => {
-    const remaining = item.uses - item.used;
-    const canAfford = state.game.coins >= item.price;
-    const soldOut = remaining <= 0;
-
-    const div = document.createElement('div');
-    div.className = `shop-item ${soldOut ? 'sold-out' : ''}`;
-    div.innerHTML = `
-      <div class="shop-emoji">${item.emoji}</div>
-      <div class="shop-name">${item.name}</div>
-      <div class="shop-desc">${item.desc}</div>
-      <div class="shop-price"><span class="coin">🪙</span>${item.price} <span style="font-size:10px; color:var(--text2)">(${remaining} restantes)</span></div>
-    `;
-    if (!soldOut) div.onclick = () => buyItem(item);
-    if (!canAfford && !soldOut) div.style.opacity = '0.5';
-    grid.appendChild(div);
-  });
-}
-
-function buyItem(item) {
-  if (state.game.coins < item.price) { notify('💸 No tienes coins suficientes, crack', 'red'); return; }
-  if (item.used >= item.uses) { notify('😭 Ya usaste todos los usos', 'red'); return; }
-
-  state.game.coins -= item.price;
-  item.used++;
-
-  switch(item.id) {
-    case 'hint': useHint(); break;
-    case 'freeze': activateFreeze(); break;
-    case 'sabotage': activateSabotage(); break;
-    case 'skip': activateSkip(); break;
-    case 'double': activateDouble(); break;
-    case 'reveal': activateReveal(); break;
-  }
-
-  updateHUD();
-  buildShop();
-  spawnCoin(window.innerWidth/2, window.innerHeight/3);
-}
-
-async function useHint() {
-  notify('💡 Cargando pista de la IA...', '', 2000);
-  try {
-    const point = state.selectedPoints[Math.floor(Math.random() * state.selectedPoints.length)];
-    const resp = await callGroq([{ role:'user', content:`Dame una pista corta y creativa (máx 20 palabras, con humor) para recordar que "${point.title}" se asocia con "${point.memeTrigger}". Sin revelar directamente la respuesta.` }], 100);
-    notify(`💡 PISTA: ${resp}`, '', 5000);
-  } catch {
-    notify('💡 Pista: Piensa en el meme asociado al concepto', '', 3000);
-  }
-}
-
-function activateFreeze() {
-  freezeActive = true;
-  notify('❄️ ¡FREEZE TIME! El tiempo está pausado 15 segundos', 'green', 3000);
-  setTimeout(() => { freezeActive = false; notify('❄️ Freeze acabado', '', 2000); }, 15000);
-}
-
-function activateSabotage() {
-  state.game.rivalScore = Math.max(0, state.game.rivalScore - 200);
-  document.getElementById('rival-score-display').textContent = state.game.rivalScore + ' pts';
-  document.getElementById('rival-score-big').textContent = state.game.rivalScore;
-  notify(`💣 ¡Sabotaje! ${RIVALS[state.config.rival].name} pierde 200 pts`, 'green', 3000);
-}
-
-function activateSkip() {
-  notify('⏭️ Skip activado - la siguiente pregunta fallida no cuenta', 'green', 3000);
-  state.game.skipNext = true;
-}
-
-function activateDouble() {
-  doubleXP = true;
-  notify('✖️2 ¡DOUBLE XP! La siguiente respuesta da el doble', 'green', 3000);
-}
-
-function activateReveal() {
-  const unmatched = state.selectedPoints.filter(p => !state.game.matched.has(p.id));
-  if (unmatched.length > 0) {
-    const p = unmatched[0];
-    notify(`👁️ REVEAL: "${p.title}" = ${p.memeEmoji} "${p.memeTrigger}"`, '', 5000);
-  } else {
-    notify('👁️ Ya lo tienes todo asociado, crack', '', 2000);
-  }
-}
-
-// === HUD UPDATE ===
-function updateHUD() {
-  const g = state.game;
-  document.getElementById('hud-score').textContent = g.playerScore;
-  document.getElementById('hud-coins').textContent = g.coins;
-  document.getElementById('player-score-big').textContent = g.playerScore;
-  document.getElementById('rival-score-big').textContent = g.rivalScore;
-  document.getElementById('player-detail').textContent = `${g.correctCount} correctas · racha ${g.streak}`;
-  document.getElementById('rival-detail').textContent = `Dificultad: ${state.config.difficulty}`;
-
-  const streak = document.getElementById('streak-indicator');
-  streak.textContent = `🔥 x${g.streak}`;
-  streak.className = `streak ${g.streak >= 3 ? 'hot' : ''}`;
-
-  // HP bars based on score difference
-  const maxScore = Math.max(g.playerScore + g.rivalScore + 100, 500);
-  const playerHP = Math.min(100, Math.max(10, (g.playerScore / maxScore) * 100 + 30));
-  const rivalHP = Math.min(100, Math.max(10, (g.rivalScore / maxScore) * 100 + 30));
-  document.getElementById('player-hp').style.width = playerHP + '%';
-  document.getElementById('rival-hp').style.width = rivalHP + '%';
-}
-
-// === PHASES ===
-function showPhase(phaseId) {
-  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
-  document.getElementById(phaseId).classList.add('active');
-  state.game.phase = phaseId.replace('phase-', '');
-}
-
-// === CHAT ===
-function toggleChat() {
-  document.getElementById('chat-panel').classList.toggle('open');
-}
-
-async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const msg = input.value.trim();
+async function sendTemarioChat() {
+  const inp = document.getElementById('chat-input');
+  const msg = inp.value.trim();
   if (!msg) return;
-  input.value = '';
-
-  const msgs = document.getElementById('chat-messages');
-  const userMsg = document.createElement('div');
-  userMsg.className = 'chat-msg user';
-  userMsg.textContent = msg;
-  msgs.appendChild(userMsg);
-
-  const loadingMsg = document.createElement('div');
-  loadingMsg.className = 'chat-msg ai typing';
-  loadingMsg.textContent = 'Pensando';
-  msgs.appendChild(loadingMsg);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  chatHistory.push({ role: 'user', content: msg });
-
+  addChatMsg('user', msg);
+  inp.value = '';
+  state.chatHistory.push({ role:'user', content: msg });
+  const loadEl = document.createElement('div');
+  loadEl.className = 'chat-msg ai';
+  loadEl.innerHTML = '<span class="loader">...</span>';
+  document.getElementById('temario-chat').appendChild(loadEl);
   try {
-    const resp = await callGroq(chatHistory, 300);
-    chatHistory.push({ role: 'assistant', content: resp });
-    loadingMsg.className = 'chat-msg ai';
-    loadingMsg.textContent = resp;
-  } catch {
-    loadingMsg.textContent = 'Error al conectar con la IA 😭';
+    const resp = await groqCall(state.chatHistory, 600);
+    loadEl.innerHTML = `<div class="who">▶ IA</div>${resp}`;
+    state.chatHistory.push({ role:'assistant', content: resp });
+  } catch(e) {
+    loadEl.innerHTML = '<div class="who">▶ IA</div>Error con API';
   }
-
-  msgs.scrollTop = msgs.scrollHeight;
+  document.getElementById('temario-chat').scrollTop = 9999;
 }
 
-// === HOW TO PLAY ===
-function showHowTo() {
-  alert(`🧠 THE ASSOCIATION GAME - CÓMO JUGAR\n\n1. SUBE TU TEORÍA: PDF, texto, lo que sea\n2. La IA analiza y saca los puntos clave con memes\n3. SELECCIONA qué puntos quieres estudiar\n4. ¡JUEGA!\n\n📍 FASES DEL MODO CARRERA:\n- Fase 1: Asociación rápida (conecta conceptos con memes)\n- Fase 2: Memoria (¿recuerdas qué significa cada meme?)\n- Fase Final: Prueba de la IA - explica con tus palabras\n\n🏆 PUNTUACIÓN:\n- Racha correcta = puntos extra\n- Menos tiempo = más puntos\n- Derrotar a la IA = victoria\n\n🛒 SHOP:\n- Gana coins resolviendo ejercicios\n- Compra pistas, freeze time, sabotajes...\n\n💬 CHAT con IA durante la partida para pedir ayuda\n\n¡Suerte, crack!`);
-}
-
-// === UTILS ===
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// INIT
-document.querySelectorAll('.diff-btn')[1]?.classList.add('active-normal');
-
-// =============================================
-// === CONFIG SCREEN LOGIC ===
-// =============================================
-let savedProfiles = [];
-let savedCustomRivals = [];
-let savedHumorProfiles = [];
-let activeProfileId = null;
-let activeHumorId = null;
-let customRivalData = null;
-let humorProfile = null;
-let editingProfileId = null;
-
-function switchCfgTab(tab) {
-  ['profiles','rival','humor'].forEach(t => {
-    document.getElementById(`cfg-tab-${t}`).classList.toggle('active', t === tab);
-    document.getElementById(`cfg-content-${t}`).style.display = t === tab ? 'block' : 'none';
-  });
-  if (tab === 'profiles') renderProfiles();
-  if (tab === 'rival') renderCustomRivals();
-  if (tab === 'humor') renderHumorProfiles();
-}
-
-// ── PROFILES ──
-function renderProfiles() {
-  const list = document.getElementById('profiles-list');
-  const noMsg = document.getElementById('no-profiles-msg');
-  list.innerHTML = '';
-  if (savedProfiles.length === 0) { noMsg.style.display = 'block'; return; }
-  noMsg.style.display = 'none';
-  savedProfiles.forEach(p => {
-    const rivalKey = p.rivalKey;
-    let rivalObj = RIVALS[rivalKey] || { name: rivalKey, avatar: '🤖' };
-    if (rivalKey === '__custom__') {
-      const cr = savedCustomRivals.find(r => r.id === p.customRivalId);
-      if (cr) rivalObj = cr;
-    }
-    const humor = savedHumorProfiles.find(h => h.id === p.humorId);
-    const isActive = activeProfileId === p.id;
-    const card = document.createElement('div');
-    card.className = `profile-card ${isActive ? 'active-profile' : ''}`;
-    card.innerHTML = `
-      <div class="profile-avatar">${rivalObj.avatar || '🤖'}</div>
-      <div class="profile-info">
-        <div class="profile-name">${p.name}</div>
-        <div class="profile-meta">
-          <span class="profile-tag">🤖 ${rivalObj.name || rivalKey}</span>
-          <span class="profile-tag">💀 ${p.diff}</span>
-          <span class="profile-tag">⏱️ ${p.time == 9999 ? '∞' : p.time + 's'}</span>
-          <span class="profile-tag">💰 ${p.coins}</span>
-          ${humor ? `<span class="profile-tag" style="border-color:var(--accent3);color:var(--accent3);">😂 ${humor.name}</span>` : ''}
-        </div>
+function renderTemarios() {
+  const list = document.getElementById('temarios-list');
+  document.getElementById('temarios-count').textContent = state.temarios.length;
+  if (!state.temarios.length) { list.innerHTML = '<div style="font-size:8px;color:var(--gray);text-align:center;padding:40px 0">Aún no tienes temarios.</div>'; return; }
+  list.innerHTML = state.temarios.map(t => `
+    <div class="temario-card pb2" onclick="expandTemario(${t.id})">
+      <div class="t-badge">${t.puntos.length} PUNTOS</div>
+      <div class="t-name">${t.name}</div>
+      <div class="t-pts">${t.resumen.substring(0,80)}...</div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        ${t.puntos.map(p=>`<span class="chip" style="border-color:var(--pixel3);color:var(--pixel3)">P${p.id}: ${p.titulo.substring(0,12)}</span>`).join('')}
       </div>
-      <div class="profile-actions">
-        ${!isActive
-          ? `<button class="btn btn-sm btn-green" onclick="selectProfile('${p.id}')">✓ USAR</button>`
-          : `<button class="btn btn-sm" style="color:var(--accent);border-color:var(--accent);cursor:default;">ACTIVO</button>`}
-        <button class="btn btn-sm btn-yellow" onclick="editProfile('${p.id}')">✏️</button>
-        <button class="btn btn-sm btn-red" onclick="deleteProfile('${p.id}')">🗑️</button>
-      </div>`;
-    list.appendChild(card);
+      <div style="margin-top:10px">
+        <button class="btn btn-red" style="font-size:7px;padding:4px 8px" onclick="event.stopPropagation();deleteTemario(${t.id})">🗑 BORRAR</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteTemario(id) {
+  state.temarios = state.temarios.filter(t=>t.id!==id);
+  renderTemarios(); renderSetup();
+}
+
+function expandTemario(id) {
+  // just highlight
+  notify('Selecciona este temario en JUGAR >', false);
+}
+
+// ── CONFIG ──
+function updateHumor(v) {
+  document.getElementById('humor-label').textContent = ['SERIO','NORMAL','OSCURO','ABSURDO'][Math.floor(v/25)] + ` (${v})`;
+  state.config.humor = parseInt(v);
+}
+
+function saveConfig() {
+  state.config.apiKey = document.getElementById('api-key').value;
+  notify('Configuración guardada ✓');
+}
+
+function createRival() {
+  const name = document.getElementById('rival-name').value.trim();
+  const desc = document.getElementById('rival-desc').value.trim();
+  const emoji = document.getElementById('rival-emoji').value.trim() || '🤖';
+  if (!name) { notify('Ponle un nombre al rival', true); return; }
+  state.rivals.push({ id: Date.now(), name: name.toUpperCase(), emoji, desc: desc || 'Un rival misterioso' });
+  renderRivals(); renderSetup();
+  document.getElementById('rival-name').value='';
+  document.getElementById('rival-desc').value='';
+  document.getElementById('rival-emoji').value='';
+  notify(`Rival ${name} creado ⚡`);
+}
+
+function renderRivals() {
+  const list = document.getElementById('rivals-list');
+  list.innerHTML = state.rivals.map(r => `
+    <div class="flex gap-8 items-center pb4" style="padding:10px;background:var(--card)">
+      <span style="font-size:22px">${r.emoji}</span>
+      <div style="flex:1">
+        <div style="font-size:8px;color:var(--pixel2)">${r.name}</div>
+        <div style="font-size:7px;color:var(--gray)">${r.desc.substring(0,60)}...</div>
+      </div>
+      ${r.id!==1?`<button class="btn btn-red" style="font-size:7px;padding:4px 8px" onclick="deleteRival(${r.id})">✕</button>`:''}
+    </div>
+  `).join('');
+}
+
+function deleteRival(id) { state.rivals=state.rivals.filter(r=>r.id!==id); renderRivals(); renderSetup(); }
+
+// ── SETUP ──
+function renderSetup() {
+  // Temarios
+  const stEl = document.getElementById('setup-temarios');
+  if (!state.temarios.length) { stEl.innerHTML = '<div style="font-size:8px;color:var(--gray)">Primero crea un temario</div>'; }
+  else {
+    stEl.innerHTML = state.temarios.map(t => `
+      <div class="flex items-center gap-8 pb" style="padding:10px;background:var(--card);cursor:pointer" onclick="selectTemario(${t.id})" id="setup-t-${t.id}">
+        <span style="font-size:14px">📚</span>
+        <div style="flex:1"><div style="font-size:8px;color:var(--pixel)">${t.name}</div><div style="font-size:7px;color:var(--gray)">${t.puntos.length} puntos</div></div>
+        <span id="setup-t-check-${t.id}" style="color:var(--pixel5);font-size:12px;display:none">✔</span>
+      </div>
+    `).join('');
+  }
+  // Rivals
+  const srEl = document.getElementById('setup-rivals');
+  srEl.innerHTML = state.rivals.map(r => `
+    <div class="flex items-center gap-8 pb3" style="padding:10px;background:var(--card);cursor:pointer" onclick="selectRival(${r.id})" id="setup-r-${r.id}">
+      <span style="font-size:20px">${r.emoji}</span>
+      <div style="flex:1"><div style="font-size:8px;color:var(--pixel4)">${r.name}</div></div>
+      <span id="setup-r-check-${r.id}" style="color:var(--pixel5);font-size:12px;display:none">✔</span>
+    </div>
+  `).join('');
+  // Pre-select first rival
+  if (state.rivals.length && !state.game.rival) selectRival(state.rivals[0].id);
+}
+
+function selectTemario(id) {
+  state.game.temario = state.temarios.find(t=>t.id===id);
+  document.querySelectorAll('[id^="setup-t-check-"]').forEach(el=>el.style.display='none');
+  document.getElementById(`setup-t-check-${id}`).style.display='inline';
+  renderPuntos();
+}
+
+function renderPuntos() {
+  const t = state.game.temario;
+  const el = document.getElementById('setup-puntos');
+  if (!t) return;
+  state.game.selectedPuntos = t.puntos.map(p=>p.id);
+  el.innerHTML = `
+    <div style="font-size:7px;color:var(--gray);margin-bottom:8px">Selecciona qué puntos estudiar:</div>
+    ${t.puntos.map(p=>`
+      <div class="flex items-center gap-8 mb-8" style="cursor:pointer" onclick="togglePunto(${p.id})">
+        <div id="punto-check-${p.id}" style="width:14px;height:14px;border:2px solid var(--pixel);background:var(--pixel);flex-shrink:0"></div>
+        <div style="font-size:8px"><span style="color:var(--pixel)">P${p.id}:</span> ${p.titulo}</div>
+      </div>
+    `).join('')}
+    <div style="font-size:7px;color:var(--pixel3);margin-top:4px"><span id="puntos-count">${t.puntos.length}</span> puntos seleccionados</div>
+  `;
+}
+
+function togglePunto(id) {
+  const idx = state.game.selectedPuntos.indexOf(id);
+  if (idx>-1) { state.game.selectedPuntos.splice(idx,1); document.getElementById(`punto-check-${id}`).style.background='transparent'; }
+  else { state.game.selectedPuntos.push(id); document.getElementById(`punto-check-${id}`).style.background='var(--pixel)'; }
+  document.getElementById('puntos-count').textContent = state.game.selectedPuntos.length;
+}
+
+function selectRival(id) {
+  state.game.rival = state.rivals.find(r=>r.id===id);
+  document.querySelectorAll('[id^="setup-r-check-"]').forEach(el=>el.style.display='none');
+  document.getElementById(`setup-r-check-${id}`).style.display='inline';
+}
+
+// ── START GAME ──
+function startGame() {
+  if (!state.game.temario) { notify('Selecciona un temario', true); return; }
+  if (!state.game.selectedPuntos.length) { notify('Selecciona al menos 1 punto', true); return; }
+  state.game.scorePlayer = 0;
+  state.game.scoreRival = 0;
+  state.game.connections = [];
+  state.game.assocBlocks = [];
+  state.game.lines = [];
+  state.game.phase = 1;
+  state.game.times.p1 = parseInt(document.getElementById('time-p1').value);
+  state.game.times.p2 = parseInt(document.getElementById('time-p2').value);
+  state.game.times.p3 = parseInt(document.getElementById('time-p3').value);
+  showScreen('game');
+  document.getElementById('nav-play-btn').style.display='block';
+  startPhase1();
+}
+
+function updateScoreUI() {
+  document.getElementById('g-score-player').textContent = state.game.scorePlayer;
+  document.getElementById('g-score-rival').textContent = state.game.scoreRival;
+}
+
+function setPhaseIndicator(ph) {
+  ['pdot1','pdot2','pdot3'].forEach((id,i)=>{
+    const d = document.getElementById(id);
+    d.className = 'phase-dot';
+    if (i+1 < ph) d.classList.add('done');
+    if (i+1 === ph) d.classList.add('active');
   });
 }
 
-function openNewProfileForm() {
-  editingProfileId = null;
-  document.getElementById('profile-form-title').textContent = '+ NUEVO PERFIL';
-  document.getElementById('btn-save-profile').textContent = '💾 GUARDAR PERFIL';
-  document.getElementById('pf-name').value = '';
-  document.getElementById('pf-rival').value = 'gojo';
-  document.getElementById('pf-diff').value = 'normal';
-  document.getElementById('pf-time').value = '90';
-  document.getElementById('pf-coins').value = '100';
-  refreshHumorSelectInProfile();
-  document.getElementById('pf-humor').value = '';
-  document.getElementById('profile-form').style.display = 'block';
-  document.getElementById('profile-form').scrollIntoView({ behavior:'smooth' });
-}
-
-function editProfile(id) {
-  const p = savedProfiles.find(x => x.id === id);
-  if (!p) return;
-  editingProfileId = id;
-  document.getElementById('profile-form-title').textContent = '✏️ EDITAR PERFIL';
-  document.getElementById('btn-save-profile').textContent = '💾 ACTUALIZAR';
-  document.getElementById('pf-name').value = p.name;
-  document.getElementById('pf-rival').value = p.rivalKey;
-  document.getElementById('pf-diff').value = p.diff;
-  document.getElementById('pf-time').value = p.time;
-  document.getElementById('pf-coins').value = p.coins;
-  refreshHumorSelectInProfile();
-  document.getElementById('pf-humor').value = p.humorId || '';
-  document.getElementById('profile-form').style.display = 'block';
-  document.getElementById('profile-form').scrollIntoView({ behavior:'smooth' });
-}
-
-function cancelProfileForm() {
-  editingProfileId = null;
-  document.getElementById('profile-form').style.display = 'none';
-}
-
-function saveProfile() {
-  const name = document.getElementById('pf-name').value.trim();
-  if (!name) { notify('⚠️ Ponle un nombre al perfil', 'red'); return; }
-  const data = {
-    id: editingProfileId || ('prof_' + Date.now()),
-    name,
-    rivalKey: document.getElementById('pf-rival').value,
-    diff: document.getElementById('pf-diff').value,
-    time: parseInt(document.getElementById('pf-time').value),
-    coins: parseInt(document.getElementById('pf-coins').value),
-    humorId: document.getElementById('pf-humor').value || null,
+function startTimer(seconds, onEnd) {
+  clearInterval(state.game.timer);
+  state.game.timerVal = seconds;
+  const el = document.getElementById('g-timer');
+  el.className = 'px-timer';
+  const tick = () => {
+    if (state.game.timerVal <= 0) { clearInterval(state.game.timer); el.textContent = '0:00'; onEnd(); return; }
+    const m = Math.floor(state.game.timerVal/60), s = state.game.timerVal%60;
+    el.textContent = m + ':' + String(s).padStart(2,'0');
+    if (state.game.timerVal <= 10) el.className = 'px-timer danger';
+    state.game.timerVal--;
   };
-  if (editingProfileId) {
-    const idx = savedProfiles.findIndex(p => p.id === editingProfileId);
-    savedProfiles[idx] = data;
-    notify('✅ Perfil actualizado', 'green');
-  } else {
-    savedProfiles.push(data);
-    notify('✅ Perfil guardado', 'green');
-  }
-  editingProfileId = null;
-  document.getElementById('profile-form').style.display = 'none';
-  renderProfiles();
+  tick();
+  state.game.timer = setInterval(tick, 1000);
 }
 
-function deleteProfile(id) {
-  if (!confirm('¿Eliminar este perfil?')) return;
-  savedProfiles = savedProfiles.filter(p => p.id !== id);
-  if (activeProfileId === id) { activeProfileId = null; }
-  renderProfiles();
-  updateSetupActiveProfile();
-  notify('🗑️ Perfil eliminado', '');
-}
+// ── PHASE 1 ──
+// ═══════════════════════════════════════════
+// PHASE 1 — INFINITE CRAFT STYLE
+// ═══════════════════════════════════════════
+const p1 = {
+  nodes: [],        // {id, x, y, text, desc, type, el}
+  lines: [],        // {fromId, toId, svgEl}
+  selecting: null,  // id of node pending connection
+  pendingX: 0,
+  pendingY: 0,
+  dragNode: null,
+  dragOffX: 0,
+  dragOffY: 0,
+  savedAssoc: [],   // {from, to, label}
+};
 
-function selectProfile(id) {
-  const p = savedProfiles.find(x => x.id === id);
-  if (!p) return;
-  activeProfileId = id;
-  if (p.rivalKey === '__custom__') {
-    const cr = savedCustomRivals.find(r => r.id === p.customRivalId);
-    if (cr) { RIVALS['__custom__'] = cr; customRivalData = cr; }
-  }
-  if (p.humorId) {
-    const h = savedHumorProfiles.find(x => x.id === p.humorId);
-    if (h) { humorProfile = h; activeHumorId = p.humorId; }
-  } else { humorProfile = null; activeHumorId = null; }
-  state.config.rival = p.rivalKey;
-  state.config.difficulty = p.diff;
-  state.config.timePerRound = p.time;
-  state.config.startCoins = p.coins;
-  notify(`✅ Perfil "${p.name}" seleccionado`, 'green');
-  renderProfiles();
-  updateSetupActiveProfile();
-}
+function startPhase1() {
+  // Reset game areas
+  document.getElementById('phase2-area').style.display='none';
+  document.getElementById('phase3-area').style.display='none';
+  document.getElementById('answer-area').style.display='none';
+  setPhaseIndicator(1);
+  document.getElementById('rival-name-display').textContent = state.game.rival?.name || 'RIVAL';
+  document.getElementById('rival-name-box').textContent = state.game.rival?.name || 'RIVAL';
+  document.getElementById('rival-avatar-display').textContent = state.game.rival?.emoji || '🤖';
 
-function refreshHumorSelectInProfile() {
-  const sel = document.getElementById('pf-humor');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">Sin perfil de humor</option>';
-  savedHumorProfiles.forEach(h => {
-    const opt = document.createElement('option');
-    opt.value = h.id; opt.textContent = `😂 ${h.name}`;
-    sel.appendChild(opt);
-  });
-}
+  // Reset p1 state
+  p1.nodes = []; p1.lines = []; p1.selecting = null; p1.savedAssoc = [];
 
-function updateSetupActiveProfile() {
-  const card = document.getElementById('active-profile-card');
-  const msg = document.getElementById('no-profile-msg');
-  if (!activeProfileId) { card.style.display='none'; msg.style.display='flex'; return; }
-  const p = savedProfiles.find(x => x.id === activeProfileId);
-  if (!p) { card.style.display='none'; msg.style.display='flex'; return; }
-  const rivalObj = RIVALS[p.rivalKey] || { name: p.rivalKey, avatar: '🤖' };
-  const humor = savedHumorProfiles.find(h => h.id === p.humorId);
-  document.getElementById('ap-avatar').textContent = rivalObj.avatar;
-  document.getElementById('ap-name').textContent = p.name;
-  document.getElementById('ap-details').innerHTML =
-    `🤖 ${rivalObj.name} &nbsp;·&nbsp; 💀 ${p.diff} &nbsp;·&nbsp; ⏱️ ${p.time==9999?'∞':p.time+'s'} &nbsp;·&nbsp; 💰 ${p.coins} coins` +
-    (humor ? `<br>😂 ${humor.name}` : '');
-  card.style.display='block'; msg.style.display='none';
-}
+  // Open fullscreen overlay
+  const overlay = document.getElementById('phase1-overlay');
+  overlay.classList.add('open');
 
-// ── CUSTOM RIVALS ──
-function renderCustomRivals() {
-  const list = document.getElementById('custom-rivals-list');
+  // Clear canvas
+  const canvas = document.getElementById('p1-canvas');
+  canvas.querySelectorAll('.c-node').forEach(n=>n.remove());
+  document.getElementById('p1-svg').innerHTML = '';
+  document.getElementById('p1-saved-list').innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Ninguna aún...</div>';
+
+  // Build right panel with concepts (title + full info text)
+  const t = state.game.temario;
+  const selectedPuntos = t.puntos.filter(p=>state.game.selectedPuntos.includes(p.id));
+  const list = document.getElementById('p1-info-list');
   list.innerHTML = '';
-  if (savedCustomRivals.length === 0) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:8px 0 16px;">Aún no hay rivales custom. Crea uno abajo 👇</div>';
-    return;
+  selectedPuntos.forEach(punto => {
+    // Section header
+    const hdr = document.createElement('div');
+    hdr.style.cssText = 'font-size:8px;color:var(--pixel2);padding:6px 8px 2px;border-bottom:1px solid var(--border)';
+    hdr.textContent = '▶ ' + punto.titulo;
+    list.appendChild(hdr);
+    // Info text block (draggable to canvas)
+    const infoEl = document.createElement('div');
+    infoEl.className = 'p1-info-item';
+    infoEl.dataset.id = 'info-' + punto.id;
+    infoEl.dataset.title = punto.titulo;
+    infoEl.dataset.body = punto.info;
+    infoEl.innerHTML = '<div class="p1-info-title">' + punto.titulo + ' — definición</div>'
+      + '<div class="p1-info-text">' + punto.info + '</div>';
+    infoEl.onclick = () => p1AddInfoNode(infoEl);
+    list.appendChild(infoEl);
+    // Each concept
+    punto.conceptos.forEach((c, ci) => {
+      const el = document.createElement('div');
+      el.className = 'p1-info-item';
+      el.dataset.id = 'c-' + punto.id + '-' + ci;
+      el.dataset.title = c;
+      el.dataset.body = c;
+      el.innerHTML = '<div class="p1-info-title">' + punto.titulo + '</div>'
+        + '<div class="p1-info-text">' + c + '</div>';
+      el.onclick = () => p1AddInfoNode(el);
+      list.appendChild(el);
+    });
+  });
+
+  // Canvas right-click → context menu
+  const cvs = document.getElementById('p1-canvas');
+  cvs.oncontextmenu = (e) => {
+    e.preventDefault();
+    p1.pendingX = e.clientX;
+    p1.pendingY = e.clientY;
+    const menu = document.getElementById('ctx-menu');
+    menu.style.left = e.clientX + 'px';
+    menu.style.top  = e.clientY + 'px';
+    menu.classList.add('open');
+  };
+  document.addEventListener('click', closeCtxMenu, { once: false });
+
+  // Canvas mousemove/up for drag
+  cvs.addEventListener('mousemove', p1OnMouseMove);
+  cvs.addEventListener('mouseup', p1OnMouseUp);
+
+  // Start timer
+  document.getElementById('p1-score').textContent = state.game.scorePlayer;
+  p1StartTimer(state.game.times.p1);
+}
+
+function p1StartTimer(secs) {
+  clearInterval(state.game.timer);
+  state.game.timerVal = secs;
+  const el = document.getElementById('p1-timer');
+  el.className = 'px-timer';
+  const tick = () => {
+    if (state.game.timerVal <= 0) { clearInterval(state.game.timer); el.textContent = '0:00'; endPhase1(); return; }
+    const m = Math.floor(state.game.timerVal/60), s = state.game.timerVal%60;
+    el.textContent = m + ':' + String(s).padStart(2,'0');
+    if (state.game.timerVal <= 10) el.classList.add('danger');
+    state.game.timerVal--;
+  };
+  tick();
+  state.game.timer = setInterval(tick, 1000);
+}
+
+function closeCtxMenu(e) {
+  const menu = document.getElementById('ctx-menu');
+  if (!menu.contains(e.target)) menu.classList.remove('open');
+}
+
+function ctxCreateNode() {
+  document.getElementById('ctx-menu').classList.remove('open');
+  document.getElementById('node-label-input').value = '';
+  document.getElementById('node-desc-input').value = '';
+  const modal = document.getElementById('node-modal');
+  modal.style.display = 'flex';
+  setTimeout(() => document.getElementById('node-label-input').focus(), 50);
+}
+function ctxCancel() { document.getElementById('ctx-menu').classList.remove('open'); }
+
+function confirmNodeCreate() {
+  const label = document.getElementById('node-label-input').value.trim();
+  if (!label) return;
+  const desc = document.getElementById('node-desc-input').value.trim();
+  document.getElementById('node-modal').style.display = 'none';
+  const cvs = document.getElementById('p1-canvas');
+  const cr = cvs.getBoundingClientRect();
+  const x = Math.max(10, p1.pendingX - cr.left - 60);
+  const y = Math.max(10, p1.pendingY - cr.top - 30);
+  p1CreateNode(label, desc, 'idea', x, y);
+  state.game.scorePlayer += 15;
+  document.getElementById('p1-score').textContent = state.game.scorePlayer;
+  updateScoreUI();
+}
+
+function cancelNodeCreate() {
+  document.getElementById('node-modal').style.display = 'none';
+}
+
+// Enter key on modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('node-modal').style.display === 'flex') {
+    confirmNodeCreate();
   }
-  savedCustomRivals.forEach(r => {
-    const isActive = state.config.rival === '__custom__' && customRivalData?.id === r.id;
-    const card = document.createElement('div');
-    card.className = `custom-rival-card ${isActive ? 'active-rival' : ''}`;
-    card.innerHTML = `
-      <div style="font-size:32px;flex-shrink:0;">${r.avatar}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:var(--pixel);font-size:8px;color:var(--accent2);margin-bottom:4px;">${r.name}</div>
-        <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🏆 ${r.msg_win}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        ${!isActive
-          ? `<button class="btn btn-sm btn-red" onclick="activateCustomRival('${r.id}')">⚡ USAR</button>`
-          : `<button class="btn btn-sm" style="color:var(--accent2);border-color:var(--accent2);cursor:default;">ACTIVO</button>`}
-        <button class="btn btn-sm" style="color:var(--text2);border-color:var(--border);" onclick="deleteCustomRival('${r.id}')">🗑️</button>
-      </div>`;
-    list.appendChild(card);
+  if (e.key === 'Escape') {
+    cancelNodeCreate();
+    document.getElementById('ctx-menu').classList.remove('open');
+  }
+});
+
+function p1AddInfoNode(el) {
+  if (el.classList.contains('on-canvas')) return;
+  el.classList.add('on-canvas');
+  const cvs = document.getElementById('p1-canvas');
+  const cr = cvs.getBoundingClientRect();
+  // Spread nodes across canvas
+  const existing = p1.nodes.length;
+  const cols = 3;
+  const col = existing % cols;
+  const row = Math.floor(existing / cols);
+  const x = 30 + col * 220 + Math.random() * 30;
+  const y = 30 + row * 120 + Math.random() * 20;
+  p1CreateNode(el.dataset.title, el.dataset.body, 'info', x, y, el.dataset.id);
+  state.game.scorePlayer += 10;
+  document.getElementById('p1-score').textContent = state.game.scorePlayer;
+  updateScoreUI();
+}
+
+function p1CreateNode(title, body, type, x, y, dataId) {
+  const id = dataId || ('n-' + Date.now());
+  const cvs = document.getElementById('p1-canvas');
+  const el = document.createElement('div');
+  el.className = 'c-node ' + (type === 'info' ? 'info-node' : 'idea-node');
+  el.id = id;
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  // Truncate body for display
+  const bodyShort = body && body.length > 80 ? body.substring(0, 80) + '…' : (body || '');
+  el.innerHTML = (type === 'info' ? '<div class="node-tag">INFO</div>' : '<div class="node-tag" style="color:var(--pixel)">IDEA</div>')
+    + '<div class="node-title">' + title + '</div>'
+    + (bodyShort && bodyShort !== title ? '<div class="node-body">' + bodyShort + '</div>' : '')
+    + '<span class="node-del" onclick="p1DeleteNode('' + id + '',event)">✕</span>';
+
+  // Drag
+  el.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('node-del')) return;
+    e.preventDefault();
+    if (p1.selecting) {
+      // Connect to this node
+      if (p1.selecting !== id) {
+        p1ConnectNodes(p1.selecting, id, title);
+      }
+      document.getElementById(p1.selecting)?.classList.remove('selected');
+      p1.selecting = null;
+      return;
+    }
+    p1.dragNode = id;
+    const cr = cvs.getBoundingClientRect();
+    p1.dragOffX = e.clientX - cr.left - parseInt(el.style.left);
+    p1.dragOffY = e.clientY - cr.top  - parseInt(el.style.top);
+    el.style.zIndex = 50;
+  });
+
+  // Click to select for connection
+  el.addEventListener('click', e => {
+    if (e.target.classList.contains('node-del')) return;
+    if (p1.dragNode) return; // was dragging
+    if (!p1.selecting) {
+      p1.selecting = id;
+      el.classList.add('selected');
+      notify('Ahora haz click en otro nodo para conectarlos');
+    } else if (p1.selecting === id) {
+      el.classList.remove('selected');
+      p1.selecting = null;
+    } else {
+      p1ConnectNodes(p1.selecting, id, title);
+      document.getElementById(p1.selecting)?.classList.remove('selected');
+      p1.selecting = null;
+    }
+  });
+
+  cvs.appendChild(el);
+  p1.nodes.push({ id, x, y, title, body, type, el });
+  return el;
+}
+
+function p1OnMouseMove(e) {
+  if (!p1.dragNode) return;
+  const cvs = document.getElementById('p1-canvas');
+  const cr = cvs.getBoundingClientRect();
+  const nd = p1.nodes.find(n=>n.id===p1.dragNode);
+  if (!nd) return;
+  const nx = Math.max(0, Math.min(cr.width - 140, e.clientX - cr.left - p1.dragOffX));
+  const ny = Math.max(0, Math.min(cr.height - 80, e.clientY - cr.top - p1.dragOffY));
+  nd.el.style.left = nx + 'px';
+  nd.el.style.top  = ny + 'px';
+  nd.x = nx; nd.y = ny;
+  p1RedrawLines();
+}
+
+function p1OnMouseUp() {
+  if (p1.dragNode) {
+    const nd = p1.nodes.find(n=>n.id===p1.dragNode);
+    if (nd) nd.el.style.zIndex = 10;
+    p1.dragNode = null;
+  }
+}
+
+function p1ConnectNodes(fromId, toId, toTitle) {
+  const fromNode = p1.nodes.find(n=>n.id===fromId);
+  const toNode   = p1.nodes.find(n=>n.id===toId);
+  if (!fromNode || !toNode) return;
+  // Check duplicate
+  const dup = p1.lines.find(l=>(l.fromId===fromId&&l.toId===toId)||(l.fromId===toId&&l.toId===fromId));
+  if (dup) { notify('Ya están conectados'); return; }
+  // Draw line
+  const svg = document.getElementById('p1-svg');
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  p1UpdateLine(line, fromNode, toNode);
+  line.setAttribute('stroke','var(--pixel)');
+  line.setAttribute('stroke-width','2');
+  line.setAttribute('stroke-dasharray','5,3');
+  line.setAttribute('opacity','0.8');
+  svg.appendChild(line);
+  p1.lines.push({ fromId, toId, svgEl: line });
+  // Save association
+  const assoc = { from: fromNode.title, to: toNode.title };
+  p1.savedAssoc.push(assoc);
+  state.game.lines.push(assoc);
+  // Update saved panel
+  const savedList = document.getElementById('p1-saved-list');
+  if (savedList.querySelector('[style*="gray"]')) savedList.innerHTML = '';
+  const row = document.createElement('div');
+  row.className = 'saved-conn';
+  row.textContent = fromNode.title.substring(0,18) + ' → ' + toNode.title.substring(0,18);
+  savedList.appendChild(row);
+  // Points
+  state.game.scorePlayer += 25;
+  document.getElementById('p1-score').textContent = state.game.scorePlayer;
+  updateScoreUI();
+  showPtsPopup(25, window.innerWidth/2, window.innerHeight/2);
+  notify('¡Conexión guardada! +25 PTS');
+}
+
+function p1UpdateLine(line, fromNode, toNode) {
+  const fr = fromNode.el.getBoundingClientRect();
+  const tr = toNode.el.getBoundingClientRect();
+  const cvs = document.getElementById('p1-canvas');
+  const cr = cvs.getBoundingClientRect();
+  line.setAttribute('x1', fr.left - cr.left + fr.width/2);
+  line.setAttribute('y1', fr.top  - cr.top  + fr.height/2);
+  line.setAttribute('x2', tr.left - cr.left + tr.width/2);
+  line.setAttribute('y2', tr.top  - cr.top  + tr.height/2);
+}
+
+function p1RedrawLines() {
+  p1.lines.forEach(l => {
+    const fn = p1.nodes.find(n=>n.id===l.fromId);
+    const tn = p1.nodes.find(n=>n.id===l.toId);
+    if (fn && tn) p1UpdateLine(l.svgEl, fn, tn);
   });
 }
 
-async function generateCustomRival() {
-  const name = document.getElementById('custom-rival-name').value.trim();
-  const emoji = document.getElementById('custom-rival-emoji').value.trim() || '🤖';
-  const desc = document.getElementById('custom-rival-desc').value.trim();
-  if (!name || !desc) { notify('⚠️ Pon nombre y descripción del rival', 'red'); return; }
-  const btn = document.getElementById('btn-gen-rival');
-  btn.textContent = '⏳ Generando...'; btn.disabled = true;
-  document.getElementById('custom-rival-status').textContent = 'La IA está construyendo tu rival...';
-  try {
-    const resp = await callGroq([{ role:'user', content:
-      `Eres el generador de personajes de "The Association Game", juego de estudio español.
-El usuario quiere crear un rival:
-- Nombre: ${name}
-- Descripción: ${desc}
-Genera el perfil capturando EXACTAMENTE su forma de hablar y manías.
-Responde SOLO en JSON (sin markdown):
-{"name":"${name}","avatar":"${emoji}","msg_win":"Frase al ganar en su estilo (máx 15 palabras)","msg_lose":"Frase al perder en su estilo (máx 15 palabras)","status":["frase jugando 1","frase jugando 2","frase jugando 3","frase jugando 4"]}`
-    }], 500);
-    let clean = resp.trim().replace(/```json?\n?/g,'').replace(/```/g,'').trim();
-    customRivalData = { ...JSON.parse(clean), avatar: emoji, desc, id: 'cr_tmp' };
-    document.getElementById('prev-avatar').textContent = emoji;
-    document.getElementById('prev-name').textContent = customRivalData.name;
-    document.getElementById('prev-win').textContent = customRivalData.msg_win;
-    document.getElementById('prev-lose').textContent = customRivalData.msg_lose;
-    document.getElementById('prev-status').textContent = customRivalData.status.join(' / ');
-    document.getElementById('custom-rival-preview').style.display = 'block';
-    document.getElementById('custom-rival-status').textContent = '✓ Generado. Revisa el preview.';
-  } catch(e) {
-    document.getElementById('custom-rival-status').textContent = '❌ Error. Inténtalo de nuevo.';
-    console.error(e);
-  }
-  btn.textContent = '✨ GENERAR CON IA'; btn.disabled = false;
-}
-
-function saveCustomRival() {
-  if (!customRivalData) return;
-  const saved = { ...customRivalData, id: 'cr_' + Date.now() };
-  savedCustomRivals.push(saved);
-  RIVALS['__custom__'] = saved;
-  customRivalData = saved;
-  updateRivalSelectors();
-  notify(`✅ ${saved.name} guardado`, 'green');
-  document.getElementById('custom-rival-preview').style.display = 'none';
-  document.getElementById('custom-rival-name').value = '';
-  document.getElementById('custom-rival-emoji').value = '';
-  document.getElementById('custom-rival-desc').value = '';
-  document.getElementById('custom-rival-status').textContent = '';
-  renderCustomRivals();
-}
-
-function activateCustomRival(id) {
-  const r = savedCustomRivals.find(x => x.id === id);
-  if (!r) return;
-  customRivalData = r; RIVALS['__custom__'] = r;
-  state.config.rival = '__custom__';
-  notify(`⚡ ${r.name} activado`, 'green');
-  renderCustomRivals();
-}
-
-function deleteCustomRival(id) {
-  if (!confirm('¿Eliminar este rival?')) return;
-  savedCustomRivals = savedCustomRivals.filter(r => r.id !== id);
-  if (customRivalData?.id === id) customRivalData = null;
-  updateRivalSelectors(); renderCustomRivals();
-  notify('🗑️ Rival eliminado', '');
-}
-
-function updateRivalSelectors() {
-  const sel = document.getElementById('pf-rival');
-  if (!sel) return;
-  const grp = document.getElementById('pf-rival-custom-group');
-  if (savedCustomRivals.length > 0 && grp) {
-    grp.style.display = '';
-    const opt = document.getElementById('pf-rival-custom-opt');
-    if (opt) opt.textContent = savedCustomRivals.map(r => `${r.avatar} ${r.name}`).join(', ');
-  } else if (grp) grp.style.display = 'none';
-}
-
-function useCustomRival() { saveCustomRival(); }
-
-// ── HUMOR PROFILES ──
-function renderHumorProfiles() {
-  const list = document.getElementById('humor-profiles-list');
-  list.innerHTML = '';
-  if (savedHumorProfiles.length === 0) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:8px 0 16px;">Aún no hay perfiles de humor. Crea uno abajo 👇</div>';
-    return;
-  }
-  savedHumorProfiles.forEach(h => {
-    const isActive = activeHumorId === h.id;
-    const card = document.createElement('div');
-    card.className = `humor-card ${isActive ? 'active-humor' : ''}`;
-    card.innerHTML = `
-      <div style="font-size:28px;flex-shrink:0;">😂</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:var(--pixel);font-size:8px;color:var(--accent3);margin-bottom:4px;">${h.name}</div>
-        <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.summary}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        ${!isActive
-          ? `<button class="btn btn-sm btn-yellow" onclick="activateHumor('${h.id}')">✓ USAR</button>`
-          : `<button class="btn btn-sm" style="color:var(--accent3);border-color:var(--accent3);cursor:default;">ACTIVO</button>`}
-        <button class="btn btn-sm" style="color:var(--text2);border-color:var(--border);" onclick="deleteHumorProfile('${h.id}')">🗑️</button>
-      </div>`;
-    list.appendChild(card);
+function p1DeleteNode(id, e) {
+  e.stopPropagation();
+  // Remove lines
+  p1.lines = p1.lines.filter(l => {
+    if (l.fromId===id||l.toId===id) { l.svgEl.remove(); return false; }
+    return true;
   });
+  // Remove node
+  const idx = p1.nodes.findIndex(n=>n.id===id);
+  if (idx>-1) {
+    p1.nodes[idx].el.remove();
+    // Unmark info item
+    const infoEl = document.querySelector('[data-id="' + id + '"]');
+    if (infoEl) infoEl.classList.remove('on-canvas');
+    p1.nodes.splice(idx, 1);
+  }
+  if (p1.selecting===id) p1.selecting=null;
 }
 
-async function saveHumorConfig() {
-  const name = (document.getElementById('humor-profile-name')?.value || '').trim() || 'Mi humor';
-  const desc = document.getElementById('humor-desc').value.trim();
-  if (!desc) { notify('⚠️ Describe tu humor primero', 'red'); return; }
-  const btn = document.getElementById('btn-save-humor');
-  btn.textContent = '⏳ Procesando...'; btn.disabled = true;
-  document.getElementById('humor-status').textContent = 'La IA interpreta tu humor...';
+function p1ClearLines() {
+  p1.lines.forEach(l => l.svgEl.remove());
+  p1.lines = [];
+  state.game.lines = [];
+  p1.savedAssoc = [];
+  document.getElementById('p1-saved-list').innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Ninguna aún...</div>';
+}
+
+function selectBlockForCanvas() {}
+function addBlockToCanvas() {}
+function addIdea() {}
+function connectMode() {}
+function onCanvasBlockClick() {}
+function drawLine() {}
+function clearConnections() {}
+
+function endPhase1() {
+  clearInterval(state.game.timer);
+  // Close overlay
+  document.getElementById('phase1-overlay').classList.remove('open');
+  // Cleanup listeners
+  const cvs = document.getElementById('p1-canvas');
+  cvs.oncontextmenu = null;
+  const newCvs = cvs.cloneNode(false);
+  cvs.parentNode.replaceChild(newCvs, cvs);
+  state.game.scorePlayer += p1.lines.length * 5;
+  updateScoreUI();
+  startPhase2();
+}
+
+// ── PHASE 2 ──
+function startPhase2() {
+  document.getElementById('phase1-area').style.display='none';
+  document.getElementById('phase2-area').style.display='block';
+  document.getElementById('phase-title').textContent = 'FASE 2: CONEXIONES COTIDIANAS';
+  setPhaseIndicator(2);
+
+  const t = state.game.temario;
+  const selectedPuntos = t.puntos.filter(p=>state.game.selectedPuntos.includes(p.id));
+  const allConcepts = [];
+  selectedPuntos.forEach(p => p.conceptos.forEach(c => allConcepts.push(c)));
+
+  const p2c = document.getElementById('p2-concepts');
+  p2c.innerHTML = allConcepts.map((c,i)=>`
+    <div class="flex items-center gap-8 mb-8" style="cursor:pointer" onclick="selectP2Concept('${c.replace(/'/g,"\\'")}', this)">
+      <div class="assoc-block pb2" style="width:100%;text-align:left;font-size:8px">${c}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('p2-connections').innerHTML = '';
+  document.getElementById('p2-cotidiano').value = '';
+  document.getElementById('p2-why').value = '';
+  document.getElementById('selected-concept').textContent = '← Selecciona un concepto';
+  state.game.connections = [];
+  state.game.selectedConcept = null;
+
+  startTimer(state.game.times.p2, endPhase2);
+  // Rival makes some connections
+  simulateRivalPhase2(allConcepts.length);
+}
+
+function selectP2Concept(text, parent) {
+  state.game.selectedConcept = text;
+  document.getElementById('selected-concept').innerHTML = `<span style="color:var(--pixel)">${text}</span>`;
+  document.querySelectorAll('#p2-concepts .assoc-block').forEach(b=>b.style.borderColor='var(--pixel3)');
+  parent.querySelector('.assoc-block').style.borderColor = 'var(--pixel)';
+}
+
+function addConnection() {
+  if (!state.game.selectedConcept) { notify('Selecciona un concepto', true); return; }
+  const cotidiano = document.getElementById('p2-cotidiano').value.trim();
+  const why = document.getElementById('p2-why').value.trim();
+  if (!cotidiano) { notify('¿Con qué lo relacionas?', true); return; }
+  const pts = 50 + (why.length > 20 ? 30 : 0);
+  state.game.connections.push({ concept: state.game.selectedConcept, cotidiano, why });
+  const tag = document.createElement('div');
+  tag.className = 'assoc-block pb2';
+  tag.style.fontSize = '8px';
+  tag.style.maxWidth = '200px';
+  tag.innerHTML = `<span style="color:var(--pixel)">${state.game.selectedConcept}</span> → <span style="color:var(--pixel2)">${cotidiano}</span>`;
+  document.getElementById('p2-connections').appendChild(tag);
+  showPtsPopup(pts, 600, 300);
+  state.game.scorePlayer += pts;
+  updateScoreUI();
+  document.getElementById('p2-cotidiano').value='';
+  document.getElementById('p2-why').value='';
+  notify(`+${pts} PTS ¡Buena conexión!`);
+}
+
+function simulateRivalPhase2(count) {
+  const pts = Math.floor(count * 35 + Math.random()*100);
+  setTimeout(()=>{
+    state.game.scoreRival += pts;
+    updateScoreUI();
+    notify(`${state.game.rival?.name || 'RIVAL'} suma ${pts} PTS en sus conexiones`);
+  }, 3000);
+}
+
+function endPhase2() {
+  clearInterval(state.game.timer);
+  startPhase3();
+}
+
+// ── PHASE 3 ──
+async function startPhase3() {
+  document.getElementById('phase2-area').style.display='none';
+  document.getElementById('phase3-area').style.display='block';
+  document.getElementById('phase-title').textContent = 'FASE 3: BATALLA FINAL';
+  setPhaseIndicator(3);
+  document.getElementById('battle-log').innerHTML = '';
+  document.getElementById('answer-area').style.display='none';
+  state.game.currentQ = 0;
+  state.game.buzzed = false;
+  state.game.doubleActive = false;
+  state.game.battleQuestions = [];
+
+  // Generate questions
+  const t = state.game.temario;
+  const selectedPuntos = t.puntos.filter(p=>state.game.selectedPuntos.includes(p.id));
+  const conceptsList = [];
+  selectedPuntos.forEach(p=>p.conceptos.forEach(c=>conceptsList.push(c)));
+  const connections = state.game.connections.map(c=>`${c.concept} → ${c.cotidiano}`).join(', ');
+  const lines = state.game.lines.map(l=>`${l.from} ↔ ${l.to}`).join(', ');
+
+  document.getElementById('battle-question').innerHTML = '<span class="loader">GENERANDO PREGUNTAS...</span>';
+  document.getElementById('buzz-btn').disabled = true;
+
   try {
-    const resp = await callGroq([{ role:'user', content:
-      `Analiza este perfil de humor para un juego de estudio español: "${desc.substring(0,400)}"
-Responde SOLO en JSON (sin markdown):
-{"summary":"Resumen de 1 frase del humor","instructions":"Instrucciones para la IA: tono, referencias, estilo, ejemplos de frases, qué evitar. Va en todos los prompts del juego."}`
-    }], 400);
-    let clean = resp.trim().replace(/```json?\n?/g,'').replace(/```/g,'').trim();
+    const prompt = `Eres un juez de un concurso de memoria y asociación con humor ${getHumorDesc(state.config.humor)}.
+El jugador estudió: ${conceptsList.join(', ')}.
+Sus asociaciones cotidianas: ${connections || 'ninguna'}.
+Sus conexiones entre conceptos: ${lines || 'ninguna'}.
+
+Rival: ${state.game.rival?.name || 'IA'} (${state.game.rival?.desc || 'rival genérico'}).
+
+Genera 5 preguntas de competición donde el jugador debe demostrar que recuerda la info Y sus asociaciones. 
+Devuelve SOLO JSON puro (sin markdown):
+{"preguntas":[{"pregunta":"...","respuesta":"...","pista":"..."}]}
+Mezcla preguntas directas sobre conceptos y preguntas que usen las asociaciones del jugador (ej: "¿Qué concepto asociaste con tu abuela?").
+Sé ${getHumorDesc(state.config.humor)} en el tono.`;
+
+    const resp = await groqCall([{role:'user',content:prompt}], 900);
+    const clean = resp.replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(clean);
-    const profile = { id: 'hum_' + Date.now(), name, rawDesc: desc, ...parsed };
-    savedHumorProfiles.push(profile);
-    activateHumor(profile.id);
-    refreshHumorSelectInProfile();
-    renderHumorProfiles();
-    document.getElementById('humor-status').textContent = '✓ Guardado y activado';
-    notify(`😂 "${profile.name}" guardado y activo`, 'green', 3000);
-    if (document.getElementById('humor-profile-name')) document.getElementById('humor-profile-name').value = '';
-    document.getElementById('humor-desc').value = '';
+    state.game.battleQuestions = parsed.preguntas;
+    document.getElementById('q-total').textContent = state.game.battleQuestions.length;
+    nextQuestion();
   } catch(e) {
-    document.getElementById('humor-status').textContent = '❌ Error. Reintenta.';
-    console.error(e);
+    // Fallback questions
+    state.game.battleQuestions = conceptsList.slice(0,5).map(c=>({ pregunta:`¿Puedes explicar o recordar algo sobre: "${c}"?`, respuesta:c, pista:`Está relacionado con ${c}` }));
+    document.getElementById('q-total').textContent = state.game.battleQuestions.length;
+    nextQuestion();
   }
-  btn.textContent = '💾 GUARDAR HUMOR'; btn.disabled = false;
 }
 
-async function previewHumor() {
-  const desc = document.getElementById('humor-desc').value.trim();
-  if (!desc) { notify('⚠️ Escribe tu humor primero', 'red'); return; }
-  const box = document.getElementById('humor-preview-box');
-  box.style.display = 'block'; box.textContent = '⏳ Generando ejemplo...';
+function nextQuestion() {
+  const q = state.game.battleQuestions[state.game.currentQ];
+  if (!q) { endGame(); return; }
+  document.getElementById('q-num').textContent = state.game.currentQ+1;
+  document.getElementById('battle-question').textContent = q.pregunta;
+  document.getElementById('buzz-btn').disabled = false;
+  document.getElementById('answer-area').style.display='none';
+  document.getElementById('answer-input').value='';
+  state.game.buzzed = false;
+  document.getElementById('rival-thinking').textContent = '';
+  startTimer(state.game.times.p3, () => rivalAnswers());
+}
+
+function buzzIn() {
+  if (state.game.buzzed) return;
+  state.game.buzzed = true;
+  clearInterval(state.game.timer);
+  document.getElementById('buzz-btn').disabled = true;
+  document.getElementById('answer-area').style.display='block';
+  document.getElementById('answer-input').focus();
+  document.getElementById('g-timer').textContent = '⚡';
+  document.getElementById('rival-thinking').textContent = 'Esperando tu respuesta...';
+}
+
+function submitAnswer() {
+  const ans = document.getElementById('answer-input').value.trim();
+  if (!ans) return;
+  const q = state.game.battleQuestions[state.game.currentQ];
+  const correct = checkAnswer(ans, q.respuesta);
+  const pts = correct ? (state.game.doubleActive ? 200 : 100) : -20;
+  state.game.scorePlayer += pts;
+  state.game.doubleActive = false;
+  updateScoreUI();
+  showPtsPopup(pts, 500, 300);
+  addBattleLog('TÚ', ans, pts > 0);
+  if (pts < 0) notify(`❌ Incorrecto. Era: ${q.respuesta}`, true);
+  else notify(`✅ ¡Correcto! +${pts} PTS`);
+  state.game.currentQ++;
+  setTimeout(nextQuestion, 1500);
+}
+
+function checkAnswer(given, expected) {
+  const g = given.toLowerCase().trim();
+  const e = expected.toLowerCase().trim();
+  return g.includes(e.substring(0,8)) || e.includes(g.substring(0,8)) || similarity(g,e)>0.5;
+}
+
+function similarity(a,b) {
+  const longer = a.length>b.length?a:b;
+  const shorter = a.length>b.length?b:a;
+  if (!longer.length) return 1;
+  let matches=0;
+  for (let i=0;i<shorter.length;i++) if (longer.includes(shorter[i])) matches++;
+  return matches/longer.length;
+}
+
+function rivalAnswers() {
+  const q = state.game.battleQuestions[state.game.currentQ];
+  if (!q) return;
+  const correct = Math.random() > 0.4;
+  const pts = correct ? 80 : 0;
+  state.game.scoreRival += pts;
+  updateScoreUI();
+  document.getElementById('rival-thinking').textContent = correct ? `"${q.respuesta.substring(0,20)}..."` : '...no sé...';
+  addBattleLog(state.game.rival?.name||'RIVAL', correct?q.respuesta:'No respondió', correct);
+  state.game.currentQ++;
+  setTimeout(nextQuestion, 1500);
+}
+
+function addBattleLog(who, answer, correct) {
+  const log = document.getElementById('battle-log');
+  const el = document.createElement('div');
+  el.style.color = correct ? 'var(--pixel5)' : 'var(--pixel6)';
+  el.innerHTML = `${correct?'✔':'✗'} <span style="color:var(--gray)">${who}:</span> ${answer.substring(0,40)}`;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── STORE ──
+function buyItem(type, cost) {
+  if (state.game.scorePlayer < cost) { notify('Puntos insuficientes', true); return; }
+  state.game.scorePlayer -= cost;
+  updateScoreUI();
+  showPtsPopup(-cost, 300, 400);
+  if (type==='hint') {
+    const q = state.game.battleQuestions[state.game.currentQ];
+    if (q) notify(`💡 PISTA: ${q.pista || q.respuesta.substring(0,10)+'...'}`);
+  } else if (type==='freeze') {
+    state.game.freezeActive = true;
+    document.getElementById('rival-thinking').textContent = '❄ CONGELADO';
+    notify('¡Rival congelado! Se pierde la siguiente pregunta');
+    setTimeout(()=>state.game.freezeActive=false, state.game.times.p3*1000);
+  } else if (type==='double') {
+    state.game.doubleActive = true;
+    notify('✕2 ¡Próxima respuesta vale el doble!');
+  }
+}
+
+// ── END GAME ──
+async function endGame() {
+  clearInterval(state.game.timer);
+  state.partidas++;
+  showScreen('results');
+  document.getElementById('final-player-score').textContent = state.game.scorePlayer;
+  document.getElementById('final-rival-score').textContent = state.game.scoreRival;
+  document.getElementById('final-connections').textContent = state.game.connections.length;
+  const winner = state.game.scorePlayer >= state.game.scoreRival;
+  const winnerEl = document.getElementById('winner-display');
+  winnerEl.style.color = winner ? 'var(--pixel5)' : 'var(--pixel6)';
+  winnerEl.textContent = winner ? '🏆 ¡HAS GANADO!' : '💀 ¡HAS PERDIDO!';
+
+  const commentEl = document.getElementById('final-ai-comment');
+  commentEl.innerHTML = '<span class="loader">Generando comentario del rival...</span>';
   try {
-    const resp = await callGroq([{ role:'user', content:
-      `Con este perfil de humor: "${desc.substring(0,300)}", genera una sola asociación meme graciosa para recordar que el Lazarillo de Tormes es un pícaro que sirve a varios amos. Una frase, sin explicación.`
-    }], 120);
-    box.textContent = '🎭 ' + resp.trim();
-  } catch { box.textContent = 'Error generando preview.'; }
+    const prompt = `Eres ${state.game.rival?.name||'un rival IA'} (${state.game.rival?.desc||'rival IA'}). Con humor ${getHumorDesc(state.config.humor)}, comenta el resultado de la batalla:
+Jugador: ${state.game.scorePlayer} puntos. Rival: ${state.game.scoreRival} puntos. ${winner?'Ganó el jugador.':'Gané yo.'}
+Conexiones del jugador: ${state.game.connections.length}.
+Sé en personaje, divertido y motivador. Máx 60 palabras.`;
+    const resp = await groqCall([{role:'user',content:prompt}], 200);
+    commentEl.innerHTML = `<span style="color:var(--pixel4)">${state.game.rival?.emoji||'🤖'} ${state.game.rival?.name||'RIVAL'}:</span><br>${resp}`;
+  } catch {
+    commentEl.innerHTML = `<span style="color:var(--pixel4)">${state.game.rival?.emoji||'🤖'}:</span> Buen juego...`;
+  }
+  renderHomeStats();
 }
 
-function activateHumor(id) {
-  const h = savedHumorProfiles.find(x => x.id === id);
-  if (!h) return;
-  humorProfile = h; activeHumorId = id;
-  notify(`😂 Humor "${h.name}" activado`, 'green', 2000);
-  renderHumorProfiles();
-}
+// ── INIT ──
+renderRivals();
+renderTemarios();
+renderHomeStats();
 
-function deleteHumorProfile(id) {
-  if (!confirm('¿Eliminar este perfil de humor?')) return;
-  savedHumorProfiles = savedHumorProfiles.filter(h => h.id !== id);
-  if (activeHumorId === id) { activeHumorId = null; humorProfile = null; }
-  refreshHumorSelectInProfile(); renderHumorProfiles();
-  notify('🗑️ Perfil de humor eliminado', '');
-}
-
+// Easter egg: konami code
+let konamiSeq = [];
+const KONAMI = [38,38,40,40,37,39,37,39,66,65];
+document.addEventListener('keydown', e=>{
+  konamiSeq.push(e.keyCode);
+  if(konamiSeq.length>10) konamiSeq.shift();
+  if(konamiSeq.join(',')===KONAMI.join(',')) {
+    notify('🎮 ¡CÓDIGO KONAMI! +500 PTS EXTRA');
+    state.game.scorePlayer+=500;
+    updateScoreUI();
+  }
+});
 </script>
+
+<!-- PHASE 1 FULLSCREEN OVERLAY -->
+<div id="phase1-overlay">
+  <div id="p1-canvas" oncontextmenu="return false">
+    <svg id="p1-svg"></svg>
+  </div>
+  <div id="p1-right">
+    <div id="p1-right-header">
+      <div style="flex:1">
+        <div style="font-size:8px;color:var(--pixel)">CONCEPTOS</div>
+        <div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Click para añadir al canvas</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:7px;color:var(--gray)">PUNTOS</div>
+        <div id="p1-score" style="font-family:VT323,monospace;font-size:22px;color:var(--pixel5)">0</div>
+      </div>
+    </div>
+    <div id="p1-info-list"></div>
+    <div id="p1-saved">
+      <div style="font-size:7px;color:var(--pixel4);margin-bottom:4px">ASOCIACIONES GUARDADAS:</div>
+      <div id="p1-saved-list"><div style="font-family:VT323,monospace;font-size:13px;color:var(--gray)">Ninguna aún...</div></div>
+    </div>
+    <div id="p1-bottom">
+      <div style="font-size:7px;color:var(--gray);width:100%;margin-bottom:4px">CLIC DERECHO en el canvas para crear un nodo · CLIC en nodo para conectar</div>
+      <button class="btn btn-gray" style="font-size:7px;padding:6px 10px" onclick="p1ClearLines()">✕ LÍNEAS</button>
+      <div style="flex:1"></div>
+      <div class="px-timer" id="p1-timer" style="font-size:22px">--</div>
+      <button class="btn btn-yellow" style="font-size:8px;padding:8px 14px" onclick="endPhase1()">FASE 2 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx-menu">
+  <div class="ctx-item" onclick="ctxCreateNode()">✦ Crear nodo de asociación</div>
+  <div class="ctx-item" onclick="ctxCancel()">✕ Cancelar</div>
+</div>
+
+<!-- NODE LABEL MODAL -->
+<div id="node-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9500;align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:3px solid var(--pixel);box-shadow:6px 6px 0 #000;padding:20px;min-width:300px">
+    <div style="font-size:9px;color:var(--pixel);margin-bottom:12px">✦ NOMBRE DE LA ASOCIACIÓN</div>
+    <input type="text" id="node-label-input" class="px-input mb-12" placeholder="Ej: Átomo, Mi abuela, La guerra de las galaxias...">
+    <div style="font-size:7px;color:var(--gray);margin-bottom:8px">Descripción (opcional):</div>
+    <input type="text" id="node-desc-input" class="px-input mb-12" placeholder="Por qué te recuerda esto...">
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-yellow" onclick="confirmNodeCreate()" style="flex:1">✔ CREAR</button>
+      <button class="btn btn-gray" onclick="cancelNodeCreate()">✕</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
